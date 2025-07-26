@@ -5,17 +5,23 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import bcrypt from 'bcryptjs';
 
 const avatarEmojis = ['🦁', '🐧', '🦄', '🐬', '🦖', '🐉', '🐘', '🦅', '🐼', '🦊'];
 
 export default function SignupPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [age, setAge] = useState('');
+  const [parentEmail, setParentEmail] = useState('');
   const [avatar, setAvatar] = useState('🦁');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +29,7 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // 나이 체크
+      // 입력값 검증
       const userAge = parseInt(age);
       if (userAge < 7 || userAge > 15) {
         setError('7살부터 15살까지 참여할 수 있어요!');
@@ -31,33 +37,62 @@ export default function SignupPage() {
         return;
       }
 
-        // 중복 체크
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('id')
-          .eq('username', username)
-          .single();
+      // 비밀번호 확인
+      if (password !== confirmPassword) {
+        setError('비밀번호가 일치하지 않아요!');
+        setLoading(false);
+        return;
+      }
 
-        if (existingUser) {
-          setError('이미 사용중인 닉네임이에요. 다른 닉네임을 선택해주세요!');
-          setLoading(false);
-          return;
-        }
+      // 비밀번호 길이 체크
+      if (password.length < 6) {
+        setError('비밀번호는 6자 이상이어야 해요!');
+        setLoading(false);
+        return;
+      }
 
-        // 사용자 생성
-        const { data: newUser, error: createError } = await supabase
-          .from('users')
-          .insert([
-            {
-              username,
-              age: userAge,
-              avatar
-            }
-          ])
-          .select()
-          .single();
+      // 이메일 형식 체크
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('올바른 이메일 주소를 입력해주세요!');
+        setLoading(false);
+        return;
+      }
 
-        if (createError) throw createError;
+      // 중복 체크
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .or(`username.eq.${username},email.eq.${email}`)
+        .single();
+
+      if (existingUser) {
+        setError('이미 사용중인 닉네임 또는 이메일이에요!');
+        setLoading(false);
+        return;
+      }
+
+      // 비밀번호 해시화
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      // 사용자 생성
+      const { data: newUser, error: createError } = await supabase
+        .from('users')
+        .insert([
+          {
+            username,
+            email,
+            password_hash: passwordHash,
+            age: userAge,
+            avatar,
+            parent_email: userAge < 13 ? parentEmail : null,
+            role: 'player'
+          }
+        ])
+        .select()
+        .single();
+
+      if (createError) throw createError;
 
         // 첫 동물 친구 추가 (사자)
         await supabase
@@ -103,8 +138,13 @@ export default function SignupPage() {
         >
           <p className="text-gray-800">
             🦉 새로운 친구가 되어주세요!<br/>
-            닉네임과 나이를 알려주고,<br/>
-            좋아하는 아바타를 골라봐요!
+            <strong>닉네임</strong>: 게임에서 사용할 이름이에요<br/>
+            <strong>이메일</strong>: 계정을 찾을 때 필요해요<br/>
+            <strong>비밀번호</strong>: 6자 이상으로 만들어요<br/>
+            <strong>나이</strong>: 7-15살 친구들만 가능해요<br/>
+            <strong>아바타</strong>: 좋아하는 동물을 골라요!<br/>
+            <br/>
+            💡 13세 미만은 부모님 동의가 필요해요!
           </p>
         </motion.div>
       )}
@@ -152,6 +192,61 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* 이메일 입력 */}
+          <div className="mb-6">
+            <label className="block text-lg font-bold text-gray-700 mb-2">
+              이메일 주소
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@email.com"
+              className="input-primary w-full"
+              required
+            />
+          </div>
+
+          {/* 비밀번호 입력 */}
+          <div className="mb-6">
+            <label className="block text-lg font-bold text-gray-700 mb-2">
+              비밀번호 (6자 이상)
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="비밀번호를 입력하세요"
+                className="input-primary w-full pr-12"
+                minLength={6}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-2xl"
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
+          </div>
+
+          {/* 비밀번호 확인 */}
+          <div className="mb-6">
+            <label className="block text-lg font-bold text-gray-700 mb-2">
+              비밀번호 확인
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="비밀번호를 다시 입력하세요"
+              className="input-primary w-full"
+              required
+            />
+          </div>
+
           {/* 나이 입력 */}
           <div className="mb-6">
             <label className="block text-lg font-bold text-gray-700 mb-2">
@@ -168,6 +263,30 @@ export default function SignupPage() {
               required
             />
           </div>
+
+          {/* 부모님 이메일 (13세 미만) */}
+          {age && parseInt(age) < 13 && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-6"
+            >
+              <label className="block text-lg font-bold text-gray-700 mb-2">
+                부모님 이메일 (보호자 동의 필요)
+              </label>
+              <input
+                type="email"
+                value={parentEmail}
+                onChange={(e) => setParentEmail(e.target.value)}
+                placeholder="부모님 이메일을 입력하세요"
+                className="input-primary w-full"
+                required={parseInt(age) < 13}
+              />
+              <p className="text-sm text-gray-600 mt-1">
+                13세 미만은 부모님 동의가 필요해요!
+              </p>
+            </motion.div>
+          )}
 
           {/* 아바타 선택 */}
           <div className="mb-6">
