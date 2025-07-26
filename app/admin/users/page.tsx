@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { FiSearch, FiEdit, FiTrash2, FiEye, FiHome, FiHelpCircle, FiUser } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import HelpButton from '@/components/HelpButton';
 
 interface User {
   id: string;
@@ -29,7 +30,6 @@ export default function AdminUsersPage() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [showHelp, setShowHelp] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showUserModal, setShowUserModal] = useState(false);
 
@@ -181,31 +181,7 @@ export default function AdminUsersPage() {
   return (
     <main className="min-h-screen p-8">
       {/* 도움말 버튼 */}
-      <button
-        onClick={() => setShowHelp(!showHelp)}
-        className="fixed top-4 right-4 bg-yellow-400 p-3 rounded-full shadow-lg hover:scale-110 transition z-50"
-      >
-        <FiHelpCircle className="text-2xl" />
-      </button>
-
-      {/* 도움말 풍선 */}
-      {showHelp && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="fixed top-20 right-4 bg-white p-6 rounded-2xl shadow-xl max-w-sm z-50"
-        >
-          <h3 className="font-bold text-lg mb-2">👥 사용자 관리 도움말</h3>
-          <ul className="space-y-2 text-sm">
-            <li>🔍 <strong>검색</strong>: 이름이나 이메일로 찾아요</li>
-            <li>👁️ <strong>상세보기</strong>: 자세한 정보를 확인해요</li>
-            <li>✏️ <strong>수정</strong>: 정보를 바꿀 수 있어요</li>
-            <li>🔒 <strong>활성/비활성</strong>: 계정을 켜고 끌 수 있어요</li>
-            <li>⏰ <strong>플레이 시간</strong>: 하루 게임 시간을 정해요</li>
-            <li>👑 <strong>권한</strong>: 역할을 바꿀 수 있어요</li>
-          </ul>
-        </motion.div>
-      )}
+      <HelpButton page="admin" section="users" position="top-right" />
 
       {/* 홈 버튼 */}
       <Link href="/admin" className="fixed top-4 left-4">

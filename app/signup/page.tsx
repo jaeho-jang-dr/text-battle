@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
-import bcrypt from 'bcryptjs';
+import HelpButton from '@/components/HelpButton';
 
 const avatarEmojis = ['🦁', '🐧', '🦄', '🐬', '🦖', '🐉', '🐘', '🦅', '🐼', '🦊'];
 
@@ -20,7 +19,6 @@ export default function SignupPage() {
   const [avatar, setAvatar] = useState('🦁');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -51,69 +49,57 @@ export default function SignupPage() {
         return;
       }
 
-      // 이메일 형식 체크
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        setError('올바른 이메일 주소를 입력해주세요!');
+      // 이메일 형식 체크 (13세 이상 또는 이메일이 입력된 경우만)
+      if ((userAge >= 13 || email) && email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          setError('올바른 이메일 주소를 입력해주세요!');
+          setLoading(false);
+          return;
+        }
+      }
+
+      // API를 통해 회원가입 처리
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          email: userAge < 13 ? (email || null) : email, // 13세 미만은 이메일 선택사항
+          password,
+          age: userAge,
+          avatar,
+          parentEmail: userAge < 13 ? parentEmail : null,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || '회원가입 중 문제가 발생했어요!');
         setLoading(false);
         return;
       }
 
-      // 중복 체크
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('id')
-        .or(`username.eq.${username},email.eq.${email}`)
-        .single();
+      const newUser = data.data.user;
 
-      if (existingUser) {
-        setError('이미 사용중인 닉네임 또는 이메일이에요!');
-        setLoading(false);
-        return;
-      }
-
-      // 비밀번호 해시화
-      const passwordHash = await bcrypt.hash(password, 10);
-
-      // 사용자 생성
-      const { data: newUser, error: createError } = await supabase
-        .from('users')
-        .insert([
-          {
-            username,
-            email,
-            password_hash: passwordHash,
-            age: userAge,
-            avatar,
-            parent_email: userAge < 13 ? parentEmail : null,
-            role: 'player'
-          }
-        ])
-        .select()
-        .single();
-
-      if (createError) throw createError;
-
-        // 첫 동물 친구 추가 (사자)
-        await supabase
-          .from('user_animals')
-          .insert([
-            {
-              user_id: newUser.id,
-              animal_id: 1, // 사자
-              nickname: `${username}의 사자`,
-              level: 1,
-              experience: 0,
-              battles_won: 0,
-              battles_lost: 0
-            }
-          ]);
-
-        // 로그인 처리
-        localStorage.setItem('kid-battle-user', JSON.stringify(newUser));
-        router.push('/welcome');
+      // 로그인 처리
+      localStorage.setItem('kid-battle-user', JSON.stringify(newUser));
+      
+      // 세션 쿠키 설정
+      document.cookie = `kid-battle-session=${JSON.stringify({
+        userId: newUser.id,
+        role: newUser.role
+      })}; path=/; max-age=86400`; // 24시간
+      
+      // 성공 메시지와 함께 환영 페이지로 이동
+      alert(data.message || '회원가입이 완료되었어요! 🎉');
+      router.push('/dashboard');
     } catch (err) {
-      setError('회원가입 중 문제가 발생했어요. 다시 시도해주세요!');
+      console.error('회원가입 에러:', err);
+      setError('앗! 뭔가 잘못됐어요. 잠시 후 다시 시도해주세요! 🔄');
     } finally {
       setLoading(false);
     }
@@ -122,32 +108,7 @@ export default function SignupPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       {/* 도움말 버튼 */}
-      <button
-        onClick={() => setShowHelp(!showHelp)}
-        className="absolute top-4 right-4 bg-kid-yellow p-3 rounded-full shadow-lg hover:scale-110 transition"
-      >
-        <span className="text-2xl">❓</span>
-      </button>
-
-      {/* 도움말 풍선 */}
-      {showHelp && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="help-bubble top-20 right-4 max-w-xs"
-        >
-          <p className="text-gray-800">
-            🦉 새로운 친구가 되어주세요!<br/>
-            <strong>닉네임</strong>: 게임에서 사용할 이름이에요<br/>
-            <strong>이메일</strong>: 계정을 찾을 때 필요해요<br/>
-            <strong>비밀번호</strong>: 6자 이상으로 만들어요<br/>
-            <strong>나이</strong>: 7-15살 친구들만 가능해요<br/>
-            <strong>아바타</strong>: 좋아하는 동물을 골라요!<br/>
-            <br/>
-            💡 13세 미만은 부모님 동의가 필요해요!
-          </p>
-        </motion.div>
-      )}
+      <HelpButton page="signup" />
 
       {/* 뒤로가기 버튼 */}
       <Link href="/" className="absolute top-4 left-4">
@@ -195,7 +156,7 @@ export default function SignupPage() {
           {/* 이메일 입력 */}
           <div className="mb-6">
             <label className="block text-lg font-bold text-gray-700 mb-2">
-              이메일 주소
+              이메일 주소 {age && parseInt(age) < 13 && <span className="text-sm text-gray-500">(선택)</span>}
             </label>
             <input
               type="email"
@@ -203,8 +164,13 @@ export default function SignupPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="example@email.com"
               className="input-primary w-full"
-              required
+              required={age ? parseInt(age) >= 13 : true}
             />
+            {age && parseInt(age) < 13 && (
+              <p className="text-sm text-gray-600 mt-1">
+                13세 미만은 이메일 없이도 가입할 수 있어요!
+              </p>
+            )}
           </div>
 
           {/* 비밀번호 입력 */}

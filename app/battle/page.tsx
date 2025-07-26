@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { BattleState, initializeBattle, processTextAttack, processDefend, processSpecialAttack } from '@/lib/battle-engine';
 import { animals } from '@/data/animals';
+import HelpButton from '@/components/HelpButton';
 
 export default function BattlePage() {
   const router = useRouter();
@@ -15,7 +16,6 @@ export default function BattlePage() {
   const [battleState, setBattleState] = useState<BattleState | null>(null);
   const [attackText, setAttackText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
   const [selectedAnimalId, setSelectedAnimalId] = useState<number>(1);
   const [userAnimals, setUserAnimals] = useState<any[]>([]);
 
@@ -200,28 +200,7 @@ export default function BattlePage() {
   return (
     <main className="min-h-screen p-4 md:p-8">
       {/* 도움말 버튼 */}
-      <button
-        onClick={() => setShowHelp(!showHelp)}
-        className="absolute top-4 right-4 bg-kid-yellow p-3 rounded-full shadow-lg hover:scale-110 transition z-10"
-      >
-        <span className="text-2xl">❓</span>
-      </button>
-
-      {/* 도움말 풍선 */}
-      {showHelp && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="help-bubble top-20 right-4 max-w-xs z-20"
-        >
-          <p className="text-gray-800">
-            🦉 배틀 팁!<br/>
-            • 200자까지 공격 텍스트를 쓸 수 있어요<br/>
-            • '강한', '파워' 같은 단어를 쓰면 데미지가 올라가요<br/>
-            • '필살'을 쓰면 크리티컬 확률이 높아져요!
-          </p>
-        </motion.div>
-      )}
+      <HelpButton page="battle" />
 
       <div className="max-w-6xl mx-auto">
         {/* 배틀 필드 */}

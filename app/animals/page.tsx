@@ -1,24 +1,25 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { animals, getAnimalsByCategory } from '@/data/animals';
-import { AnimalCategory } from '@/types';
+import { animalsData } from '@/data/animals-extended';
+import HelpButton from '@/components/HelpButton';
 
 export default function AnimalsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<AnimalCategory>('current');
-  const [selectedAnimal, setSelectedAnimal] = useState<number | null>(null);
-  const [showHelp, setShowHelp] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<'current' | 'mythical' | 'prehistoric' | 'custom'>('current');
+  const [selectedAnimal, setSelectedAnimal] = useState<string | null>(null);
+  const [customAnimals, setCustomAnimals] = useState<any[]>([]);
 
-  const categories: { value: AnimalCategory; label: string; emoji: string }[] = [
-    { value: 'current', label: '현존 동물', emoji: '🦁' },
-    { value: 'legend', label: '전설의 동물', emoji: '🦄' },
-    { value: 'prehistoric', label: '고생대 동물', emoji: '🦖' }
+  const categories = [
+    { value: 'current' as const, label: '현존 동물', emoji: '🦁' },
+    { value: 'mythical' as const, label: '신화/상상의 동물', emoji: '🦄' },
+    { value: 'prehistoric' as const, label: '선사시대 동물', emoji: '🦖' },
+    { value: 'custom' as const, label: '커스텀 동물', emoji: '🎨' }
   ];
 
-  const filteredAnimals = getAnimalsByCategory(selectedCategory);
-  const selectedAnimalData = animals.find(a => a.id === selectedAnimal);
+  const filteredAnimals = animalsData.filter(animal => animal.category === selectedCategory);
+  const selectedAnimalData = animalsData.find(a => a.name === selectedAnimal) || customAnimals.find(a => a.name === selectedAnimal);
 
   return (
     <main className="min-h-screen p-8">
@@ -31,28 +32,20 @@ export default function AnimalsPage() {
           <h1 className="text-title">동물 도감 📖</h1>
         </Link>
 
-        <button
-          onClick={() => setShowHelp(!showHelp)}
-          className="bg-kid-yellow p-3 rounded-full shadow-lg hover:scale-110 transition"
-        >
-          <span className="text-2xl">❓</span>
-        </button>
+        <div className="flex items-center gap-4">
+          <Link href="/create-animal">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-kid-purple text-white px-4 py-2 rounded-full shadow-lg font-bold flex items-center gap-2"
+            >
+              <span className="text-xl">🎨</span>
+              나만의 동물 만들기
+            </motion.button>
+          </Link>
+          <HelpButton page="animals" />
+        </div>
       </div>
-
-      {/* 도움말 풍선 */}
-      {showHelp && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="help-bubble top-24 right-4 max-w-xs"
-        >
-          <p className="text-gray-800">
-            🦉 모든 동물 친구들을 만나보세요!<br/>
-            카테고리를 선택하고 동물을 클릭하면<br/>
-            자세한 정보를 볼 수 있어요!
-          </p>
-        </motion.div>
-      )}
 
       {/* 카테고리 탭 */}
       <div className="flex gap-4 mb-8 flex-wrap justify-center">
@@ -83,24 +76,24 @@ export default function AnimalsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {filteredAnimals.map((animal, index) => (
               <motion.div
-                key={animal.id}
+                key={animal.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.05 }}
-                onClick={() => setSelectedAnimal(animal.id)}
+                onClick={() => setSelectedAnimal(animal.name)}
                 className={`card-animal cursor-pointer ${
-                  selectedAnimal === animal.id ? 'ring-4 ring-kid-blue' : ''
+                  selectedAnimal === animal.name ? 'ring-4 ring-kid-blue' : ''
                 }`}
               >
                 <div className="flex items-center gap-4">
                   <span className="text-5xl">{animal.emoji}</span>
                   <div>
-                    <h3 className="font-bold text-lg">{animal.koreanName}</h3>
+                    <h3 className="font-bold text-lg">{animal.korean_name}</h3>
                     <p className="text-sm text-gray-600">{animal.name}</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-700 mt-2">{animal.description}</p>
+                <p className="text-sm text-gray-700 mt-2">{animal.kid_description}</p>
               </motion.div>
             ))}
           </div>
@@ -110,7 +103,7 @@ export default function AnimalsPage() {
         <div>
           {selectedAnimalData ? (
             <motion.div
-              key={selectedAnimalData.id}
+              key={selectedAnimalData.name}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="card-animal sticky top-4"
@@ -127,15 +120,20 @@ export default function AnimalsPage() {
                   <span className="text-8xl">{selectedAnimalData.emoji}</span>
                 </motion.div>
                 <h2 className="text-3xl font-bold text-gray-800 mt-4">
-                  {selectedAnimalData.koreanName}
+                  {selectedAnimalData.korean_name}
                 </h2>
                 <p className="text-xl text-gray-600">{selectedAnimalData.name}</p>
+                <p className="text-sm text-kid-orange font-bold mt-2">
+                  {selectedAnimalData.rarity === 'legendary' ? '🌟 전설급' : 
+                   selectedAnimalData.rarity === 'epic' ? '💎 에픽' :
+                   selectedAnimalData.rarity === 'rare' ? '✨ 레어' : '⭐ 일반'}
+                </p>
               </div>
 
               {/* 배틀 크라이 */}
               <div className="bg-kid-yellow rounded-lg p-4 mb-6 text-center">
                 <p className="text-lg font-bold text-gray-800">
-                  "{selectedAnimalData.battleCry}"
+                  "{selectedAnimalData.battle_cry}"
                 </p>
               </div>
 
@@ -143,19 +141,19 @@ export default function AnimalsPage() {
               <div className="space-y-4 mb-6">
                 <div className="bg-blue-50 rounded-lg p-4">
                   <h4 className="font-bold text-gray-700 mb-1">🏠 서식지</h4>
-                  <p className="text-gray-600">{selectedAnimalData.detailedInfo.habitat}</p>
+                  <p className="text-gray-600">{selectedAnimalData.habitat}</p>
                 </div>
                 <div className="bg-green-50 rounded-lg p-4">
                   <h4 className="font-bold text-gray-700 mb-1">🍖 먹이</h4>
-                  <p className="text-gray-600">{selectedAnimalData.detailedInfo.food}</p>
+                  <p className="text-gray-600">{selectedAnimalData.food}</p>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-4">
                   <h4 className="font-bold text-gray-700 mb-1">⭐ 특기</h4>
-                  <p className="text-gray-600">{selectedAnimalData.detailedInfo.speciality}</p>
+                  <p className="text-gray-600">{selectedAnimalData.speciality}</p>
                 </div>
                 <div className="bg-pink-50 rounded-lg p-4">
                   <h4 className="font-bold text-gray-700 mb-1">💡 재미있는 사실</h4>
-                  <p className="text-gray-600">{selectedAnimalData.detailedInfo.funFact}</p>
+                  <p className="text-gray-600">{selectedAnimalData.fun_fact}</p>
                 </div>
               </div>
 
@@ -165,13 +163,13 @@ export default function AnimalsPage() {
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-bold text-red-600">공격력</span>
-                      <span className="text-sm font-bold">{selectedAnimalData.stats.power}</span>
+                      <span className="text-sm font-bold text-red-600">💪 힘</span>
+                      <span className="text-sm font-bold">{selectedAnimalData.power}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${selectedAnimalData.stats.power}%` }}
+                        animate={{ width: `${selectedAnimalData.power}%` }}
                         transition={{ duration: 0.5, delay: 0.1 }}
                         className="bg-red-500 h-3 rounded-full"
                       />
@@ -179,13 +177,13 @@ export default function AnimalsPage() {
                   </div>
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-bold text-blue-600">방어력</span>
-                      <span className="text-sm font-bold">{selectedAnimalData.stats.defense}</span>
+                      <span className="text-sm font-bold text-blue-600">🛡️ 방어</span>
+                      <span className="text-sm font-bold">{selectedAnimalData.defense}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${selectedAnimalData.stats.defense}%` }}
+                        animate={{ width: `${selectedAnimalData.defense}%` }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="bg-blue-500 h-3 rounded-full"
                       />
@@ -193,15 +191,29 @@ export default function AnimalsPage() {
                   </div>
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-sm font-bold text-green-600">속도</span>
-                      <span className="text-sm font-bold">{selectedAnimalData.stats.speed}</span>
+                      <span className="text-sm font-bold text-green-600">⚡ 속도</span>
+                      <span className="text-sm font-bold">{selectedAnimalData.speed}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
                       <motion.div
                         initial={{ width: 0 }}
-                        animate={{ width: `${selectedAnimalData.stats.speed}%` }}
+                        animate={{ width: `${selectedAnimalData.speed}%` }}
                         transition={{ duration: 0.5, delay: 0.3 }}
                         className="bg-green-500 h-3 rounded-full"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-sm font-bold text-purple-600">🧠 지능</span>
+                      <span className="text-sm font-bold">{selectedAnimalData.intelligence}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${selectedAnimalData.intelligence}%` }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="bg-purple-500 h-3 rounded-full"
                       />
                     </div>
                   </div>

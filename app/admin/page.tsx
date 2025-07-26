@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { FiUsers, FiAward, FiActivity, FiSettings, FiHome, FiHelpCircle } from 'react-icons/fi';
 import { GiAnimalSkull, GiSwordsPower } from 'react-icons/gi';
 import { MdPets, MdAdminPanelSettings } from 'react-icons/md';
+import HelpButton from '@/components/HelpButton';
 
 interface AdminStats {
   totalUsers: number;
@@ -29,7 +30,6 @@ export default function AdminDashboard() {
     customAnimals: 0,
     pendingApprovals: 0,
   });
-  const [showHelp, setShowHelp] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
@@ -182,34 +182,7 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen p-8">
       {/* 도움말 버튼 */}
-      <button
-        onClick={() => setShowHelp(!showHelp)}
-        className="fixed top-4 right-4 bg-yellow-400 p-3 rounded-full shadow-lg hover:scale-110 transition z-50"
-      >
-        <FiHelpCircle className="text-2xl" />
-      </button>
-
-      {/* 도움말 풍선 */}
-      {showHelp && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="fixed top-20 right-4 bg-white p-6 rounded-2xl shadow-xl max-w-sm z-50"
-        >
-          <h3 className="font-bold text-lg mb-2">🌟 관리자 도움말</h3>
-          <p className="text-gray-700 mb-2">
-            이곳은 게임을 관리하는 특별한 공간이에요!
-          </p>
-          <ul className="space-y-1 text-sm">
-            <li>👥 <strong>사용자 관리</strong>: 친구들의 계정을 확인해요</li>
-            <li>🦁 <strong>동물 관리</strong>: 새로운 동물을 추가해요</li>
-            <li>⚔️ <strong>배틀 기록</strong>: 모든 전투를 확인해요</li>
-            <li>🏆 <strong>업적 관리</strong>: 보상을 설정해요</li>
-            <li>✅ <strong>부모 승인</strong>: 승인 요청을 처리해요</li>
-            <li>⚙️ <strong>시스템 설정</strong>: 게임 설정을 바꿔요</li>
-          </ul>
-        </motion.div>
-      )}
+      <HelpButton page="admin" position="top-right" />
 
       {/* 홈 버튼 */}
       <Link href="/dashboard" className="fixed top-4 left-4">

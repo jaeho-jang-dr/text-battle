@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
-import bcrypt from 'bcryptjs';
+import HelpButton from '@/components/HelpButton';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,7 +14,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showHelp, setShowHelp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -24,50 +22,37 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // 사용자 찾기
-      const query = loginMethod === 'username' 
-        ? supabase.from('users').select('*').eq('username', username)
-        : supabase.from('users').select('*').eq('email', email);
-      
-      const { data: user, error: userError } = await query.single();
+      // API를 통해 로그인 처리
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          loginMethod,
+          username: loginMethod === 'username' ? username : undefined,
+          email: loginMethod === 'email' ? email : undefined,
+          password,
+        }),
+      });
 
-      if (userError || !user) {
-        setError('계정을 찾을 수 없어요. 회원가입을 해주세요!');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || '로그인 중 문제가 발생했어요!');
         setLoading(false);
         return;
       }
-
-      // 계정 활성 상태 확인
-      if (!user.is_active) {
-        setError('계정이 비활성화되어 있어요. 관리자에게 문의해주세요!');
-        setLoading(false);
-        return;
-      }
-
-      // 비밀번호 확인
-      const passwordMatch = await bcrypt.compare(password, user.password_hash);
-      if (!passwordMatch) {
-        setError('비밀번호가 틀렸어요. 다시 확인해주세요!');
-        setLoading(false);
-        return;
-      }
-
-      // 마지막 로그인 시간 업데이트
-      await supabase
-        .from('users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', user.id);
-
-      // 플레이 세션 시작
-      await supabase
-        .from('play_sessions')
-        .insert([{
-          user_id: user.id,
-          start_time: new Date().toISOString()
-        }]);
 
       // 로그인 성공 - 세션 저장
+      const user = data.data.user;
       localStorage.setItem('kid-battle-user', JSON.stringify(user));
+      
+      // 세션 쿠키 설정
+      document.cookie = `kid-battle-session=${JSON.stringify({
+        userId: user.id,
+        role: user.role
+      })}; path=/; max-age=86400`; // 24시간
       
       // 관리자는 관리자 페이지로, 일반 사용자는 대시보드로
       if (user.role === 'admin') {
@@ -85,28 +70,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       {/* 도움말 버튼 */}
-      <button
-        onClick={() => setShowHelp(!showHelp)}
-        className="absolute top-4 right-4 bg-kid-yellow p-3 rounded-full shadow-lg hover:scale-110 transition"
-      >
-        <span className="text-2xl">❓</span>
-      </button>
-
-      {/* 도움말 풍선 */}
-      {showHelp && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="help-bubble top-20 right-4 max-w-xs"
-        >
-          <p className="text-gray-800">
-            🦉 다시 만나서 반가워요!<br/>
-            <strong>닉네임</strong> 또는 <strong>이메일</strong>로 로그인할 수 있어요!<br/>
-            <br/>
-            비밀번호를 잊었다면 부모님께 도움을 요청하세요!
-          </p>
-        </motion.div>
-      )}
+      <HelpButton page="login" />
 
       {/* 뒤로가기 버튼 */}
       <Link href="/" className="absolute top-4 left-4">
