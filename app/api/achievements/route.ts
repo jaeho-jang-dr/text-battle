@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 사용자가 로그인한 경우 달성 여부 확인
-    let userAchievements = [];
+    let userAchievements: any[] = [];
     if (userId) {
       const { data } = await supabase
         .from('user_achievements')

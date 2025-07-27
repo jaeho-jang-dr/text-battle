@@ -59,6 +59,21 @@ export default function SignupPage() {
         }
       }
 
+      // 부모 이메일 인증 먼저 처리
+      if (parentEmail) {
+        const verifyResponse = await fetch('/api/auth/send-verification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: parentEmail }),
+        });
+        
+        if (!verifyResponse.ok) {
+          setError('부모님 이메일 인증 발송에 실패했어요!');
+          setLoading(false);
+          return;
+        }
+      }
+
       // API를 통해 회원가입 처리
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -84,6 +99,12 @@ export default function SignupPage() {
       }
 
       const newUser = data.data.user;
+      const autoLoginToken = data.data.autoLoginToken;
+
+      // 자동 로그인 토큰 저장
+      if (autoLoginToken) {
+        localStorage.setItem('kid-battle-auto-token', autoLoginToken);
+      }
 
       // 로그인 처리
       localStorage.setItem('kid-battle-user', JSON.stringify(newUser));
@@ -95,8 +116,12 @@ export default function SignupPage() {
       })}; path=/; max-age=86400`; // 24시간
       
       // 성공 메시지와 함께 환영 페이지로 이동
-      alert(data.message || '회원가입이 완료되었어요! 🎉');
-      router.push('/dashboard');
+      if (parentEmail) {
+        alert('회원가입이 완료되었어요! 🎉\n부모님 이메일로 인증 링크를 보냈어요.');
+      } else {
+        alert(data.message || '회원가입이 완료되었어요! 🎉');
+      }
+      router.push('/welcome');
     } catch (err) {
       console.error('회원가입 에러:', err);
       setError('앗! 뭔가 잘못됐어요. 잠시 후 다시 시도해주세요! 🔄');

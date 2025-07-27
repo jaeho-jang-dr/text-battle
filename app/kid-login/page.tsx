@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -29,6 +29,40 @@ export default function KidLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showCharacters, setShowCharacters] = useState(false);
+  const [checkingAutoLogin, setCheckingAutoLogin] = useState(true);
+
+  // 자동 로그인 체크
+  useEffect(() => {
+    const checkAutoLogin = async () => {
+      const token = localStorage.getItem('kid-battle-auto-token');
+      if (token) {
+        try {
+          const response = await fetch('/api/auth/auto-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const user = data.data.user;
+            localStorage.setItem('kid-battle-user', JSON.stringify(user));
+            document.cookie = `kid-battle-session=${JSON.stringify({
+              userId: user.id,
+              role: user.role
+            })}; path=/; max-age=86400`;
+            router.push('/dashboard');
+            return;
+          }
+        } catch (err) {
+          console.error('자동 로그인 오류:', err);
+        }
+      }
+      setCheckingAutoLogin(false);
+    };
+
+    checkAutoLogin();
+  }, [router]);
 
   const handleCheckParentEmail = async () => {
     if (!parentEmail) {
@@ -108,6 +142,21 @@ export default function KidLoginPage() {
       setLoading(false);
     }
   };
+
+  if (checkingAutoLogin) {
+    return (
+      <main className="min-h-screen flex flex-col items-center justify-center p-8">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="text-6xl mb-4"
+        >
+          🎮
+        </motion.div>
+        <p className="text-xl text-gray-700">로그인 확인 중...</p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8 bg-gradient-to-b from-kid-blue/20 to-kid-purple/20">

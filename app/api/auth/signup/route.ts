@@ -95,6 +95,10 @@ export async function POST(req: NextRequest) {
 
     // 비밀번호 암호화
     const passwordHash = await bcrypt.hash(password, 10);
+    
+    // 자동 로그인 토큰 생성
+    const { randomUUID } = await import('crypto');
+    const autoLoginToken = randomUUID();
 
     // 사용자 생성
     const { data: newUser, error: createError } = await supabase
@@ -109,6 +113,7 @@ export async function POST(req: NextRequest) {
         role: 'player',
         is_active: true,
         play_time_limit: 60, // 기본 60분
+        auto_login_token: autoLoginToken,
         created_at: new Date().toISOString()
       }])
       .select()
@@ -175,6 +180,7 @@ export async function POST(req: NextRequest) {
     return apiResponse(
       {
         user: safeUser,
+        autoLoginToken,
         firstAnimal: {
           name: '사자',
           emoji: '🦁',

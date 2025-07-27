@@ -3,32 +3,56 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { LeaderboardEntry } from '@/types';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
+  const [userRank, setUserRank] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     loadLeaderboard();
-  }, []);
+    if (user?.id) {
+      loadUserRank(user.id);
+    }
+  }, [user, showAll]);
 
   const loadLeaderboard = async () => {
     try {
-      const { data, error } = await supabase
-        .from('leaderboard')
-        .select('*')
-        .limit(25);
+      const limit = showAll ? 100 : 25;
+      const response = await fetch(`/api/leaderboard?limit=${limit}`);
+      const result = await response.json();
 
-      if (!error && data) {
-        setLeaderboard(data);
+      if (result.success && result.data?.leaderboard) {
+        setLeaderboard(result.data.leaderboard);
+      } else {
+        console.error('리더보드 로드 실패:', result.message);
       }
     } catch (error) {
       console.error('Error loading leaderboard:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadUserRank = async (userId: string) => {
+    try {
+      const response = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      const result = await response.json();
+
+      if (result.success && result.data?.rank) {
+        setUserRank(result.data.rank);
+      }
+    } catch (error) {
+      console.error('Error loading user rank:', error);
     }
   };
 
@@ -81,6 +105,19 @@ export default function LeaderboardPage() {
           <span className="text-2xl">❓</span>
         </button>
       </div>
+
+      {/* 내 순위 표시 */}
+      {user && userRank && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-kid-yellow p-4 rounded-xl shadow-lg mb-6 text-center"
+        >
+          <p className="text-lg font-bold text-gray-800">
+            🌟 {user.username}님은 현재 <span className="text-2xl text-kid-blue">{userRank}등</span>이에요!
+          </p>
+        </motion.div>
+      )}
 
       {/* 도움말 풍선 */}
       {showHelp && (
@@ -213,6 +250,20 @@ export default function LeaderboardPage() {
           </motion.div>
         )}
       </div>
+
+      {/* 더보기 버튼 */}
+      {leaderboard.length >= 25 && (
+        <div className="text-center mt-8">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowAll(!showAll)}
+            className="btn-primary"
+          >
+            {showAll ? '상위 25명만 보기' : '100등까지 모두 보기'} 👀
+          </motion.button>
+        </div>
+      )}
 
       {/* 동기부여 메시지 */}
       <motion.div

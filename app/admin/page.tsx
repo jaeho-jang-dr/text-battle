@@ -17,6 +17,7 @@ interface AdminStats {
   activeToday: number;
   customAnimals: number;
   pendingApprovals: number;
+  suspendedAccounts: number;
 }
 
 export default function AdminDashboard() {
@@ -29,6 +30,7 @@ export default function AdminDashboard() {
     activeToday: 0,
     customAnimals: 0,
     pendingApprovals: 0,
+    suspendedAccounts: 0,
   });
   const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -90,6 +92,12 @@ export default function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
         .eq('is_approved', false);
 
+      // 정지된 계정 수
+      const { count: suspendedCount } = await supabase
+        .from('users')
+        .select('*', { count: 'exact', head: true })
+        .eq('account_suspended', true);
+
       setStats({
         totalUsers: userCount || 0,
         totalBattles: battleCount || 0,
@@ -97,6 +105,7 @@ export default function AdminDashboard() {
         activeToday: activeCount || 0,
         customAnimals: customCount || 0,
         pendingApprovals: pendingCount || 0,
+        suspendedAccounts: suspendedCount || 0,
       });
     } catch (error) {
       console.error('통계 조회 오류:', error);
@@ -153,6 +162,14 @@ export default function AdminDashboard() {
       link: '/admin/settings',
       color: 'bg-gray-500',
       emoji: '⚙️'
+    },
+    {
+      title: '정지 계정 관리',
+      icon: <FiActivity className="text-4xl" />,
+      description: '정지된 계정을 관리해요',
+      link: '/admin/suspended',
+      color: 'bg-red-600',
+      emoji: '🚫'
     }
   ];
 
@@ -162,7 +179,8 @@ export default function AdminDashboard() {
     { title: '등록된 동물', value: stats.totalAnimals, emoji: '🦁', color: 'bg-green-500' },
     { title: '오늘 활동', value: stats.activeToday, emoji: '🌟', color: 'bg-yellow-500' },
     { title: '커스텀 동물', value: stats.customAnimals, emoji: '🎨', color: 'bg-purple-500' },
-    { title: '대기 중 승인', value: stats.pendingApprovals, emoji: '⏳', color: 'bg-orange-500' }
+    { title: '대기 중 승인', value: stats.pendingApprovals, emoji: '⏳', color: 'bg-orange-500' },
+    { title: '정지 계정', value: stats.suspendedAccounts, emoji: '🚫', color: 'bg-red-600' }
   ];
 
   if (loading) {
