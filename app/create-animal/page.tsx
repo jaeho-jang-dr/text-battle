@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
-import HelpButton from '@/components/HelpButton';
+// import { useAuth } from '@/hooks/useAuth';
+import HelpButton from '@/components/help/HelpButton';
 
 const animalEmojis = ['🦁', '🐯', '🐻', '🦊', '🐺', '🦄', '🐉', '🦅', '🦜', '🦚', '🐸', '🦎', '🐢', '🦂', '🦋'];
 const habitatOptions = ['숲', '바다', '하늘', '사막', '극지방', '초원', '산', '동굴', '강', '호수'];
@@ -13,7 +13,8 @@ const foodOptions = ['고기', '풀', '과일', '물고기', '곤충', '꿀', '�
 
 export default function CreateAnimalPage() {
   const router = useRouter();
-  const { user, requireAuth } = useAuth();
+  // const { user, requireAuth } = useAuth();
+  const user = null; // 임시
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);

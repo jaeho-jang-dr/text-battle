@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "node",
+      "args": ["/usr/lib/node_modules/@supabase/mcp-server-supabase/dist/transports/stdio.js"],
+      "env": {
+        "SUPABASE_URL": "${SUPABASE_URL}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}"
+      }
+    },
+    "tosspayments": {
+      "command": "node",
+      "args": ["/usr/lib/node_modules/@tosspayments/integration-guide-mcp/dist/server.js"],
+      "env": {
+        "TOSS_SECRET_KEY": "${TOSS_SECRET_KEY}",
+        "TOSS_CLIENT_KEY": "${TOSS_CLIENT_KEY}"
+      }
+    }
+  }
+}
