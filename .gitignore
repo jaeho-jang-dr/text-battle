@@ -35,3 +35,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database
+*.db
+*.db-shm
+*.db-wal
+
+# test files
+test-*.js
+test-*.ts
+check-*.js
+
+# local scripts
+setup-*.js
+add-*.js

@@ -4,13 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Kid Text Battle is a child-friendly online text battle game for elementary school children (ages 7-10) featuring animal characters. The project has recently migrated from Supabase to SQLite for easier setup and deployment.
+Kid Text Battle is a child-friendly online text battle game for elementary school children (ages 7-10) featuring animal characters. The project uses SQLite for local development and includes bot opponents for unlimited practice battles.
 
 ## Core Commands
 
 ```bash
-# Development
-npm run dev          # Start development server (http://localhost:3000)
+# Development (runs on port 3008)
+npm run dev          # Start development server (http://localhost:3008)
 npm run build        # Build for production
 npm run start        # Start production server
 
@@ -20,68 +20,87 @@ npm run typecheck    # TypeScript type checking
 npm run format       # Format code with Prettier
 npm run format:check # Check code formatting
 
-# Testing
-node test-sqlite.js  # Run SQLite database tests
-node check-db.js     # Check database contents
+# Database Testing & Verification
+node check-db.js     # Check database contents and character stats
+node test-sqlite.js  # Test SQLite database operations
+node test-bot-battle.js  # Test bot battle functionality
+node setup-admin.js  # Setup admin accounts
 ```
 
 ## Architecture Overview
 
 ### Database Layer (SQLite)
-- **Location**: `kid-text-battle.db` (auto-created on first run)
-- **Initialization**: `/lib/db.ts` automatically creates all tables, seeds data, and configures settings
-- **Key Features**:
-  - Auto-initialization on app start
-  - WAL mode for performance
-  - Sample data creation (5 characters, admin account)
-  - No external database setup required
+- **Location**: `kid-text-battle.db` (auto-created on first run via `/lib/db.ts`)
+- **Key Tables**:
+  - `users`: Accounts with token auth, warning tracking, suspension status
+  - `characters`: Player characters with `is_bot` flag for AI opponents
+  - `animals`: 16 pre-seeded animals (current/mythical/prehistoric)
+  - `battles`: Battle history with AI judgments
+  - `admin_users`: Admin accounts (default: admin/1234)
+- **Bot System**: Characters with `is_bot=1` allow unlimited daily battles
 
-### API Structure
-All APIs follow Next.js 13 App Router conventions in `/app/api/`:
-- **Auth**: `/auth/login`, `/auth/verify` - Token-based authentication
-- **Characters**: `/characters` - Character CRUD with content filtering
-- **Battles**: `/battles`, `/battles/judge` - Battle system with AI judgment
-- **Leaderboard**: `/leaderboard` - Top 25 rankings with statistics
+### API Structure (Next.js 13 App Router)
+All APIs in `/app/api/`:
+- **Auth**: `/auth/login`, `/auth/verify` - 30-day token authentication
+- **Characters**: `/characters` - CRUD with animal property formatting
+- **Battles**: `/battles` - Battle creation with bot detection for unlimited battles
+- **Admin**: `/admin/login` - Admin authentication endpoint
+- **Leaderboard**: `/leaderboard` - Rankings with bot indicators
 
-### Content Safety System
-Located in `/lib/filters/content-filter.ts`:
-- Profanity filtering (Korean/English)
+### Content Safety System (`/lib/filters/content-filter.ts`)
+- Korean/English profanity filtering
 - Ten Commandments violation detection
-- Automatic warning system (3 strikes = suspension)
-- All violations logged silently without alerting children
+- 3-strike warning system (silent logging)
+- Automatic user suspension on 3rd violation
 
-### Key Design Decisions
-1. **SQLite over PostgreSQL**: Simplified deployment and zero configuration
-2. **Token Authentication**: 30-day tokens for both guest and email users
-3. **Character Limits**: Max 3 characters per account enforced at database level
-4. **Battle Text**: 100 character limit with comprehensive filtering
-5. **Daily Battle Limits**: 10 active battles per character per day
+### Frontend Architecture
+- **Play Page**: Main game interface with BattleOpponents component
+- **Admin Page**: Hidden panel accessed via unicorn (🦄) icon
+- **Character Display**: Uses `character.animal.emoji` (not `animals`)
+- **Bot Indicators**: Purple badges showing "🤖 대기 계정" and "무제한"
+
+## MCP Server Integration
+
+Two MCP servers are configured:
+1. **Supabase MCP**: Database and auth operations (currently unused, SQLite preferred)
+2. **Toss Payments MCP**: Payment integration (future feature)
+
+Configuration in `mcp-config.json`, activation via `./activate-mcp-servers.sh`
 
 ## Child-Friendly Requirements
 
-- **Language**: All user-facing text must be friendly and encouraging
-- **Errors**: Never show scary error messages - use friendly alternatives
-- **Competition**: Emphasize fun over winning
-- **Animals Only**: No human characters allowed
-- **Battle Results**: Positive messages for both winners and losers
+- **Error Messages**: Always friendly, never scary
+- **Battle Results**: Positive messages for both winners and losers  
+- **Content**: Animals only, no human characters
+- **UI Language**: Korean-focused with encouraging tone
 
-## Database Schema
+## Key Implementation Details
 
-The database auto-initializes with these core tables:
-- `users`: Account management with warning tracking
-- `characters`: Player characters linked to animals
-- `animals`: 16 pre-seeded animals (current/mythical/prehistoric)
-- `battles`: Battle history with AI judgments
-- `leaderboard`: View combining character stats and rankings
-- `admin_settings`: System configuration (default password: 1234)
+1. **Character Emoji Display**: Verify route returns `animal` (singular) not `animals`
+2. **Bot Battle Logic**: Check `defender.is_bot` to skip daily limit
+3. **Admin Access**: Bottom-right unicorn button with hover effects
+4. **Daily Limits**: 10 battles/day per character (except vs bots)
+5. **Character Limits**: Max 3 characters per account
 
-## Admin Access
+## Common Development Tasks
 
-Hidden unicorn icon (🦄) in bottom-right corner of homepage leads to admin panel.
+```bash
+# Add new bot characters
+node add-bot-column.js
+
+# Test specific features
+node test-bot-battle-api.js  # Test bot battle API
+node test-email-login.js     # Test email authentication
+node test-emoji-display.js   # Verify character emojis
+
+# Check battle errors
+node check-battle-error.js
+```
 
 ## Important Notes
 
-- The project originally used Supabase but has been migrated to SQLite for easier setup
-- All database operations are synchronous (better-sqlite3)
-- Content filtering is applied silently - violations are logged but not shown to users
-- The battle judgment AI endpoint simulates scoring based on creativity, appropriateness, and relevance
+- Database operations use synchronous better-sqlite3 (not async)
+- All violations logged but not shown to children
+- Server runs on port 3008 (not default 3000)
+- Token auth stored in localStorage
+- Window references must check `typeof window !== 'undefined'` for SSR
