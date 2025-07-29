@@ -35,6 +35,8 @@ export default function PlayPage() {
     battleResult: null,
     isBattling: false
   });
+  const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
+  const [newBattleText, setNewBattleText] = useState('');
 
   useEffect(() => {
     // 로그인 처리 및 데이터 로드
@@ -137,6 +139,52 @@ export default function PlayPage() {
     } catch (error) {
       console.error('Character creation error:', error);
       setError('캐릭터 생성 중 오류가 발생했습니다');
+    }
+  };
+
+  // 배틀 텍스트 수정 시작
+  const startEditBattleText = (character: Character) => {
+    setEditingCharacter(character);
+    setNewBattleText(character.battleText || '');
+  };
+
+  // 배틀 텍스트 업데이트
+  const updateBattleText = async () => {
+    if (!editingCharacter || !newBattleText) return;
+
+    if (newBattleText.length < 10 || newBattleText.length > 100) {
+      setError('배틀 텍스트는 10자 이상 100자 이하로 작성해주세요!');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/characters/${editingCharacter.id}/battle-text`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ battleText: newBattleText })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // 캐릭터 목록 업데이트
+        setCharacters(characters.map(char => 
+          char.id === editingCharacter.id 
+            ? { ...char, battleText: newBattleText }
+            : char
+        ));
+        setEditingCharacter(null);
+        setNewBattleText('');
+        setError('');
+      } else {
+        setError(data.error || '배틀 텍스트 수정에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('Battle text update error:', error);
+      setError('배틀 텍스트 수정 중 오류가 발생했습니다');
     }
   };
 
@@ -362,6 +410,12 @@ export default function PlayPage() {
                         }`}
                       >
                         {character.activeBattlesToday >= 10 ? '오늘은 충분히 싸웠어요!' : '배틀하기!'}
+                      </button>
+                      <button
+                        onClick={() => startEditBattleText(character)}
+                        className="w-full mt-2 bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <span>✏️</span> 배틀 텍스트 수정
                       </button>
                     </div>
                   ))}
@@ -722,6 +776,94 @@ export default function PlayPage() {
           </ul>
         </div>
       </div>
+
+      {/* 배틀 텍스트 수정 모달 */}
+      <AnimatePresence>
+        {editingCharacter && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => {
+              setEditingCharacter(null);
+              setNewBattleText('');
+              setError('');
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8"
+            >
+              <h2 className="text-2xl font-bold mb-6 text-center">
+                ✏️ 배틀 텍스트 수정
+              </h2>
+
+              {/* 캐릭터 정보 */}
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6 text-center">
+                <div className="text-5xl mb-2">{editingCharacter.animal?.emoji}</div>
+                <h3 className="text-xl font-bold">{editingCharacter.characterName}</h3>
+                <p className="text-gray-600">{editingCharacter.animal?.koreanName}</p>
+              </div>
+
+              {/* 배틀 텍스트 입력 */}
+              <div className="mb-6">
+                <label className="block text-lg font-bold mb-3">
+                  새로운 배틀 텍스트
+                </label>
+                <textarea
+                  value={newBattleText}
+                  onChange={(e) => setNewBattleText(e.target.value.slice(0, 100))}
+                  placeholder="예: 나는 정글의 왕! 용감하고 강력한 사자다!"
+                  className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:outline-none resize-none h-32 text-lg"
+                />
+                <div className="flex justify-between mt-2 text-sm">
+                  <span className={`${
+                    newBattleText.length < 10 ? 'text-red-600' : 
+                    newBattleText.length > 100 ? 'text-red-600' : 'text-green-600'
+                  }`}>
+                    {newBattleText.length}/100자
+                  </span>
+                  {newBattleText.length >= 10 && newBattleText.length <= 100 && (
+                    <span className="text-green-600">✨ 좋아요!</span>
+                  )}
+                </div>
+              </div>
+
+              {/* 에러 메시지 */}
+              {error && (
+                <div className="bg-red-100 border-2 border-red-300 rounded-xl p-4 mb-6 text-red-700">
+                  {error}
+                </div>
+              )}
+
+              {/* 버튼 */}
+              <div className="flex gap-4">
+                <button
+                  onClick={updateBattleText}
+                  disabled={newBattleText.length < 10 || newBattleText.length > 100}
+                  className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200"
+                >
+                  수정하기
+                </button>
+                <button
+                  onClick={() => {
+                    setEditingCharacter(null);
+                    setNewBattleText('');
+                    setError('');
+                  }}
+                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all duration-200"
+                >
+                  취소
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

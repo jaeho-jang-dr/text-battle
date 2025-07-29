@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     // 캐릭터 조회
     const characters = db.prepare(`
       SELECT c.*, a.*,
-        c.id as id, c.character_name, c.base_score, c.wins, c.losses,
+        c.id as id, c.character_name, c.battle_text, c.base_score, c.wins, c.losses,
         a.id as animal_id, a.name as animal_name
       FROM characters c
       JOIN animals a ON c.animal_id = a.id
@@ -39,6 +39,8 @@ export async function GET(request: NextRequest) {
     // 사용자 데이터에 캐릭터 추가
     user.characters = characters.map(char => ({
       ...char,
+      characterName: char.character_name,
+      battleText: char.battle_text,
       baseScore: char.base_score || 1000, // 기본값 1000
       wins: char.wins || 0,
       losses: char.losses || 0,
