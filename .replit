@@ -1,21 +1,12 @@
-run = "bash replit-fix.sh && npm run start"
-entrypoint = "app/page.tsx"
-hidden = [".next", "node_modules", ".env.local"]
+run = "npm install && npm run build && npm run start"
 
 [nix]
 channel = "stable-22_11"
 
 [env]
-NEXT_PUBLIC_REPLIT = "true"
 PORT = "3000"
 NODE_ENV = "production"
 
 [[ports]]
 localPort = 3000
 externalPort = 80
-exposeLocalhost = true
-
-[deployment]
-deploymentTarget = "static"
-build = ["sh", "-c", "npm install && npm run build"]
-run = ["sh", "-c", "npm run start"]
