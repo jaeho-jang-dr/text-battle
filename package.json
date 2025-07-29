@@ -9,7 +9,9 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "setup": "node scripts/setup-replit.js",
+    "setup:db": "node add-all-animals.js && node setup-admin.js"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.10.0",
