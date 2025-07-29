@@ -31,6 +31,9 @@ export async function GET(request: NextRequest) {
 
       const formattedCharacters = characters.map(char => ({
         ...char,
+        baseScore: char.base_score || 1000,
+        wins: char.wins || 0,
+        losses: char.losses || 0,
         animal: {
           id: char.animal_id,
           name: char.animal_name,
@@ -39,7 +42,7 @@ export async function GET(request: NextRequest) {
           category: char.category,
           description: char.description
         },
-        activeBattlesToday: char.active_battles_today
+        activeBattlesToday: char.active_battles_today || 0
       }));
 
       return NextResponse.json({
@@ -71,6 +74,9 @@ export async function GET(request: NextRequest) {
 
       const formattedOpponents = opponents.map(char => ({
         ...char,
+        baseScore: char.base_score || 1000,
+        wins: char.wins || 0,
+        losses: char.losses || 0,
         animal: {
           id: char.animal_id,
           name: char.animal_name,
@@ -139,6 +145,9 @@ export async function GET(request: NextRequest) {
       
       return {
         ...char,
+        baseScore: char.base_score || 1000,
+        wins: char.wins || 0,
+        losses: char.losses || 0,
         animal: {
           id: char.animal_id,
           name: char.animal_name,
@@ -147,7 +156,7 @@ export async function GET(request: NextRequest) {
           category: char.category,
           description: char.description
         },
-        activeBattlesToday: char.active_battles_today,
+        activeBattlesToday: char.active_battles_today || 0,
         todayBattles,
         canBattleToday,
         remainingBattles: Math.max(0, 10 - todayBattles)

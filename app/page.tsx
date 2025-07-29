@@ -204,8 +204,8 @@ export default function Home() {
             <div className="bg-green-50 rounded-xl p-4">
               <h4 className="font-bold text-green-700 mb-2">🦄 다양한 동물들</h4>
               <p className="text-sm text-gray-700">
-                현존하는 동물부터 전설의 동물, 고생대 동물까지! 
-                20가지 이상의 동물로 캐릭터를 만들 수 있어요. 특히 새로운 고생대 동물들이 추가되었어요!
+                현존하는 동물 50종, 전설의 동물 15종, 고생대 동물 15종! 
+                총 80종의 다양한 동물로 캐릭터를 만들 수 있어요!
               </p>
             </div>
             <div className="bg-yellow-50 rounded-xl p-4">

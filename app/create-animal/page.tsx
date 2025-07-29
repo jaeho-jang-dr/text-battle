@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -18,7 +18,44 @@ export default function CreateAnimalPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   
+  useEffect(() => {
+    checkAdminStatus();
+  }, []);
+
+  const checkAdminStatus = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('관리자 로그인이 필요합니다!');
+      router.push('/');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/verify', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const data = await response.json();
+      if (data.success && data.data.isAdmin) {
+        setIsAdmin(true);
+      } else {
+        alert('관리자 권한이 필요합니다!');
+        router.push('/');
+      }
+    } catch (error) {
+      console.error('Failed to verify admin status:', error);
+      alert('권한 확인 중 오류가 발생했습니다.');
+      router.push('/');
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  };
+
   // 동물 정보 상태
   const [animalData, setAnimalData] = useState({
     name: '',
@@ -109,6 +146,23 @@ export default function CreateAnimalPage() {
 
   const totalStats = animalData.power + animalData.defense + animalData.speed + animalData.intelligence;
   const statsPercentage = (totalStats / 280) * 100;
+
+  // 권한 확인 중일 때 로딩 화면
+  if (isCheckingAuth) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl animate-bounce mb-4">🦄</div>
+          <p className="text-xl font-bold text-gray-700">권한을 확인하는 중...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // 관리자가 아닌 경우 (이미 redirect 되었을 것이지만 안전장치)
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <main className="min-h-screen p-8">
