@@ -24,7 +24,7 @@ export default function DebugPage() {
         error: data.error
       };
     } catch (e) {
-      results.leaderboard = { error: e.message };
+      results.leaderboard = { error: e instanceof Error ? e.message : 'Unknown error' };
     }
 
     // 2. Admin Login API (test)
@@ -41,7 +41,7 @@ export default function DebugPage() {
         error: data.error
       };
     } catch (e) {
-      results.adminLogin = { error: e.message };
+      results.adminLogin = { error: e instanceof Error ? e.message : 'Unknown error' };
     }
 
     // 3. Auth Verify API
@@ -58,7 +58,7 @@ export default function DebugPage() {
         error: data.error
       };
     } catch (e) {
-      results.authVerify = { error: e.message };
+      results.authVerify = { error: e instanceof Error ? e.message : 'Unknown error' };
     }
 
     // 4. Check localStorage

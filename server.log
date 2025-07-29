@@ -569,3 +569,127 @@ Force refresh requested for character 3f538530-806a-4b0e-9ba5-e78eaec9bdf9 - inv
  GET /api/animals 200 in 11ms
  GET / 200 in 49ms
  GET /icon.svg?936747c01d97c416 200 in 25ms
+ ✓ Compiled in 595ms (2353 modules)
+ ✓ Compiled in 290ms (2353 modules)
+ ✓ Compiled in 280ms (2353 modules)
+ ✓ Compiled in 409ms (2353 modules)
+ ✓ Compiled in 238ms (1165 modules)
+ ✓ Compiled in 215ms (1165 modules)
+ ✓ Compiled /_not-found in 421ms (2342 modules)
+ GET /_next/static/css/css-app_globals_css.css?v=1753801696144 404 in 522ms
+ ✓ Compiled in 168ms (1167 modules)
+ ⨯ Error: Cannot find module './948.js'
+Require stack:
+- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
+- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/_not-found/page.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js
+- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js
+    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
+    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:55:36
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
+    at Function._load (node:internal/modules/cjs/loader:1211:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
+    at require (node:internal/modules/helpers:135:16)
+    at __webpack_require__.f.require (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:198:28)
+    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:111:40
+    at Array.reduce (<anonymous>)
+    at __webpack_require__.e (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:110:67)
+    at Array.map (<anonymous>)
+    at __webpack_require__.X (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:162:22)
+    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:17959
+    at Object.<anonymous> (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:18009)
+    at Module._compile (node:internal/modules/cjs/loader:1730:14)
+    at Object..js (node:internal/modules/cjs/loader:1895:10)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
+    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
+    at require (node:internal/modules/helpers:135:16)
+    at requirePage (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js:109:84)
+    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:84
+    at async loadComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:26)
+    at async DevServer.findPageComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:710:36)
+    at async DevServer.findPageComponents (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
+    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1905:24)
+    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
+    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/_not-found/page.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js',
+    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js'
+  ],
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 972ms (2565 modules)
+ GET / 200 in 63ms
+ GET /_next/static/css/css-app_globals_css.css?v=1753801701307 404 in 18ms
+ GET /_next/static/chunks/main-app.js?v=1753801701307 404 in 35ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 35ms
+ GET /_next/static/chunks/app/page.js 404 in 32ms
+ ✓ Compiled /icon.svg in 285ms (1259 modules)
+ GET /icon.svg?936747c01d97c416 200 in 329ms
+ ✓ Compiled in 237ms (1350 modules)
+ ✓ Compiled in 188ms (1350 modules)
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/next' in /home/drjang00/DevEnvironments/kid-text-battle/.next/server for build dependencies doesn't lead to expected result '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/vendor-chunks/next.js', but to 'Error: Can't resolve './vendor-chunks/next' in '/home/drjang00/DevEnvironments/kid-text-battle/.next/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ./vendor-chunks/next (expected /home/drjang00/DevEnvironments/kid-text-battle/.next/server/vendor-chunks/next.js)
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/icon.svg/route.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/icon.svg/route.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/vendor-chunks'
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/mcp/route' in /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server for build dependencies doesn't lead to expected result '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/mcp/route' in '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server'' instead. Resolving dependencies are ignored for this path.
+<w>  at resolve commonjs file ../../../../.next/server/app/api/mcp/route (expected /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js)
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
+<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+<w>  at resolve commonjs /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
+ ✓ Compiled in 155ms (1349 modules)
+ ✓ Compiled in 290ms (1347 modules)
+ ✓ Compiled in 164ms (1347 modules)
+ ✓ Compiled in 162ms (1347 modules)
+ ✓ Compiled in 199ms (1347 modules)
+ ✓ Compiled in 165ms (1347 modules)

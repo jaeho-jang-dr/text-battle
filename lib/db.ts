@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 const dbPath = path.join(process.cwd(), 'kid-text-battle.db');
 
 // 데이터베이스 인스턴스
-export const db = new Database(dbPath);
+export const db = new (Database as any)(dbPath);
 
 // WAL 모드 활성화 (성능 향상)
 db.pragma('journal_mode = WAL');

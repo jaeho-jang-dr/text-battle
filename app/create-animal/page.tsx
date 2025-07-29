@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-// import { useAuth } from '@/hooks/useAuth';
-import HelpButton from '@/components/help/HelpButton';
+import { useAuth } from '@/contexts/AuthContext';
+import HelpButton from '@/components/HelpButton';
 
 const animalEmojis = ['🦁', '🐯', '🐻', '🦊', '🐺', '🦄', '🐉', '🦅', '🦜', '🦚', '🐸', '🦎', '🐢', '🦂', '🦋'];
 const habitatOptions = ['숲', '바다', '하늘', '사막', '극지방', '초원', '산', '동굴', '강', '호수'];
@@ -13,8 +13,7 @@ const foodOptions = ['고기', '풀', '과일', '물고기', '곤충', '꿀', '�
 
 export default function CreateAnimalPage() {
   const router = useRouter();
-  // const { user, requireAuth } = useAuth();
-  const user = null; // 임시
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -167,23 +166,7 @@ export default function CreateAnimalPage() {
   return (
     <main className="min-h-screen p-8">
       {/* 도움말 버튼 */}
-      <HelpButton 
-        page="create-animal" 
-        customHelp={[
-          {
-            id: '1',
-            title: '🎨 나만의 동물 만들기',
-            content: '상상력을 발휘해서 특별한 동물을 만들어보세요!\n\n• 이름과 설명을 정해주세요\n• 서식지와 먹이를 선택해요\n• 스탯을 조절해서 강점을 만들어요\n• 총 스탯은 280점까지예요!',
-            emoji: '🦄'
-          },
-          {
-            id: '2',
-            title: '📊 스탯 배분 팁',
-            content: '• 힘: 공격력이 강해져요\n• 방어: 받는 피해가 줄어요\n• 속도: 먼저 공격할 확률이 높아져요\n• 지능: 전략적인 보너스를 받아요\n\n균형있게 배분하거나, 한 가지에 집중해보세요!',
-            emoji: '💡'
-          }
-        ]}
-      />
+      <HelpButton />
 
       {/* 뒤로가기 버튼 */}
       <Link href="/animals" className="fixed top-4 left-4">

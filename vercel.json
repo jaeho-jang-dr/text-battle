@@ -5,11 +5,17 @@
   "installCommand": "npm install",
   "regions": ["icn1"],
   "functions": {
-    "app/api/mcp/route.ts": {
+    "app/api/mcp/[transport]/route.ts": {
+      "maxDuration": 300
+    },
+    "app/api/mcp-simple/route.ts": {
       "maxDuration": 60
     },
-    "app/api/mcp/sse/route.ts": {
-      "maxDuration": 300
+    "app/api/battles/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/battles/history/route.ts": {
+      "maxDuration": 30
     }
   },
   "env": {
