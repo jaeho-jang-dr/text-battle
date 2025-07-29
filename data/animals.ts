@@ -209,7 +209,7 @@ export const animals: Animal[] = [
 ];
 
 // 카테고리별 동물 가져오기
-export const getAnimalsByCategory = (category: AnimalCategory) => {
+export const getAnimalsByCategory = (category: Animal['category']) => {
   return animals.filter(animal => animal.category === category);
 };
 

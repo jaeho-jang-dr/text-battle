@@ -18,7 +18,7 @@ const nextConfig = {
   
   // 실험적 기능
   experimental: {
-    serverActions: true
+    // serverActions는 Next.js 14에서 기본 활성화됨
   },
   
   // 개발 환경에서 React DevTools 비활성화

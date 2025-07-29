@@ -18,11 +18,23 @@ export interface Animal {
   id: number;
   name: string;
   koreanName: string;
-  category: 'current' | 'mythical' | 'prehistoric';
+  category: 'current' | 'mythical' | 'prehistoric' | 'legend';
   description: string;
-  abilities: string;
+  abilities?: string;
   emoji: string;
   imageUrl?: string;
+  detailedInfo?: {
+    habitat?: string;
+    food?: string;
+    speciality?: string;
+    funFact?: string;
+  };
+  stats?: {
+    power?: number;
+    defense?: number;
+    speed?: number;
+  };
+  battleCry?: string;
 }
 
 // 캐릭터 타입
@@ -47,6 +59,11 @@ export interface Character {
   // 조인된 데이터
   animal?: Animal;
   user?: User;
+  // 추가 속성들 (API 응답에서 포함될 수 있음)
+  isBot?: boolean;
+  animalIcon?: string;
+  animalName?: string;
+  winRate?: number;
 }
 
 // 배틀 타입
@@ -148,3 +165,6 @@ export interface FilterResult {
   violations: string[];
   warningType?: string;
 }
+
+// 배틀 비교 타입 내보내기
+export * from './battle-comparison';

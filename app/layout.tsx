@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AdminButton from "@/components/AdminButton";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "Kid Text Battle",
@@ -14,9 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="min-h-screen">
-        {children}
-        <AdminButton />
+      <body className="min-h-screen" suppressHydrationWarning>
+        <AuthProvider>
+          {children}
+          <AdminButton />
+        </AuthProvider>
       </body>
     </html>
   );

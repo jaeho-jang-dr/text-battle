@@ -30,9 +30,9 @@ export async function GET(request: Request) {
     const stats = {
       total: animals.length,
       byCategory: {
-        current: animals.filter(a => a.category === 'current').length,
-        mythical: animals.filter(a => a.category === 'mythical').length,
-        prehistoric: animals.filter(a => a.category === 'prehistoric').length
+        current: animals.filter((a: any) => a.category === 'current').length,
+        mythical: animals.filter((a: any) => a.category === 'mythical').length,
+        prehistoric: animals.filter((a: any) => a.category === 'prehistoric').length
       }
     };
 

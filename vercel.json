@@ -4,6 +4,14 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "regions": ["icn1"],
+  "functions": {
+    "app/api/mcp/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/mcp/sse/route.ts": {
+      "maxDuration": 300
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   },

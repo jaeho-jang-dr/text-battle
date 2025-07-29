@@ -8,9 +8,13 @@ export default function AdminButton() {
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // 관리자 토큰 확인
+    // Mark as client-side first
+    setIsClient(true);
+    
+    // 관리자 토큰 확인 (클라이언트에서만)
     const adminToken = localStorage.getItem('adminToken');
     if (adminToken) {
       setIsAdmin(true);
@@ -20,6 +24,11 @@ export default function AdminButton() {
   const handleClick = () => {
     router.push('/admin');
   };
+
+  // 클라이언트 렌더링이 완료될 때까지 렌더링하지 않음
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <AnimatePresence>

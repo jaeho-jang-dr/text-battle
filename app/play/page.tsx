@@ -5,6 +5,9 @@ import { useSearchParams } from 'next/navigation';
 import { User, Character, Animal } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import BattleOpponents from '@/components/BattleOpponents';
+import AnimalDetailPopup from '@/components/AnimalDetailPopup';
+import BattleHistory from '@/components/BattleHistory';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface BattleMode {
   isActive: boolean;
@@ -16,12 +19,11 @@ interface BattleMode {
 }
 
 export default function PlayPage() {
-  const searchParams = useSearchParams();
-  const isGuest = searchParams.get('guest') === 'true';
-  const [user, setUser] = useState<User | null>(null);
+  const { user, isAuthenticated, logout } = useAuth();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const [showCharacterCreation, setShowCharacterCreation] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
   const [characterName, setCharacterName] = useState('');
@@ -37,58 +39,47 @@ export default function PlayPage() {
   });
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
   const [newBattleText, setNewBattleText] = useState('');
+  const [selectedAnimalDetail, setSelectedAnimalDetail] = useState<Animal | null>(null);
+  const [showAnimalDetail, setShowAnimalDetail] = useState(false);
+  const [showBattleHistory, setShowBattleHistory] = useState<{ characterId: string; characterName: string } | null>(null);
 
   useEffect(() => {
-    // 로그인 처리 및 데이터 로드
-    initializeUser();
-    loadAnimals();
+    setIsClient(true);
   }, []);
 
-  // 로그아웃 및 첫 화면으로 돌아가기
+  useEffect(() => {
+    // 클라이언트에서만 데이터 로드
+    if (isClient) {
+      // 로그인 처리 및 데이터 로드
+      if (isAuthenticated && user) {
+        loadCharacters();
+        setIsLoading(false);
+      }
+      loadAnimals();
+    }
+  }, [isClient, isAuthenticated, user]);
+
+  // 로그아웃 처리
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
+    logout();
   };
 
-  const initializeUser = async () => {
+
+  const loadCharacters = async () => {
     try {
-      // 게스트 로그인
-      if (isGuest) {
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ isGuest: true })
-        });
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token || !user) return;
 
-        const data = await response.json();
-        if (data.success) {
-          setUser(data.data.user);
-          localStorage.setItem('token', data.data.token);
-        }
-      } else {
-        // 토큰 확인
-        const token = localStorage.getItem('token');
-        if (!token) {
-          window.location.href = '/';
-          return;
-        }
+      const response = await fetch('/api/characters?userId=' + user.id, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
-        const response = await fetch('/api/auth/verify', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          setUser(data.data.user);
-          setCharacters(data.data.user.characters || []);
-        } else {
-          window.location.href = '/';
-        }
+      const data = await response.json();
+      if (data.success) {
+        setCharacters(data.data || []);
       }
     } catch (error) {
-      console.error('User initialization error:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Failed to load characters:', error);
     }
   };
 
@@ -111,7 +102,7 @@ export default function PlayPage() {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch('/api/characters', {
         method: 'POST',
         headers: {
@@ -145,6 +136,7 @@ export default function PlayPage() {
   // 배틀 텍스트 수정 시작
   const startEditBattleText = (character: Character) => {
     setEditingCharacter(character);
+    // 기존 배틀 텍스트를 미리 채워넣어서 사용자가 기반으로 수정할 수 있도록 함
     setNewBattleText(character.battleText || '');
   };
 
@@ -158,7 +150,7 @@ export default function PlayPage() {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch(`/api/characters/${editingCharacter.id}/battle-text`, {
         method: 'PATCH',
         headers: {
@@ -226,7 +218,7 @@ export default function PlayPage() {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
       const response = await fetch('/api/battles', {
         method: 'POST',
         headers: {
@@ -250,7 +242,7 @@ export default function PlayPage() {
 
         // 캐릭터 정보 업데이트
         const updatedCharacters = characters.map(char => {
-          if (char.id === battleMode.selectedCharacter.id) {
+          if (char.id === battleMode.selectedCharacter?.id) {
             return {
               ...char,
               activeBattlesToday: char.activeBattlesToday + 1,
@@ -327,7 +319,8 @@ export default function PlayPage() {
     }
   };
 
-  if (isLoading) {
+  // 서버 렌더링이나 클라이언트 초기 렌더링에서는 기본 로딩 UI 표시
+  if (!isClient || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-green-100">
         <div className="text-center">
@@ -358,9 +351,9 @@ export default function PlayPage() {
             <button
               onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200"
-              title="로그아웃 및 처음으로"
+              title={user?.isGuest ? "게스트 세션 종료" : "로그아웃 및 처음으로"}
             >
-              🏠 처음으로
+              {user?.isGuest ? '🚪 세션 종료' : '🏠 처음으로'}
             </button>
           </div>
         </header>
@@ -417,6 +410,12 @@ export default function PlayPage() {
                       >
                         <span>✏️</span> 배틀 텍스트 수정
                       </button>
+                      <button
+                        onClick={() => setShowBattleHistory({ characterId: character.id, characterName: character.characterName })}
+                        className="w-full mt-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <span>📊</span> 배틀 히스토리
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -443,7 +442,11 @@ export default function PlayPage() {
                 {animals.map((animal) => (
                   <button
                     key={animal.id}
-                    onClick={() => setSelectedAnimal(animal)}
+                    onClick={() => {
+                      setSelectedAnimal(animal);
+                      setSelectedAnimalDetail(animal);
+                      setShowAnimalDetail(true);
+                    }}
                     className={`p-4 rounded-xl border-2 transition-all ${
                       selectedAnimal?.id === animal.id
                         ? 'border-blue-500 bg-blue-50'
@@ -527,7 +530,7 @@ export default function PlayPage() {
             onSelectOpponent={handleSelectOpponentFromList}
             onRefresh={() => {
               // 캐릭터 정보 새로고침
-              initializeUser();
+              loadCharacters();
             }}
           />
         )}
@@ -553,11 +556,11 @@ export default function PlayPage() {
                     <div className="text-center">
                       {battleMode.selectedOpponent ? (
                         <>
-                          <div className="text-6xl mb-2">{battleMode.selectedOpponent.animalIcon || '🐾'}</div>
+                          <div className="text-6xl mb-2">{(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji || '🐾'}</div>
                           <h3 className="text-xl font-bold">{battleMode.selectedOpponent.characterName}</h3>
                           <p className="text-sm text-gray-600">
                             상대 캐릭터
-                            {battleMode.selectedOpponent.isBot && ' (🤖 대기 계정)'}
+                            {(battleMode.selectedOpponent as any).isBot && ' (🤖 대기 계정)'}
                           </p>
                         </>
                       ) : (
@@ -683,15 +686,15 @@ export default function PlayPage() {
               <div className="mb-4 text-center">
                 <p className="text-lg">
                   상대: <span className="font-bold">{battleMode.selectedOpponent.characterName}</span>
-                  ({battleMode.selectedOpponent.animalIcon} {battleMode.selectedOpponent.animalName})
-                  {battleMode.selectedOpponent.isBot && (
+                  ({(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji} {(battleMode.selectedOpponent as any).animalName || battleMode.selectedOpponent.animal?.koreanName})
+                  {(battleMode.selectedOpponent as any).isBot && (
                     <span className="ml-2 text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
                       🤖 대기 계정
                     </span>
                   )}
                 </p>
                 <p className="text-sm text-gray-600">
-                  ELO: {battleMode.selectedOpponent.eloScore} | 승률: {battleMode.selectedOpponent.winRate}%
+                  ELO: {battleMode.selectedOpponent.eloScore} | 승률: {(battleMode.selectedOpponent as any).winRate || 0}%
                 </p>
               </div>
 
@@ -724,7 +727,7 @@ export default function PlayPage() {
                       <div className="text-right">
                         <p className="text-sm">
                           오늘 배틀: {character.activeBattlesToday}/10
-                          {battleMode.selectedOpponent?.isBot && (
+                          {(battleMode.selectedOpponent as any)?.isBot && (
                             <span className="text-purple-600"> (무제한)</span>
                           )}
                         </p>
@@ -792,9 +795,9 @@ export default function PlayPage() {
             }}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-8"
             >
@@ -812,12 +815,15 @@ export default function PlayPage() {
               {/* 배틀 텍스트 입력 */}
               <div className="mb-6">
                 <label className="block text-lg font-bold mb-3">
-                  새로운 배틀 텍스트
+                  배틀 텍스트 수정하기
                 </label>
+                <p className="text-sm text-gray-600 mb-3">
+                  💡 기존 텍스트를 기반으로 수정하거나 완전히 새로 작성해보세요!
+                </p>
                 <textarea
                   value={newBattleText}
                   onChange={(e) => setNewBattleText(e.target.value.slice(0, 100))}
-                  placeholder="예: 나는 정글의 왕! 용감하고 강력한 사자다!"
+                  placeholder="기존 텍스트를 수정하거나 새로운 배틀 텍스트를 작성해보세요!"
                   className="w-full p-4 border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:outline-none resize-none h-32 text-lg"
                 />
                 <div className="flex justify-between mt-2 text-sm">
@@ -864,6 +870,26 @@ export default function PlayPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* 배틀 히스토리 모달 */}
+      {showBattleHistory && (
+        <BattleHistory
+          characterId={showBattleHistory.characterId}
+          characterName={showBattleHistory.characterName}
+          onClose={() => setShowBattleHistory(null)}
+        />
+      )}
+
+      {/* 동물 상세 정보 팝업 */}
+      <AnimalDetailPopup
+        animal={selectedAnimalDetail}
+        isOpen={showAnimalDetail}
+        onClose={() => setShowAnimalDetail(false)}
+        onSelect={() => {
+          setSelectedAnimal(selectedAnimalDetail);
+          setShowAnimalDetail(false);
+        }}
+      />
     </main>
   );
 }

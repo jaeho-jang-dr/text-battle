@@ -173,9 +173,10 @@ export function initializeDatabase() {
   console.log('✅ 테이블 생성 완료');
 
   // 동물 데이터 확인 및 삽입
-  const animalCount = db.prepare('SELECT COUNT(*) as count FROM animals').get() as { count: number };
+  const animalCountResult = db.prepare('SELECT COUNT(*) as count FROM animals').get();
+  const animalCount = animalCountResult as { count: number } | undefined;
   
-  if (animalCount.count === 0) {
+  if (!animalCount || animalCount.count === 0) {
     console.log('🦁 동물 데이터 삽입 중...');
     
     const insertAnimal = db.prepare(`
@@ -211,7 +212,7 @@ export function initializeDatabase() {
       [20, 'Arthropleura', '아스로플레우라', 'prehistoric', '자동차만큼 긴 거대한 노래기예요', '길이가 2.5미터나 됐어요', '🐛', null, '#8B4513']
     ];
 
-    const insertMany = db.transaction((animals) => {
+    const insertMany = db.transaction((animals: any[]) => {
       for (const animal of animals) {
         insertAnimal.run(...animal);
       }
@@ -222,9 +223,10 @@ export function initializeDatabase() {
   }
 
   // 관리자 설정 확인 및 생성
-  const settingCount = db.prepare('SELECT COUNT(*) as count FROM admin_settings').get() as { count: number };
+  const settingCountResult = db.prepare('SELECT COUNT(*) as count FROM admin_settings').get();
+  const settingCount = settingCountResult as { count: number } | undefined;
   
-  if (settingCount.count === 0) {
+  if (!settingCount || settingCount.count === 0) {
     console.log('⚙️ 관리자 설정 생성 중...');
     
     const insertSetting = db.prepare(`
@@ -243,7 +245,7 @@ export function initializeDatabase() {
       ['elo_k_factor', '32']
     ];
 
-    const insertManySettings = db.transaction((settings) => {
+    const insertManySettings = db.transaction((settings: any[]) => {
       for (const setting of settings) {
         insertSetting.run(...setting);
       }
@@ -268,9 +270,10 @@ export function initializeDatabase() {
   }
 
   // 관리자 사용자 확인 및 생성
-  const adminUserCount = db.prepare('SELECT COUNT(*) as count FROM admin_users').get() as { count: number };
+  const adminUserCountResult = db.prepare('SELECT COUNT(*) as count FROM admin_users').get();
+  const adminUserCount = adminUserCountResult as { count: number } | undefined;
   
-  if (adminUserCount.count === 0) {
+  if (!adminUserCount || adminUserCount.count === 0) {
     console.log('🦄 관리자 사용자 생성 중...');
     
     db.prepare(`

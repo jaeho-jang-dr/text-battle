@@ -45,11 +45,11 @@ export async function GET(request: NextRequest) {
     // 카테고리 필터링 (클라이언트 사이드)
     let characters = allCharacters || [];
     if (category && category !== 'all') {
-      characters = characters.filter(char => char.category === category);
+      characters = characters.filter((char: any) => char.category === category);
     }
 
     // 순위 계산 및 통계 추가
-    const leaderboard = characters.slice(0, 25).map((character, index) => {
+    const leaderboard = characters.slice(0, 25).map((character: any, index: number) => {
       const totalBattles = character.total_active_battles + character.total_passive_battles;
       const winRate = totalBattles > 0 
         ? Math.round((character.wins / totalBattles) * 100) 
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
     const stats = {
       totalCharacters: allCharacters?.length || 0,
       averageElo: Math.round(
-        (allCharacters?.reduce((sum, char) => sum + char.elo_score, 0) || 0) / 
+        (allCharacters?.reduce((sum: number, char: any) => sum + char.elo_score, 0) || 0) / 
         (allCharacters?.length || 1)
       ),
       highestElo: allCharacters?.[0]?.elo_score || 1500,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { filterBattleText } from '@/lib/filters/content-filter';
 import { updateUserActivity, logUserAction } from '@/lib/activity-tracker';
+import { battleHistoryCache } from '@/lib/cache/battle-history-cache';
 import { v4 as uuidv4 } from 'uuid';
 
 // ELO 점수 계산 함수
@@ -230,6 +231,11 @@ export async function POST(request: NextRequest) {
       winner: battleResult.winner,
       isBot: isDefenderBot
     });
+
+    // 배틀 완료 후 관련 캐릭터들의 히스토리 캐시 무효화
+    console.log(`Battle completed - invalidating cache for characters: ${attackerId}, ${defenderId}`);
+    battleHistoryCache.invalidateCharacter(attackerId);
+    battleHistoryCache.invalidateCharacter(defenderId);
 
     return NextResponse.json({
       success: true,

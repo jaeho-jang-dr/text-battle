@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     `).all(user.id);
 
     // 사용자 데이터에 캐릭터 추가
-    user.characters = characters.map(char => ({
+    (user as any).characters = characters.map((char: any) => ({
       ...char,
       characterName: char.character_name,
       battleText: char.battle_text,

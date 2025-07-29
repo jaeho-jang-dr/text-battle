@@ -1,6 +1,6 @@
 {
   "name": "kid-text-battle",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3008",
@@ -14,6 +14,7 @@
     "setup:db": "node add-all-animals.js && node setup-admin.js"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.45.0",
     "@types/bcryptjs": "^2.4.6",
@@ -25,12 +26,14 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.1",
     "framer-motion": "^11.0.0",
+    "mcp-handler": "^1.0.1",
     "next": "14.2.0",
     "pg": "^8.12.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-icons": "^5.0.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^20",

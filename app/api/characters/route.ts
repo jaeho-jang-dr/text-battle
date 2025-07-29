@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
         ORDER BY c.created_at ASC
       `).all(userId);
 
-      const formattedCharacters = characters.map(char => ({
+      const formattedCharacters = characters.map((char: any) => ({
         ...char,
         baseScore: char.base_score || 1000,
         wins: char.wins || 0,
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         LIMIT 20
       `).all(excludeUserId);
 
-      const formattedOpponents = opponents.map(char => ({
+      const formattedOpponents = opponents.map((char: any) => ({
         ...char,
         baseScore: char.base_score || 1000,
         wins: char.wins || 0,
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
     `).all(user.id);
 
     // 각 캐릭터의 오늘 배틀 횟수 확인
-    const charactersWithStatus = characters.map(char => {
+    const charactersWithStatus = characters.map((char: any) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
