@@ -6,6 +6,7 @@
     "dev": "next dev -p 3008",
     "build": "next build",
     "start": "next start -p ${PORT:-3008}",
+    "replit": "./replit-start.sh",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",

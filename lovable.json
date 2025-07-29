@@ -18,8 +18,8 @@
     "ADMIN_DEFAULT_PASSWORD"
   ],
   "features": {
-    "database": "postgresql",
-    "storage": false,
+    "database": "sqlite",
+    "storage": true,
     "authentication": "custom"
   },
   "cors": {

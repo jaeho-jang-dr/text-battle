@@ -1,12 +1,6 @@
 run = "npm run start"
 entrypoint = "app/page.tsx"
-hidden = [".next", "node_modules"]
-
-[languages.javascript]
-pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
-
-[languages.javascript.languageServer]
-start = "typescript-language-server --stdio"
+hidden = [".next", "node_modules", ".env.local"]
 
 [nix]
 channel = "stable-22_11"
@@ -14,17 +8,13 @@ channel = "stable-22_11"
 [env]
 NEXT_PUBLIC_REPLIT = "true"
 PORT = "3000"
-
-[packager]
-language = "nodejs"
-
-[packager.features]
-enabledForHosting = true
+NODE_ENV = "production"
 
 [[ports]]
 localPort = 3000
 externalPort = 80
 
 [deployment]
-build = ["npm", "run", "build"]
-run = ["npm", "run", "start"]
+deploymentTarget = "static"
+build = ["sh", "-c", "npm install && npm run build"]
+run = ["sh", "-c", "npm run start"]

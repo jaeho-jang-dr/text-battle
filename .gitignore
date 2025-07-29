@@ -49,3 +49,8 @@ check-*.js
 # local scripts
 setup-*.js
 add-*.js
+# Replit
+.replit_history
+.cache
+.config
+.upm
