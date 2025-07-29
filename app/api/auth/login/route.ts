@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { filterEmail } from '@/lib/filters/content-filter';
+import { updateUserActivity } from '@/lib/activity-tracker';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
@@ -24,6 +25,9 @@ export async function POST(request: NextRequest) {
       stmt.run(userId, displayName, token, tokenExpiresAt.toISOString());
       
       const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+      
+      // 활동 추적
+      updateUserActivity(userId);
 
       return NextResponse.json({
         success: true,
@@ -70,6 +74,9 @@ export async function POST(request: NextRequest) {
       stmt.run(token, tokenExpiresAt.toISOString(), existingUser.id);
       
       const user = db.prepare('SELECT * FROM users WHERE id = ?').get(existingUser.id);
+      
+      // 활동 추적
+      updateUserActivity(existingUser.id);
 
       return NextResponse.json({
         success: true,
@@ -90,6 +97,9 @@ export async function POST(request: NextRequest) {
       stmt.run(userId, email, token, tokenExpiresAt.toISOString());
       
       const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+      
+      // 활동 추적
+      updateUserActivity(userId);
 
       return NextResponse.json({
         success: true,

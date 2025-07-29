@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { filterBattleText } from '@/lib/filters/content-filter';
+import { updateUserActivity, logUserAction } from '@/lib/activity-tracker';
 import { v4 as uuidv4 } from 'uuid';
 
 // ELO 점수 계산 함수
@@ -70,6 +71,9 @@ export async function POST(request: NextRequest) {
     }
 
     const { attackerId, defenderId } = await request.json();
+    
+    // 사용자 활동 추적
+    updateUserActivity(user.id);
 
     // 공격자 캐릭터 확인
     const attacker = db.prepare(`
@@ -217,6 +221,15 @@ export async function POST(request: NextRequest) {
       battleResult.judgment,
       battleResult.reasoning
     );
+    
+    // 배틀 활동 로그
+    logUserAction(user.id, 'battle_created', {
+      battleId,
+      attackerId,
+      defenderId,
+      winner: battleResult.winner,
+      isBot: isDefenderBot
+    });
 
     return NextResponse.json({
       success: true,
