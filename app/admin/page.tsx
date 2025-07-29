@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import UsersTab from '@/components/admin/UsersTab';
+import BattlesTab from '@/components/admin/BattlesTab';
+import LogsTab from '@/components/admin/LogsTab';
+import SettingsTab from '@/components/admin/SettingsTab';
 
 interface AdminStats {
   totalUsers: number;
@@ -560,6 +564,54 @@ export default function AdminPage() {
                   </table>
                 </div>
               </motion.div>
+            </motion.div>
+          )}
+
+          {/* 사용자 탭 */}
+          {activeTab === 'users' && (
+            <motion.div
+              key="users"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <UsersTab />
+            </motion.div>
+          )}
+
+          {/* 배틀 탭 */}
+          {activeTab === 'battles' && (
+            <motion.div
+              key="battles"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <BattlesTab />
+            </motion.div>
+          )}
+
+          {/* 로그 탭 */}
+          {activeTab === 'logs' && (
+            <motion.div
+              key="logs"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <LogsTab />
+            </motion.div>
+          )}
+
+          {/* 설정 탭 */}
+          {activeTab === 'settings' && (
+            <motion.div
+              key="settings"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <SettingsTab />
             </motion.div>
           )}
         </AnimatePresence>

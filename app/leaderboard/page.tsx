@@ -232,22 +232,65 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* 헤더 */}
-        <header className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-purple-600 mb-2">
-            🏆 명예의 전당 🏆
-          </h1>
-          <p className="text-xl text-gray-700">
-            최강의 동물 전사는 누구일까요?
-          </p>
-          {user && (
-            <p className="text-sm text-gray-600 mt-2">
-              로그인: {user.displayName || user.email || '플레이어'}
+    <main className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
+      {/* 헤더 */}
+      <header className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 shadow-lg">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">🏆 명예의 전당</h1>
+              <p className="text-purple-200">최강의 동물 전사들이 모인 곳!</p>
+            </div>
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-white/20 hover:bg-white/30 backdrop-blur px-6 py-3 rounded-xl font-bold transition-all duration-200 transform hover:scale-105"
+            >
+              🏠 홈으로 돌아가기
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto p-6">
+        {/* 점수 계산법 설명 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-3xl shadow-xl p-8 mb-6"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-center">📊 순위 결정 방법</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-blue-50 rounded-2xl p-6">
+              <h3 className="font-bold text-blue-700 mb-3 flex items-center gap-2">
+                <span className="text-2xl">🎯</span> ELO 점수 (실력 점수)
+              </h3>
+              <ul className="space-y-2 text-gray-700">
+                <li>• <strong>시작 점수</strong>: 모든 캐릭터는 1500점으로 시작</li>
+                <li>• <strong>승리 시</strong>: 상대가 강할수록 많은 점수 획득</li>
+                <li>• <strong>패배 시</strong>: 상대가 약할수록 많은 점수 감소</li>
+                <li>• <strong>계산 방식</strong>: 국제 체스 랭킹과 동일한 ELO 시스템</li>
+                <li>• <strong>공정성</strong>: 실력이 비슷한 상대와 매칭 유도</li>
+              </ul>
+            </div>
+            <div className="bg-green-50 rounded-2xl p-6">
+              <h3 className="font-bold text-green-700 mb-3 flex items-center gap-2">
+                <span className="text-2xl">📈</span> 기본 점수
+              </h3>
+              <ul className="space-y-2 text-gray-700">
+                <li>• <strong>승리</strong>: +10점</li>
+                <li>• <strong>패배</strong>: -5점 (최소 0점)</li>
+                <li>• <strong>특징</strong>: 많이 플레이할수록 증가</li>
+                <li>• <strong>용도</strong>: 활동량 측정</li>
+                <li>• <strong>보너스</strong>: 연승 시 추가 점수 가능</li>
+              </ul>
+            </div>
+          </div>
+          <div className="mt-6 bg-purple-50 rounded-2xl p-4 text-center">
+            <p className="text-purple-700">
+              💡 <strong>팁</strong>: ELO 점수로 정렬하면 실력 순위를, 기본 점수로 정렬하면 활동 순위를 볼 수 있어요!
             </p>
-          )}
-        </header>
+          </div>
+        </motion.div>
 
         {/* 필터 옵션 */}
         <div className="bg-white rounded-3xl shadow-xl p-6 mb-6">
@@ -397,19 +440,19 @@ export default function LeaderboardPage() {
 
         {/* 하단 버튼들 */}
         <div className="mt-8 flex justify-center gap-4">
-          <a
-            href="/play"
-            className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200"
+          <button
+            onClick={() => window.location.href = '/play'}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105"
           >
             🎮 게임으로 돌아가기
-          </a>
+          </button>
           {!user && (
-            <a
-              href="/"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors duration-200"
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105"
             >
               🔑 로그인하기
-            </a>
+            </button>
           )}
         </div>
       </div>

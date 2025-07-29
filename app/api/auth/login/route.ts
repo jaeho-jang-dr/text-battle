@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { filterEmail } from '@/lib/filters/content-filter';
-import { updateUserActivity } from '@/lib/activity-tracker';
+import { updateUserActivity, logUserAction } from '@/lib/activity-tracker';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
@@ -28,6 +28,12 @@ export async function POST(request: NextRequest) {
       
       // 활동 추적
       updateUserActivity(userId);
+      
+      // 로그 기록
+      logUserAction(userId, 'user_login', { 
+        isGuest: true, 
+        displayName 
+      });
 
       return NextResponse.json({
         success: true,
@@ -77,6 +83,12 @@ export async function POST(request: NextRequest) {
       
       // 활동 추적
       updateUserActivity(existingUser.id);
+      
+      // 로그 기록
+      logUserAction(existingUser.id, 'user_login', { 
+        email,
+        isNewUser: false 
+      });
 
       return NextResponse.json({
         success: true,
@@ -100,6 +112,12 @@ export async function POST(request: NextRequest) {
       
       // 활동 추적
       updateUserActivity(userId);
+      
+      // 로그 기록
+      logUserAction(userId, 'user_login', { 
+        email,
+        isNewUser: true 
+      });
 
       return NextResponse.json({
         success: true,

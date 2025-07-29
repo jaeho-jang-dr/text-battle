@@ -57,9 +57,9 @@ export async function POST(request: NextRequest) {
       try {
         const logId = uuidv4();
         db.prepare(`
-          INSERT INTO admin_logs (id, admin_id, action_type, details)
-          VALUES (?, ?, ?, ?)
-        `).run(logId, adminUser.id, 'admin_login', JSON.stringify({ username }));
+          INSERT INTO admin_logs (id, admin_id, action_type, target_type, details, created_at)
+          VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        `).run(logId, adminUser.id, 'admin_login', 'admin_action', JSON.stringify({ username }));
       } catch (logError) {
         console.error('Admin log error (non-critical):', logError);
         // 로그 실패는 critical하지 않으므로 계속 진행

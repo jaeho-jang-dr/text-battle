@@ -127,31 +127,92 @@ export default function Home() {
           )}
         </div>
 
-        {/* 게임 소개 */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <h3 className="text-2xl font-bold mb-4 text-center">
+        {/* 게임 소개 및 네비게이션 */}
+        <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
+          <h3 className="text-2xl font-bold mb-6 text-center">
             🎮 게임 방법
           </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-4xl mb-2">🐻</div>
-              <h4 className="font-bold mb-2">1. 동물 선택</h4>
-              <p className="text-gray-600">
-                좋아하는 동물을 골라 캐릭터를 만들어요
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <button
+              onClick={() => window.location.href = '/animals'}
+              className="group cursor-pointer transform transition-all duration-200 hover:scale-105"
+            >
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 text-center hover:shadow-lg">
+                <div className="text-5xl mb-3">🐻</div>
+                <h4 className="font-bold mb-2 text-lg">1. 동물 선택</h4>
+                <p className="text-gray-600 text-sm mb-3">
+                  좋아하는 동물을 골라 캐릭터를 만들어요
+                </p>
+                <p className="text-purple-600 font-bold text-sm group-hover:underline">
+                  동물 도감 보기 →
+                </p>
+              </div>
+            </button>
+            <button
+              onClick={() => window.location.href = '/text-guide'}
+              className="group cursor-pointer transform transition-all duration-200 hover:scale-105"
+            >
+              <div className="bg-gradient-to-br from-green-50 to-yellow-50 rounded-2xl p-6 text-center hover:shadow-lg">
+                <div className="text-5xl mb-3">✍️</div>
+                <h4 className="font-bold mb-2 text-lg">2. 텍스트 작성</h4>
+                <p className="text-gray-600 text-sm mb-3">
+                  100자 이내로 멋진 배틀 텍스트를 써요
+                </p>
+                <p className="text-green-600 font-bold text-sm group-hover:underline">
+                  작성 가이드 보기 →
+                </p>
+              </div>
+            </button>
+            <button
+              onClick={() => window.location.href = '/leaderboard'}
+              className="group cursor-pointer transform transition-all duration-200 hover:scale-105"
+            >
+              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 text-center hover:shadow-lg">
+                <div className="text-5xl mb-3">🏆</div>
+                <h4 className="font-bold mb-2 text-lg">3. 배틀 & 순위</h4>
+                <p className="text-gray-600 text-sm mb-3">
+                  다른 친구들과 배틀하고 순위를 올려요
+                </p>
+                <p className="text-orange-600 font-bold text-sm group-hover:underline">
+                  순위표 보기 →
+                </p>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* 추가 정보 */}
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          <h3 className="text-xl font-bold mb-4 text-center">
+            ✨ 게임 특징
+          </h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-blue-50 rounded-xl p-4">
+              <h4 className="font-bold text-blue-700 mb-2">🎯 일일 배틀 제한</h4>
+              <p className="text-sm text-gray-700">
+                캐릭터당 하루 10번까지 배틀 가능해요. 
+                하지만 🤖 대기 계정과는 무제한으로 연습할 수 있어요!
               </p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">✍️</div>
-              <h4 className="font-bold mb-2">2. 텍스트 작성</h4>
-              <p className="text-gray-600">
-                100자 이내로 멋진 배틀 텍스트를 써요
+            <div className="bg-purple-50 rounded-xl p-4">
+              <h4 className="font-bold text-purple-700 mb-2">📊 공정한 점수 시스템</h4>
+              <p className="text-sm text-gray-700">
+                ELO 시스템으로 실력을 정확히 측정해요. 
+                강한 상대를 이기면 더 많은 점수를 얻어요!
               </p>
             </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">🏆</div>
-              <h4 className="font-bold mb-2">3. 배틀 & 순위</h4>
-              <p className="text-gray-600">
-                다른 친구들과 배틀하고 순위를 올려요
+            <div className="bg-green-50 rounded-xl p-4">
+              <h4 className="font-bold text-green-700 mb-2">🦄 다양한 동물들</h4>
+              <p className="text-sm text-gray-700">
+                현존하는 동물부터 전설의 동물, 고생대 동물까지! 
+                16가지 동물로 캐릭터를 만들 수 있어요.
+              </p>
+            </div>
+            <div className="bg-yellow-50 rounded-xl p-4">
+              <h4 className="font-bold text-yellow-700 mb-2">🛡️ 안전한 환경</h4>
+              <p className="text-sm text-gray-700">
+                부적절한 내용은 자동으로 필터링돼요. 
+                모두가 즐거운 게임을 만들어가요!
               </p>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { filterCharacterName, filterBattleText } from '@/lib/filters/content-filter';
+import { logUserAction } from '@/lib/activity-tracker';
 import { v4 as uuidv4 } from 'uuid';
 
 // GET: 사용자의 캐릭터 목록 조회
@@ -245,6 +246,13 @@ export async function POST(request: NextRequest) {
     `);
     
     stmt.run(characterId, user.id, animalId, characterName, battleText);
+    
+    // 로그 기록
+    logUserAction(user.id, 'character_created', {
+      characterId,
+      characterName,
+      animalId
+    });
 
     // 생성된 캐릭터 조회
     const character = db.prepare(`
