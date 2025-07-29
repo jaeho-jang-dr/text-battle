@@ -13,6 +13,7 @@ interface Animal {
   abilities: string;
   emoji: string;
   image_url?: string;
+  color?: string;
 }
 
 export default function AnimalsPage() {
@@ -128,8 +129,14 @@ export default function AnimalsPage() {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setSelectedAnimal(animal)}
                 className="bg-white rounded-2xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all duration-200"
+                style={{
+                  backgroundColor: animal.color ? `${animal.color}20` : 'white',
+                  borderColor: animal.color || 'transparent',
+                  borderWidth: '2px',
+                  borderStyle: 'solid'
+                }}
               >
-                <div className="text-6xl text-center mb-3">{animal.emoji}</div>
+                <div className="text-6xl text-center mb-3" style={{ color: animal.color || 'inherit' }}>{animal.emoji}</div>
                 <h3 className="font-bold text-center text-gray-800">{animal.korean_name}</h3>
                 <p className="text-xs text-center text-gray-500 mt-1">{animal.name}</p>
                 <div className={`mt-3 h-1 rounded-full bg-gradient-to-r ${getCategoryColor(animal.category)}`} />
