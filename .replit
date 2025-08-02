@@ -1,15 +1,16 @@
-run = "npm run start"
+run = "./replit-build.sh && npm run start"
 modules = ["nodejs-20:v8-20240808-44c19a9"]
-hidden = [".config", "package-lock.json"]
+hidden = [".config", "package-lock.json", ".next"]
+compile = "./replit-build.sh"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [deployment]
-run = ["sh", "-c", "npm run build && npm run start"]
+run = ["sh", "-c", "./replit-build.sh && npm run start"]
 deploymentTarget = "cloudrun"
 ignorePorts = false
-buildCommand = "npm run build"
+buildCommand = "./replit-build.sh"
 
 [[ports]]
 localPort = 3008
