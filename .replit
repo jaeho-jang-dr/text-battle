@@ -1,4 +1,4 @@
-run = "git pull origin main && rm -rf .next node_modules && npm install --legacy-peer-deps && npm run build && npm run start"
+run = "npm run dev"
 
 [nix]
 channel = "stable-22_11"
