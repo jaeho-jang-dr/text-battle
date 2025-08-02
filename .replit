@@ -1,4 +1,4 @@
-run = "bash replit-build.sh && npm run start"
+run = "git pull origin main && rm -rf .next node_modules && npm install --legacy-peer-deps && npm run build && npm run start"
 
 [nix]
 channel = "stable-22_11"

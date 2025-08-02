@@ -76,3 +76,11 @@ Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd
  POST /api/battles 200 in 118ms
 Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, da9cd092-f2f4-4c0b-addd-b5e5b2968422
  POST /api/battles 200 in 18ms
+ ✓ Compiled in 1191ms (2309 modules)
+ ⚠ Found a change in next.config.js. Restarting the server to apply the changes...
+  ▲ Next.js 14.2.0
+  - Local:        http://localhost:3008
+  - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 2.7s
