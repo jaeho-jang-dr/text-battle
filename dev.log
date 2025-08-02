@@ -84,3 +84,13 @@ Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd
 
  ✓ Starting...
  ✓ Ready in 2.7s
+ ○ Compiling /api/animals ...
+ ✓ Compiled /api/animals in 3.3s (1261 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 3478ms
+ ✓ Compiled in 288ms (592 modules)
+ GET / 200 in 79ms
+ ✓ Compiled /icon.svg in 162ms (696 modules)
+ GET /icon.svg?936747c01d97c416 200 in 196ms
+ GET /icon.svg?936747c01d97c416 200 in 11ms
+ ✓ Compiled in 122ms (611 modules)

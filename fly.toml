@@ -1,0 +1,29 @@
+# Fly.io 배포 설정
+app = "kid-text-battle"
+primary_region = "nrt"  # Tokyo (한국에서 가장 가까움)
+
+[build]
+  [build.args]
+    NODE_VERSION = "18"
+
+[env]
+  NODE_ENV = "production"
+  PORT = "3000"
+  USE_SQLITE = "true"
+  DATABASE_PATH = "/data/kid-text-battle.db"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
+
+[mounts]
+  source = "kid_text_battle_data"
+  destination = "/data"

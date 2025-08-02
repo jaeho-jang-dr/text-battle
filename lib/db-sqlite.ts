@@ -3,8 +3,8 @@ import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 
-// 데이터베이스 파일 경로
-const dbPath = path.join(process.cwd(), 'kid-text-battle.db');
+// 데이터베이스 파일 경로 (환경 변수 또는 기본 경로 사용)
+const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), 'kid-text-battle.db');
 
 // 데이터베이스 인스턴스
 export const sqliteDb = new (Database as any)(dbPath);
