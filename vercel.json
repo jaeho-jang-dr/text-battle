@@ -5,12 +5,14 @@
   "installCommand": "npm install",
   "regions": ["icn1"],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "USE_SQLITE": "false"
   },
   "build": {
     "env": {
       "DATABASE_URL": "@database_url",
-      "OPENAI_API_KEY": "@openai_api_key"
+      "OPENAI_API_KEY": "@openai_api_key",
+      "USE_SQLITE": "false"
     }
   }
 }

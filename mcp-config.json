@@ -15,6 +15,10 @@
         "TOSS_SECRET_KEY": "${TOSS_SECRET_KEY}",
         "TOSS_CLIENT_KEY": "${TOSS_CLIENT_KEY}"
       }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright"]
     }
   }
 }

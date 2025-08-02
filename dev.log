@@ -38,3 +38,41 @@ Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd
  GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 9ms
 Battle completed - invalidating cache for characters: 8c30f294-8069-493a-a0fc-ff09c5a37c3c, 8b19af22-a382-461a-be4e-b8629facef57
  POST /api/battles 200 in 48ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 43ms
+ ✓ Compiled /api/battles/history in 364ms (1234 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 434ms
+Cache hit for character 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
+ ✓ Compiled /api/characters in 205ms (1236 modules)
+🗄️  Using SQLite database
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7&_t=1754119971306 200 in 234ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7&_t=1754119973708 200 in 8ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7&_t=1754119975037 200 in 7ms
+ GET /play 200 in 139ms
+ ✓ Compiled /icon.svg in 298ms (1200 modules)
+ GET /icon.svg?936747c01d97c416 200 in 355ms
+ ✓ Compiled /api/animals in 95ms (1255 modules)
+ ✓ Compiled (1257 modules)
+🗄️  Using SQLite database
+ GET /api/auth/verify 200 in 213ms
+ GET /api/animals 200 in 172ms
+ GET /icon.svg?936747c01d97c416 200 in 179ms
+ GET /api/auth/verify 200 in 20ms
+ ✓ Compiled /api/characters in 70ms (1261 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 168ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 176ms
+ GET /api/animals 200 in 15ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 19ms
+ ✓ Compiled /api/leaderboard in 97ms (1263 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 134ms
+ GET /api/leaderboard? 200 in 12ms
+ ✓ Compiled /api/battles in 81ms (1266 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 118ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ POST /api/battles 200 in 18ms
