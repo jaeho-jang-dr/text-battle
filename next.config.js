@@ -29,7 +29,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // 개발 환경에서 React DevTools 비활성화
+  // 개발 환경에서 React DevTools 비활성화 및 경로 별칭 설정
   webpack: (config, { dev }) => {
     if (dev) {
       config.resolve.alias = {
@@ -37,6 +37,13 @@ const nextConfig = {
         'react-devtools-core': false,
       }
     }
+    
+    // Replit을 위한 경로 별칭 설정
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': __dirname,
+    }
+    
     return config
   }
 }
