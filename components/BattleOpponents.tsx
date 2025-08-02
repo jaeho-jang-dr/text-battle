@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Character } from '@/types';
+import { Character } from '../types';
 
 interface BattleOpponentsProps {
   currentCharacter: Character | null;

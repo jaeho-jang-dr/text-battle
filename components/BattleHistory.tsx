@@ -7,7 +7,7 @@ import {
   BattleHistoryEntry, 
   BattleStats,
   BattleInsight 
-} from '@/types/battle-history';
+} from '../types/battle-history';
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale';
 

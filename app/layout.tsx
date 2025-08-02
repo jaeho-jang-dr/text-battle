@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AdminButton from "@/components/AdminButton";
-import { AuthProvider } from "@/contexts/AuthContext";
+import AdminButton from "../components/AdminButton";
+import { AuthProvider } from "../contexts/AuthContext";
 
 export const metadata: Metadata = {
   title: "Kid Text Battle",

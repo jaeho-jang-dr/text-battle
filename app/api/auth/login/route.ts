@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { filterEmail } from '@/lib/filters/content-filter';
-import { updateUserActivity, logUserAction } from '@/lib/activity-tracker';
+import { db } from '../../../../lib/db';
+import { filterEmail } from '../../../../lib/filters/content-filter';
+import { updateUserActivity, logUserAction } from '../../../../lib/activity-tracker';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {

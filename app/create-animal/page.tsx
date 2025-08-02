@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
-import HelpButton from '@/components/HelpButton';
+import { useAuth } from '../../contexts/AuthContext';
+import HelpButton from '../../components/HelpButton';
 
 const animalEmojis = ['🦁', '🐯', '🐻', '🦊', '🐺', '🦄', '🐉', '🦅', '🦜', '🦚', '🐸', '🦎', '🐢', '🦂', '🦋'];
 const habitatOptions = ['숲', '바다', '하늘', '사막', '극지방', '초원', '산', '동굴', '강', '호수'];

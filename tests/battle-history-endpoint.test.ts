@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
 import { NextRequest } from 'next/server';
-import { GET } from '@/app/api/battles/history/route';
-import { db } from '@/lib/db';
-import { battleHistoryCache } from '@/lib/cache/battle-history-cache';
+import { GET } from '../app/api/battles/history/route';
+import { db } from '../lib/db';
+import { battleHistoryCache } from '../lib/cache/battle-history-cache';
 
 // Mock the database
 jest.mock('@/lib/db');

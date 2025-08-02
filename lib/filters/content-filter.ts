@@ -1,4 +1,4 @@
-import { FilterResult } from '@/types';
+import { FilterResult } from '../../types';
 
 // 욕설 필터 (아동 친화적 필터)
 const profanityList = [

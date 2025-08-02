@@ -1,4 +1,4 @@
-import { BattleHistoryResponse } from '@/types/battle-history';
+import { BattleHistoryResponse } from '../../types/battle-history';
 
 interface CacheEntry<T> {
   data: T;

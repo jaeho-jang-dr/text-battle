@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { ApiResponse } from '@/types';
+import { db } from '../../../../lib/db';
+import { ApiResponse } from '../../../../types';
 import { 
   BattleHistoryResponse, 
   BattleHistoryEntry, 
   BattleStats, 
   TimelinePoint,
   BattleInsight
-} from '@/types/battle-history';
-import { battleHistoryCache } from '@/lib/cache/battle-history-cache';
-import { BattlePatternAnalyzer } from '@/lib/analytics/battle-patterns';
+} from '../../../../types/battle-history';
+import { battleHistoryCache } from '../../../../lib/cache/battle-history-cache';
+import { BattlePatternAnalyzer } from '../../../../lib/analytics/battle-patterns';
 
 export async function GET(req: NextRequest) {
   try {

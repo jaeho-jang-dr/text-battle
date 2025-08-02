@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { User, Character, Animal } from '@/types';
+import { User, Character, Animal } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
-import BattleOpponents from '@/components/BattleOpponents';
-import AnimalDetailPopup from '@/components/AnimalDetailPopup';
-import BattleHistory from '@/components/BattleHistory';
-import BattleEnergyBar from '@/components/BattleEnergyBar';
-import { useAuth } from '@/contexts/AuthContext';
-import { useBattleSound } from '@/hooks/useBattleSound';
+import BattleOpponents from '../../components/BattleOpponents';
+import AnimalDetailPopup from '../../components/AnimalDetailPopup';
+import BattleHistory from '../../components/BattleHistory';
+import BattleEnergyBar from '../../components/BattleEnergyBar';
+import { useAuth } from '../../contexts/AuthContext';
+import { useBattleSound } from '../../hooks/useBattleSound';
 
 interface BattleMode {
   isActive: boolean;

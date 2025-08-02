@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { ApiResponse } from '@/types';
-import { BattleComparisonResponse } from '@/types/battle-comparison';
-import { BattleComparisonAnalyzer } from '@/lib/analytics/battle-comparison';
+import { db } from '../../../../lib/db';
+import { ApiResponse } from '../../../../types';
+import { BattleComparisonResponse } from '../../../../types/battle-comparison';
+import { BattleComparisonAnalyzer } from '../../../../lib/analytics/battle-comparison';
 
 export async function GET(req: NextRequest) {
   try {

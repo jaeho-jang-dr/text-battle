@@ -1,4 +1,4 @@
-import { db } from '@/lib/db';
+import { db } from '../db';
 import {
   CharacterOverview,
   HeadToHeadStats,
@@ -9,7 +9,7 @@ import {
   PredictiveAnalysis,
   ComparisonVisualization,
   ComparisonInsight
-} from '@/types/battle-comparison';
+} from '../../types/battle-comparison';
 
 export class BattleComparisonAnalyzer {
   // 캐릭터 개요 정보 가져오기

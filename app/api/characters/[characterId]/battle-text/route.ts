@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { filterBattleText } from '@/lib/filters/content-filter';
-import { logUserAction } from '@/lib/activity-tracker';
+import { db } from '../../../../../lib/db';
+import { filterBattleText } from '../../../../../lib/filters/content-filter';
+import { logUserAction } from '../../../../../lib/activity-tracker';
 
 export async function PATCH(
   request: NextRequest,

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Animal } from '@/types';
+import { Animal } from '../types';
 
 interface AnimalDetailPopupProps {
   animal: Animal | null;

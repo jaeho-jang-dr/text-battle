@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { filterBattleText } from '@/lib/filters/content-filter';
-import { updateUserActivity, logUserAction } from '@/lib/activity-tracker';
-import { battleHistoryCache } from '@/lib/cache/battle-history-cache';
+import { db } from '../../../lib/db';
+import { filterBattleText } from '../../../lib/filters/content-filter';
+import { updateUserActivity, logUserAction } from '../../../lib/activity-tracker';
+import { battleHistoryCache } from '../../../lib/cache/battle-history-cache';
 import { v4 as uuidv4 } from 'uuid';
 
 // ELO 점수 계산 함수

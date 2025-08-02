@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db } from '../../../../../lib/db';
 
 // 관리자 토큰 검증 함수
 function verifyAdminToken(request: NextRequest) {

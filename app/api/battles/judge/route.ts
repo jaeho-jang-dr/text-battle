@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db } from '../../../../lib/db';
 
 // 부적절한 단어 필터링 목록
 const INAPPROPRIATE_WORDS = [

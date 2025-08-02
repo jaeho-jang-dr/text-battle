@@ -1,4 +1,4 @@
-import { BattleHistoryEntry, BattleStats } from '@/types/battle-history';
+import { BattleHistoryEntry, BattleStats } from '../../types/battle-history';
 
 export interface BattlePattern {
   type: 'winning_time' | 'losing_streak' | 'opponent_dominance' | 'improvement' | 'plateau';

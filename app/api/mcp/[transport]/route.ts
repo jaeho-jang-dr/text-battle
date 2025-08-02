@@ -12,7 +12,7 @@ const handler = createMcpHandler(
     },
     async ({ type }) => {
       try {
-        const { db } = await import("@/lib/db");
+        const { db } = await import("../../../../lib/db");
         
         let stats: any = {};
         
@@ -74,7 +74,7 @@ const handler = createMcpHandler(
     },
     async ({ name, animalId, personality }) => {
       try {
-        const { db } = await import("@/lib/db");
+        const { db } = await import("../../../../lib/db");
         const { v4: uuidv4 } = await import("uuid");
         
         // Check if animal exists
@@ -124,7 +124,7 @@ const handler = createMcpHandler(
     },
     async ({ limit, winnerOnly }) => {
       try {
-        const { db } = await import("@/lib/db");
+        const { db } = await import("../../../../lib/db");
         
         const query = winnerOnly 
           ? `SELECT b.*, c1.name as challenger_name, c2.name as defender_name, a1.name as challenger_animal, a2.name as defender_animal
@@ -185,7 +185,7 @@ const handler = createMcpHandler(
     },
     async ({ category }) => {
       try {
-        const { db } = await import("@/lib/db");
+        const { db } = await import("../../../../lib/db");
         
         let query = "SELECT * FROM animals";
         if (category !== "all") {
@@ -223,7 +223,7 @@ const handler = createMcpHandler(
     },
     async ({ minutes }) => {
       try {
-        const { db } = await import("@/lib/db");
+        const { db } = await import("../../../../lib/db");
         
         const timeAgo = new Date(Date.now() - minutes * 60 * 1000).toISOString();
         
@@ -272,7 +272,7 @@ const handler = createMcpHandler(
     },
     async ({ period }) => {
       try {
-        const { db } = await import("@/lib/db");
+        const { db } = await import("../../../../lib/db");
         
         let timeFilter = "";
         const now = new Date();

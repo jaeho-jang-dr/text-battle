@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Character } from '@/types';
+import { User, Character } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface LeaderboardEntry {

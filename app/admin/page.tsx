@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import UsersTab from '@/components/admin/UsersTab';
-import BattlesTab from '@/components/admin/BattlesTab';
-import LogsTab from '@/components/admin/LogsTab';
-import SettingsTab from '@/components/admin/SettingsTab';
+import UsersTab from '../../components/admin/UsersTab';
+import BattlesTab from '../../components/admin/BattlesTab';
+import LogsTab from '../../components/admin/LogsTab';
+import SettingsTab from '../../components/admin/SettingsTab';
 
 interface AdminStats {
   totalUsers: number;
