@@ -39,6 +39,38 @@ DATABASE_URL = file:./kid-text-battle.db
    ```
 3. 우측 상단의 **"Webview"** 탭에서 앱 확인
 
+## 🛠️ 빌드 에러 해결
+
+### globals.css 에러 발생 시
+만약 `app/globals.css` 관련 에러가 발생하면:
+
+1. **Shell 탭에서 다음 명령어 실행**:
+   ```bash
+   # 종속성 재설치
+   rm -rf node_modules package-lock.json
+   npm install
+   
+   # 빌드 테스트
+   npm run build
+   ```
+
+2. **package.json 스크립트 확인**:
+   ```json
+   "scripts": {
+     "dev": "next dev -p 3008",
+     "build": "next build",
+     "start": "next start -p 3008"
+   }
+   ```
+
+3. **Next.js 설정 확인** (next.config.js):
+   ```javascript
+   module.exports = {
+     reactStrictMode: true,
+     swcMinify: true,
+   }
+   ```
+
 ## 📱 도메인 설정
 - Replit은 자동으로 URL 제공: `https://kid-text-battle-[username].repl.co`
 - 커스텀 도메인 연결 가능 (유료 플랜)
