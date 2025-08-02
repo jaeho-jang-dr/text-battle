@@ -25,6 +25,8 @@ export default function BattleHistory({ characterId, characterName, onClose }: B
   const [page, setPage] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshSuccess, setRefreshSuccess] = useState(false);
+  const [scoreRefreshing, setScoreRefreshing] = useState(false);
+  const [scoreRefreshSuccess, setScoreRefreshSuccess] = useState(false);
 
   const fetchHistory = async (offset: number = 0, forceRefresh: boolean = false) => {
     try {
@@ -111,9 +113,32 @@ export default function BattleHistory({ characterId, characterName, onClose }: B
             <span className={`font-bold ${entry.isWin ? 'text-green-600' : 'text-red-600'}`}>
               {entry.isWin ? '승리' : '패배'}
             </span>
-            <span>
-              점수: {entry.scoreChange > 0 ? '+' : ''}{entry.scoreChange}
-            </span>
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                setScoreRefreshing(true);
+                setScoreRefreshSuccess(false);
+                await fetchHistory(page * 20, true);
+                setScoreRefreshing(false);
+                setScoreRefreshSuccess(true);
+                setTimeout(() => setScoreRefreshSuccess(false), 3000);
+              }}
+              disabled={scoreRefreshing}
+              className={`px-2 py-1 rounded transition-all duration-200 ${
+                scoreRefreshing
+                  ? 'bg-gray-100 cursor-wait'
+                  : scoreRefreshSuccess
+                  ? 'bg-green-100 hover:bg-green-200'
+                  : 'hover:bg-gray-100 cursor-pointer'
+              }`}
+              title="클릭하여 점수 새로고침"
+            >
+              <span className="flex items-center gap-1">
+                점수: {entry.scoreChange > 0 ? '+' : ''}{entry.scoreChange}
+                {scoreRefreshing && <span className="animate-spin text-xs">🔄</span>}
+                {scoreRefreshSuccess && <span className="text-green-600 text-xs">✅</span>}
+              </span>
+            </button>
             <span>
               ELO: {entry.eloChange > 0 ? '+' : ''}{entry.eloChange}
             </span>

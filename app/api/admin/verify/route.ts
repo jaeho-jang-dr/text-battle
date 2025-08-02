@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(' ')[1];
     
     // Verify user token first
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT id, email, created_at 
       FROM users 
       WHERE token = ?
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user is admin
-    const adminUser = db.prepare(`
+    const adminUser = await db.prepare(`
       SELECT au.id, au.username, au.role 
       FROM admin_users au
       WHERE au.username = ?

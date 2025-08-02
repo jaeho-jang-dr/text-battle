@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '100');
 
     // 사용자 검색 (이메일, 표시명, ID)
-    const users = db.prepare(`
+    const users = await db.prepare(`
       SELECT 
         u.id,
         u.email,

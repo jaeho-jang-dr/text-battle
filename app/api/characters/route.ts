@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
 
     // 공개 프로필 조회 (userId 제공 시)
     if (userId) {
-      const characters = db.prepare(`
+      const characters = await db.prepare(`
         SELECT 
           c.*,
           a.id as animal_id,
@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
         baseScore: char.base_score || 1000,
         wins: char.wins || 0,
         losses: char.losses || 0,
+        battleText: char.battle_text || '',  // Include battle text in response
         animal: {
           id: char.animal_id,
           name: char.animal_name,
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
 
     // 대전 상대 찾기 (excludeUserId 제공 시)
     if (excludeUserId) {
-      const opponents = db.prepare(`
+      const opponents = await db.prepare(`
         SELECT 
           c.*,
           a.id as animal_id,
@@ -77,6 +78,7 @@ export async function GET(request: NextRequest) {
         baseScore: char.base_score || 1000,
         wins: char.wins || 0,
         losses: char.losses || 0,
+        battleText: char.battle_text || '',  // Include battle text in response
         animal: {
           id: char.animal_id,
           name: char.animal_name,
@@ -102,7 +104,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -116,7 +118,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자의 모든 캐릭터 조회 (배틀 텍스트 포함)
-    const characters = db.prepare(`
+    const characters = await db.prepare(`
       SELECT 
         c.*,
         a.id as animal_id,
@@ -148,6 +150,7 @@ export async function GET(request: NextRequest) {
         baseScore: char.base_score || 1000,
         wins: char.wins || 0,
         losses: char.losses || 0,
+        battleText: char.battle_text || '',  // Include battle text in response
         animal: {
           id: char.animal_id,
           name: char.animal_name,
@@ -187,7 +190,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -235,7 +238,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 캐릭터 수 확인
-    const charCount = db.prepare(
+    const charCount = await db.prepare(
       'SELECT COUNT(*) as count FROM characters WHERE user_id = ? AND is_active = 1'
     ).get(user.id) as { count: number };
 
@@ -248,23 +251,23 @@ export async function POST(request: NextRequest) {
 
     // 캐릭터 생성
     const characterId = uuidv4();
-    const stmt = db.prepare(`
+    const stmt = await db.prepare(`
       INSERT INTO characters (
         id, user_id, animal_id, character_name, battle_text
       ) VALUES (?, ?, ?, ?, ?)
     `);
     
-    stmt.run(characterId, user.id, animalId, characterName, battleText);
+    await stmt.run(characterId, user.id, animalId, characterName, battleText);
     
     // 로그 기록
-    logUserAction(user.id, 'character_created', {
+    await logUserAction(user.id, 'character_created', {
       characterId,
       characterName,
       animalId
     });
 
     // 생성된 캐릭터 조회
-    const character = db.prepare(`
+    const character = await db.prepare(`
       SELECT c.*, a.*,
         c.id as id, c.character_name,
         a.id as animal_id, a.name as animal_name
@@ -282,6 +285,7 @@ export async function POST(request: NextRequest) {
       category: character.category
     };
     character.activeBattlesToday = character.active_battles_today;
+    character.battleText = character.battle_text || '';  // Include battle text in response
 
     return NextResponse.json({
       success: true,
@@ -307,13 +311,13 @@ async function recordWarning(userId: string, type: string, content: string, warn
     `).run(warningId, userId, warningType || type, content);
 
     // 경고 횟수 확인
-    const warningCount = db.prepare(
+    const warningCount = await db.prepare(
       'SELECT COUNT(*) as count FROM warnings WHERE user_id = ?'
     ).get(userId) as { count: number };
 
     // 3회 이상이면 계정 정지
     if (warningCount.count >= 3) {
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET warning_count = ?, is_suspended = 1, suspended_reason = ?
         WHERE id = ?
@@ -340,7 +344,7 @@ async function recordWarning(userId: string, type: string, content: string, warn
       );
     } else {
       // 경고 횟수만 업데이트
-      db.prepare(
+      await db.prepare(
         'UPDATE users SET warning_count = ? WHERE id = ?'
       ).run(warningCount.count, userId);
     }

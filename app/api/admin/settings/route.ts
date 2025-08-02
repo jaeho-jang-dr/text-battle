@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 모든 설정 조회
-    const settings = db.prepare(`
+    const settings = await db.prepare(`
       SELECT * FROM admin_settings
       ORDER BY setting_key
     `).all();
@@ -63,7 +63,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // 설정 업데이트
-    db.prepare(`
+    await db.prepare(`
       UPDATE admin_settings
       SET setting_value = ?, updated_at = CURRENT_TIMESTAMP
       WHERE setting_key = ?

@@ -7,7 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BattleOpponents from '@/components/BattleOpponents';
 import AnimalDetailPopup from '@/components/AnimalDetailPopup';
 import BattleHistory from '@/components/BattleHistory';
+import BattleEnergyBar from '@/components/BattleEnergyBar';
 import { useAuth } from '@/contexts/AuthContext';
+import { useBattleSound } from '@/hooks/useBattleSound';
 
 interface BattleMode {
   isActive: boolean;
@@ -16,10 +18,12 @@ interface BattleMode {
   selectedOpponent: Character | null;
   battleResult: any | null;
   isBattling: boolean;
+  showEnergyBars: boolean;
 }
 
 export default function PlayPage() {
   const { user, isAuthenticated, logout } = useAuth();
+  const { playVictorySound, playDefeatSound, playBattleStartSound } = useBattleSound();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,13 +39,16 @@ export default function PlayPage() {
     opponents: [],
     selectedOpponent: null,
     battleResult: null,
-    isBattling: false
+    isBattling: false,
+    showEnergyBars: false
   });
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
   const [newBattleText, setNewBattleText] = useState('');
   const [selectedAnimalDetail, setSelectedAnimalDetail] = useState<Animal | null>(null);
   const [showAnimalDetail, setShowAnimalDetail] = useState(false);
   const [showBattleHistory, setShowBattleHistory] = useState<{ characterId: string; characterName: string } | null>(null);
+  const [refreshingCharacterId, setRefreshingCharacterId] = useState<string | null>(null);
+  const [scoreRefreshSuccess, setScoreRefreshSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -92,6 +99,37 @@ export default function PlayPage() {
       }
     } catch (error) {
       console.error('Failed to load animals:', error);
+    }
+  };
+
+  // 특정 캐릭터의 점수 새로고침
+  const refreshCharacterScore = async (characterId: string) => {
+    try {
+      setRefreshingCharacterId(characterId);
+      setScoreRefreshSuccess(null);
+      
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token || !user) return;
+
+      // 캐시 무시하고 최신 데이터 가져오기
+      const response = await fetch(`/api/characters?userId=${user.id}&_t=${Date.now()}`, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Cache-Control': 'no-cache'
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setCharacters(data.data || []);
+        setScoreRefreshSuccess(characterId);
+        // 3초 후 성공 표시 제거
+        setTimeout(() => setScoreRefreshSuccess(null), 3000);
+      }
+    } catch (error) {
+      console.error('Failed to refresh character score:', error);
+    } finally {
+      setRefreshingCharacterId(null);
     }
   };
 
@@ -199,7 +237,8 @@ export default function PlayPage() {
           opponents: data.data,
           selectedOpponent: null,
           battleResult: null,
-          isBattling: false
+          isBattling: false,
+          showEnergyBars: false
         });
       } else {
         setError('대전할 상대를 찾을 수 없어요!');
@@ -214,8 +253,11 @@ export default function PlayPage() {
   const executeBattle = async () => {
     if (!battleMode.selectedCharacter || !battleMode.selectedOpponent) return;
 
-    setBattleMode(prev => ({ ...prev, isBattling: true }));
+    setBattleMode(prev => ({ ...prev, isBattling: true, showEnergyBars: true }));
     setError('');
+    
+    // 배틀 시작 사운드 재생
+    playBattleStartSound();
 
     try {
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
@@ -234,11 +276,26 @@ export default function PlayPage() {
       const data = await response.json();
       
       if (data.success) {
+        // 즉시 배틀 결과 저장 (에너지 바 애니메이션용)
         setBattleMode(prev => ({
           ...prev,
-          battleResult: data.data,
-          isBattling: false
+          battleResult: data.data
         }));
+        
+        // 에너지 바 애니메이션을 위한 지연
+        setTimeout(() => {
+          setBattleMode(prev => ({
+            ...prev,
+            isBattling: false
+          }));
+          
+          // 승리/패배 사운드 재생
+          if (data.data.result.winner === 'attacker') {
+            playVictorySound();
+          } else {
+            playDefeatSound();
+          }
+        }, 3500); // 3.5초 후 결과 표시 (애니메이션 완료 대기)
 
         // 캐릭터 정보 업데이트
         const updatedCharacters = characters.map(char => {
@@ -273,7 +330,8 @@ export default function PlayPage() {
       opponents: [],
       selectedOpponent: null,
       battleResult: null,
-      isBattling: false
+      isBattling: false,
+      showEnergyBars: false
     });
     setError('');
   };
@@ -304,7 +362,8 @@ export default function PlayPage() {
         opponents: [],
         selectedOpponent: opponent,
         battleResult: null,
-        isBattling: false
+        isBattling: false,
+        showEnergyBars: false
       });
     } else {
       // 여러 캐릭터 중 선택하기 위한 상태 설정
@@ -314,7 +373,8 @@ export default function PlayPage() {
         opponents: availableCharacters,
         selectedOpponent: opponent,
         battleResult: null,
-        isBattling: false
+        isBattling: false,
+        showEnergyBars: false
       });
     }
   };
@@ -388,7 +448,28 @@ export default function PlayPage() {
                         </p>
                       </div>
                       <div className="text-sm space-y-1">
-                        <p>📊 점수: {character.baseScore}</p>
+                        <button
+                          onClick={() => refreshCharacterScore(character.id)}
+                          disabled={refreshingCharacterId === character.id}
+                          className={`w-full text-left p-2 rounded-lg transition-all duration-200 ${
+                            refreshingCharacterId === character.id
+                              ? 'bg-gray-100 cursor-wait'
+                              : scoreRefreshSuccess === character.id
+                              ? 'bg-green-100 hover:bg-green-200'
+                              : 'hover:bg-gray-100 cursor-pointer'
+                          }`}
+                          title="클릭하여 점수 새로고침"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>📊 점수: {character.baseScore}</span>
+                            {refreshingCharacterId === character.id && (
+                              <span className="animate-spin text-xs">🔄</span>
+                            )}
+                            {scoreRefreshSuccess === character.id && (
+                              <span className="text-green-600 text-xs">✅</span>
+                            )}
+                          </div>
+                        </button>
                         <p>🏆 승리: {character.wins}</p>
                         <p>💔 패배: {character.losses}</p>
                         <p>⚔️ 오늘 배틀: {character.activeBattlesToday}/10</p>
@@ -593,15 +674,46 @@ export default function PlayPage() {
                     </>
                   )}
 
+                  {/* 에너지 바 표시 (배틀 중) */}
+                  {battleMode.isBattling && battleMode.showEnergyBars && battleMode.selectedCharacter && battleMode.selectedOpponent && (
+                    <div className="mb-8">
+                      <div className="flex justify-between items-center gap-8">
+                        <BattleEnergyBar
+                          characterName={battleMode.selectedCharacter.characterName}
+                          emoji={battleMode.selectedCharacter.animal?.emoji || '🐾'}
+                          maxEnergy={100}
+                          currentEnergy={battleMode.battleResult ? 
+                            (battleMode.battleResult.result.winner === 'attacker' ? 60 : 20) : 100}
+                          isAttacker={true}
+                          combatPower={battleMode.battleResult?.combatStats?.attacker?.totalPower || 200}
+                          showAnimation={battleMode.showEnergyBars}
+                          animationDuration={3}
+                        />
+                        <div className="text-4xl animate-pulse">⚔️</div>
+                        <BattleEnergyBar
+                          characterName={battleMode.selectedOpponent.characterName}
+                          emoji={(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji || '🐾'}
+                          maxEnergy={100}
+                          currentEnergy={battleMode.battleResult ? 
+                            (battleMode.battleResult.result.winner === 'defender' ? 60 : 20) : 100}
+                          isAttacker={false}
+                          combatPower={battleMode.battleResult?.combatStats?.defender?.totalPower || 200}
+                          showAnimation={battleMode.showEnergyBars}
+                          animationDuration={3}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   {/* 배틀 시작 버튼 */}
-                  {battleMode.selectedOpponent && (
+                  {battleMode.selectedOpponent && !battleMode.isBattling && (
                     <div className="text-center">
                       <button
                         onClick={executeBattle}
                         disabled={battleMode.isBattling}
                         className="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-xl text-xl disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {battleMode.isBattling ? '배틀 중... ⚔️' : '배틀 시작! 🔥'}
+                        배틀 시작! 🔥
                       </button>
                     </div>
                   )}
@@ -748,7 +860,8 @@ export default function PlayPage() {
                     opponents: [],
                     selectedOpponent: null,
                     battleResult: null,
-                    isBattling: false
+                    isBattling: false,
+                    showEnergyBars: false
                   });
                 }}
                 className="w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-6 rounded-lg"

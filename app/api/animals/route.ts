@@ -23,8 +23,8 @@ export async function GET(request: Request) {
     }
     
     const animals = params.length > 0 
-      ? db.prepare(query).all(...params)
-      : db.prepare(query).all();
+      ? await db.prepare(query).all(...params)
+      : await db.prepare(query).all();
 
     // Add statistics
     const stats = {

@@ -17,13 +17,13 @@ const handler = createMcpHandler(
         let stats: any = {};
         
         if (!type || type === "battles") {
-          const battleCount = db.prepare("SELECT COUNT(*) as count FROM battles").get() as { count: number };
+          const battleCount = await db.prepare("SELECT COUNT(*) as count FROM battles").get() as { count: number };
           stats.battles = battleCount.count;
         }
         
         if (!type || type === "characters") {
-          const characterCount = db.prepare("SELECT COUNT(*) as count FROM characters").get() as { count: number };
-          const botCount = db.prepare("SELECT COUNT(*) as count FROM characters WHERE is_bot = 1").get() as { count: number };
+          const characterCount = await db.prepare("SELECT COUNT(*) as count FROM characters").get() as { count: number };
+          const botCount = await db.prepare("SELECT COUNT(*) as count FROM characters WHERE is_bot = 1").get() as { count: number };
           stats.characters = {
             total: characterCount.count,
             bots: botCount.count,
@@ -32,8 +32,8 @@ const handler = createMcpHandler(
         }
         
         if (!type || type === "users") {
-          const userCount = db.prepare("SELECT COUNT(*) as count FROM users").get() as { count: number };
-          const guestCount = db.prepare("SELECT COUNT(*) as count FROM users WHERE is_guest = 1").get() as { count: number };
+          const userCount = await db.prepare("SELECT COUNT(*) as count FROM users").get() as { count: number };
+          const guestCount = await db.prepare("SELECT COUNT(*) as count FROM users WHERE is_guest = 1").get() as { count: number };
           stats.users = {
             total: userCount.count,
             guests: guestCount.count,
@@ -42,7 +42,7 @@ const handler = createMcpHandler(
         }
         
         if (!type || type === "animals") {
-          const animalCount = db.prepare("SELECT COUNT(*) as count FROM animals").get() as { count: number };
+          const animalCount = await db.prepare("SELECT COUNT(*) as count FROM animals").get() as { count: number };
           stats.animals = animalCount.count;
         }
         
@@ -78,7 +78,7 @@ const handler = createMcpHandler(
         const { v4: uuidv4 } = await import("uuid");
         
         // Check if animal exists
-        const animal = db.prepare("SELECT * FROM animals WHERE id = ?").get(animalId);
+        const animal = await db.prepare("SELECT * FROM animals WHERE id = ?").get(animalId);
         if (!animal) {
           return {
             content: [{
@@ -90,12 +90,12 @@ const handler = createMcpHandler(
         
         // Create bot character
         const characterId = uuidv4();
-        const stmt = db.prepare(`
+        const stmt = await db.prepare(`
           INSERT INTO characters (id, user_id, name, animal_id, is_bot, elo_rating, daily_battles_left)
           VALUES (?, 'system', ?, ?, 1, 1200, 999)
         `);
         
-        stmt.run(characterId, name, animalId);
+        await stmt.run(characterId, name, animalId);
         
         return {
           content: [{
@@ -145,7 +145,7 @@ const handler = createMcpHandler(
              ORDER BY b.created_at DESC
              LIMIT ?`;
         
-        const battles = db.prepare(query).all(limit);
+        const battles = await db.prepare(query).all(limit);
         
         const analysis = {
           totalBattles: battles.length,
@@ -193,7 +193,7 @@ const handler = createMcpHandler(
         }
         query += " ORDER BY name";
         
-        const animals = db.prepare(query).all();
+        const animals = await db.prepare(query).all();
         
         return {
           content: [{
@@ -227,7 +227,7 @@ const handler = createMcpHandler(
         
         const timeAgo = new Date(Date.now() - minutes * 60 * 1000).toISOString();
         
-        const recentBattles = db.prepare(`
+        const recentBattles = await db.prepare(`
           SELECT b.*, c1.name as challenger_name, c2.name as defender_name, 
                  a1.name as challenger_animal, a2.name as defender_animal
           FROM battles b
@@ -291,13 +291,13 @@ const handler = createMcpHandler(
             break;
         }
         
-        const activeUsers = db.prepare(`
+        const activeUsers = await db.prepare(`
           SELECT COUNT(DISTINCT user_id) as count 
           FROM user_activity 
           WHERE last_active > ?
         `).get(timeFilter) as { count: number };
         
-        const newUsers = db.prepare(`
+        const newUsers = await db.prepare(`
           SELECT COUNT(*) as count 
           FROM users 
           WHERE created_at > ?

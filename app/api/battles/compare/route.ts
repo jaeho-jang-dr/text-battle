@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -73,8 +73,8 @@ export async function GET(req: NextRequest) {
     }
 
     // 권한 확인 - 최소 한 캐릭터는 사용자 소유여야 함
-    const char1Owner = db.prepare('SELECT user_id FROM characters WHERE id = ?').get(character1Id) as any;
-    const char2Owner = db.prepare('SELECT user_id FROM characters WHERE id = ?').get(character2Id) as any;
+    const char1Owner = await db.prepare('SELECT user_id FROM characters WHERE id = ?').get(character1Id) as any;
+    const char2Owner = await db.prepare('SELECT user_id FROM characters WHERE id = ?').get(character2Id) as any;
 
     if (char1Owner.user_id !== user.id && char2Owner.user_id !== user.id) {
       return NextResponse.json({
@@ -188,7 +188,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -213,8 +213,8 @@ export async function POST(req: NextRequest) {
     }
 
     // 캐릭터 ID 찾기
-    const char1 = db.prepare('SELECT id FROM characters WHERE character_name = ?').get(character1Name) as any;
-    const char2 = db.prepare('SELECT id FROM characters WHERE character_name = ?').get(character2Name) as any;
+    const char1 = await db.prepare('SELECT id FROM characters WHERE character_name = ?').get(character1Name) as any;
+    const char2 = await db.prepare('SELECT id FROM characters WHERE character_name = ?').get(character2Name) as any;
 
     if (!char1) {
       return NextResponse.json({

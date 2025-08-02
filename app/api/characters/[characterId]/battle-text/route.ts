@@ -18,7 +18,7 @@ export async function PATCH(
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -32,7 +32,7 @@ export async function PATCH(
     }
 
     // 캐릭터 소유권 확인
-    const character = db.prepare(`
+    const character = await db.prepare(`
       SELECT * FROM characters 
       WHERE id = ? AND user_id = ? AND is_active = 1
     `).get(params.characterId, user.id);
@@ -58,7 +58,7 @@ export async function PATCH(
     const textFilter = filterBattleText(battleText);
     if (!textFilter.isClean) {
       // 경고 처리
-      const warningStmt = db.prepare(`
+      const warningStmt = await db.prepare(`
         INSERT INTO warnings (id, user_id, warning_type, content, character_id)
         VALUES (?, ?, ?, ?, ?)
       `);
@@ -73,16 +73,16 @@ export async function PATCH(
       );
 
       // 사용자 경고 카운트 증가
-      db.prepare(`
+      await db.prepare(`
         UPDATE users 
         SET warning_count = warning_count + 1 
         WHERE id = ?
       `).run(user.id);
 
       // 3회 경고 시 정지
-      const updatedUser = db.prepare('SELECT warning_count FROM users WHERE id = ?').get(user.id);
+      const updatedUser = await db.prepare('SELECT warning_count FROM users WHERE id = ?').get(user.id);
       if (updatedUser.warning_count >= 3) {
-        db.prepare(`
+        await db.prepare(`
           UPDATE users 
           SET is_suspended = 1, 
               suspended_reason = '부적절한 내용 작성으로 인한 자동 정지' 
@@ -97,7 +97,7 @@ export async function PATCH(
     }
 
     // 배틀 텍스트 업데이트
-    const updateStmt = db.prepare(`
+    const updateStmt = await db.prepare(`
       UPDATE characters 
       SET battle_text = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
@@ -106,7 +106,7 @@ export async function PATCH(
     updateStmt.run(battleText, params.characterId);
 
     // 로그 기록
-    logUserAction(user.id, 'battle_text_updated', {
+    await logUserAction(user.id, 'battle_text_updated', {
       characterId: params.characterId,
       characterName: character.character_name,
       oldText: character.battle_text,

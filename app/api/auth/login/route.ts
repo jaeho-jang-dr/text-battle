@@ -17,20 +17,20 @@ export async function POST(request: NextRequest) {
       const userId = uuidv4();
       const displayName = `게스트_${Math.floor(Math.random() * 10000)}`;
       
-      const stmt = db.prepare(`
+      const stmt = await db.prepare(`
         INSERT INTO users (id, is_guest, display_name, login_token, token_expires_at)
         VALUES (?, 1, ?, ?, ?)
       `);
       
-      stmt.run(userId, displayName, token, tokenExpiresAt.toISOString());
+      await stmt.run(userId, displayName, token, tokenExpiresAt.toISOString());
       
-      const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
       
       // 활동 추적
-      updateUserActivity(userId);
+      await updateUserActivity(userId);
       
       // 로그 기록
-      logUserAction(userId, 'user_login', { 
+      await logUserAction(userId, 'user_login', { 
         isGuest: true, 
         displayName 
       });
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 기존 사용자 확인
-    const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const existingUser = await db.prepare('SELECT * FROM users WHERE email = ?').get(email);
 
     const token = uuidv4();
     const tokenExpiresAt = new Date();
@@ -71,21 +71,21 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       // 기존 사용자 - 토큰 업데이트
-      const stmt = db.prepare(`
+      const stmt = await db.prepare(`
         UPDATE users 
         SET login_token = ?, token_expires_at = ?, last_login = CURRENT_TIMESTAMP
         WHERE id = ?
       `);
       
-      stmt.run(token, tokenExpiresAt.toISOString(), existingUser.id);
+      await stmt.run(token, tokenExpiresAt.toISOString(), existingUser.id);
       
-      const user = db.prepare('SELECT * FROM users WHERE id = ?').get(existingUser.id);
+      const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(existingUser.id);
       
       // 활동 추적
-      updateUserActivity(existingUser.id);
+      await updateUserActivity(existingUser.id);
       
       // 로그 기록
-      logUserAction(existingUser.id, 'user_login', { 
+      await logUserAction(existingUser.id, 'user_login', { 
         email,
         isNewUser: false 
       });
@@ -101,20 +101,20 @@ export async function POST(request: NextRequest) {
     } else {
       // 신규 사용자
       const userId = uuidv4();
-      const stmt = db.prepare(`
+      const stmt = await db.prepare(`
         INSERT INTO users (id, email, is_guest, login_token, token_expires_at)
         VALUES (?, ?, 0, ?, ?)
       `);
       
-      stmt.run(userId, email, token, tokenExpiresAt.toISOString());
+      await stmt.run(userId, email, token, tokenExpiresAt.toISOString());
       
-      const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+      const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
       
       // 활동 추적
-      updateUserActivity(userId);
+      await updateUserActivity(userId);
       
       // 로그 기록
-      logUserAction(userId, 'user_login', { 
+      await logUserAction(userId, 'user_login', { 
         email,
         isNewUser: true 
       });

@@ -129,53 +129,76 @@ export default function AnimalDetailPopup({ animal, isOpen, onClose, onSelect }:
                   </div>
                 )}
 
-                {/* 스탯 (있다면) */}
-                {(animal as any).stats && (
+                {/* 전투 능력치 */}
+                {(animal.attack_power || animal.strength || animal.speed || animal.energy) && (
                   <div className="space-y-2">
-                    <h3 className="font-bold text-gray-700">능력치</h3>
+                    <h3 className="font-bold text-gray-700">전투 능력치</h3>
                     <div className="space-y-2">
-                      {(animal as any).stats.power && (
+                      {animal.attack_power !== undefined && (
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium w-16">공격력</span>
                           <div className="flex-1 bg-gray-200 rounded-full h-2">
                             <motion.div
                               initial={{ width: 0 }}
-                              animate={{ width: `${(animal as any).stats.power}%` }}
+                              animate={{ width: `${animal.attack_power}%` }}
                               transition={{ delay: 0.3, duration: 0.5 }}
                               className="bg-red-500 h-2 rounded-full"
                             />
                           </div>
-                          <span className="text-sm font-medium w-10 text-right">{(animal as any).stats.power}</span>
+                          <span className="text-sm font-medium w-10 text-right">{animal.attack_power}</span>
                         </div>
                       )}
-                      {(animal as any).stats.defense && (
+                      {animal.strength !== undefined && (
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium w-16">방어력</span>
+                          <span className="text-sm font-medium w-16">힘</span>
                           <div className="flex-1 bg-gray-200 rounded-full h-2">
                             <motion.div
                               initial={{ width: 0 }}
-                              animate={{ width: `${(animal as any).stats.defense}%` }}
+                              animate={{ width: `${animal.strength}%` }}
                               transition={{ delay: 0.4, duration: 0.5 }}
-                              className="bg-blue-500 h-2 rounded-full"
+                              className="bg-orange-500 h-2 rounded-full"
                             />
                           </div>
-                          <span className="text-sm font-medium w-10 text-right">{(animal as any).stats.defense}</span>
+                          <span className="text-sm font-medium w-10 text-right">{animal.strength}</span>
                         </div>
                       )}
-                      {(animal as any).stats.speed && (
+                      {animal.speed !== undefined && (
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium w-16">속도</span>
                           <div className="flex-1 bg-gray-200 rounded-full h-2">
                             <motion.div
                               initial={{ width: 0 }}
-                              animate={{ width: `${(animal as any).stats.speed}%` }}
+                              animate={{ width: `${animal.speed}%` }}
                               transition={{ delay: 0.5, duration: 0.5 }}
                               className="bg-green-500 h-2 rounded-full"
                             />
                           </div>
-                          <span className="text-sm font-medium w-10 text-right">{(animal as any).stats.speed}</span>
+                          <span className="text-sm font-medium w-10 text-right">{animal.speed}</span>
                         </div>
                       )}
+                      {animal.energy !== undefined && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium w-16">에너지</span>
+                          <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${animal.energy}%` }}
+                              transition={{ delay: 0.6, duration: 0.5 }}
+                              className="bg-blue-500 h-2 rounded-full"
+                            />
+                          </div>
+                          <span className="text-sm font-medium w-10 text-right">{animal.energy}</span>
+                        </div>
+                      )}
+                    </div>
+                    {/* 총 전투력 표시 */}
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold text-gray-700">총 전투력</span>
+                        <span className="text-lg font-bold text-purple-600">
+                          {(animal.attack_power || 0) + (animal.strength || 0) + (animal.speed || 0) + (animal.energy || 0)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 )}

@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     // 시스템 토큰이 아닌 경우 일반 사용자 토큰으로 처리
     if (token !== systemToken) {
       // SQLite에서 사용자 확인
-      const user = db.prepare(`
+      const user = await db.prepare(`
         SELECT * FROM users 
         WHERE login_token = ? AND token_expires_at > datetime('now')
       `).get(token);

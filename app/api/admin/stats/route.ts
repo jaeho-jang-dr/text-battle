@@ -24,48 +24,48 @@ export async function GET(request: NextRequest) {
     }
 
     // 전체 사용자 수
-    const totalUsers = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number };
+    const totalUsers = await db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number };
     
     // 게스트와 일반 사용자 구분
-    const guestUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_guest = 1').get() as { count: number };
-    const registeredUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_guest = 0').get() as { count: number };
+    const guestUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_guest = 1').get() as { count: number };
+    const registeredUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_guest = 0').get() as { count: number };
     
     // 활성 사용자 (최근 7일 이내 로그인)
-    const activeUsers = db.prepare(`
+    const activeUsers = await db.prepare(`
       SELECT COUNT(*) as count FROM users 
       WHERE datetime(last_login) > datetime('now', '-7 days')
     `).get() as { count: number };
     
     // 정지된 사용자
-    const suspendedUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_suspended = 1').get() as { count: number };
+    const suspendedUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_suspended = 1').get() as { count: number };
     
     // 전체 캐릭터 수
-    const totalCharacters = db.prepare('SELECT COUNT(*) as count FROM characters WHERE is_bot = 0').get() as { count: number };
-    const botCharacters = db.prepare('SELECT COUNT(*) as count FROM characters WHERE is_bot = 1').get() as { count: number };
+    const totalCharacters = await db.prepare('SELECT COUNT(*) as count FROM characters WHERE is_bot = 0').get() as { count: number };
+    const botCharacters = await db.prepare('SELECT COUNT(*) as count FROM characters WHERE is_bot = 1').get() as { count: number };
     
     // 전체 배틀 수
-    const totalBattles = db.prepare('SELECT COUNT(*) as count FROM battles').get() as { count: number };
+    const totalBattles = await db.prepare('SELECT COUNT(*) as count FROM battles').get() as { count: number };
     
     // 오늘의 배틀 수
-    const todayBattles = db.prepare(`
+    const todayBattles = await db.prepare(`
       SELECT COUNT(*) as count FROM battles 
       WHERE date(created_at) = date('now')
     `).get() as { count: number };
     
     // 이번 주 배틀 수
-    const weekBattles = db.prepare(`
+    const weekBattles = await db.prepare(`
       SELECT COUNT(*) as count FROM battles 
       WHERE datetime(created_at) > datetime('now', '-7 days')
     `).get() as { count: number };
     
     // 평균 ELO 점수
-    const avgElo = db.prepare(`
+    const avgElo = await db.prepare(`
       SELECT AVG(elo_score) as avg FROM characters 
       WHERE is_bot = 0 AND is_active = 1
     `).get() as { avg: number };
     
     // 상위 10개 캐릭터
-    const topCharacters = db.prepare(`
+    const topCharacters = await db.prepare(`
       SELECT 
         c.id,
         c.character_name,
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     `).all();
     
     // 최근 20개 배틀
-    const recentBattles = db.prepare(`
+    const recentBattles = await db.prepare(`
       SELECT 
         b.id,
         b.created_at,
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     `).all();
     
     // 경고 받은 사용자 목록
-    const warningUsers = db.prepare(`
+    const warningUsers = await db.prepare(`
       SELECT 
         u.id,
         u.email,
@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
     `).all();
     
     // 동물별 통계
-    const animalStats = db.prepare(`
+    const animalStats = await db.prepare(`
       SELECT 
         a.id,
         a.name,
@@ -157,7 +157,7 @@ export async function GET(request: NextRequest) {
     `).all();
     
     // 시간대별 배틀 통계 (최근 24시간)
-    const hourlyBattles = db.prepare(`
+    const hourlyBattles = await db.prepare(`
       SELECT 
         strftime('%H', created_at) as hour,
         COUNT(*) as count
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest) {
     `).all();
     
     // 일별 신규 사용자 (최근 30일)
-    const dailyNewUsers = db.prepare(`
+    const dailyNewUsers = await db.prepare(`
       SELECT 
         date(created_at) as date,
         COUNT(*) as count
@@ -179,7 +179,7 @@ export async function GET(request: NextRequest) {
     `).all();
     
     // 현재 온라인 사용자 (최근 5분 이내 활동)
-    const onlineUsers = db.prepare(`
+    const onlineUsers = await db.prepare(`
       SELECT 
         u.id,
         u.email,

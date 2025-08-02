@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 캐릭터 소유권 확인
-    const character = db.prepare(`
+    const character = await db.prepare(`
       SELECT id, user_id, character_name, base_score, elo_score
       FROM characters
       WHERE id = ?
@@ -96,14 +96,14 @@ export async function GET(req: NextRequest) {
     }
 
     // 전체 배틀 수 조회
-    const totalCount = db.prepare(`
+    const totalCount = await db.prepare(`
       SELECT COUNT(*) as count
       FROM battles
       WHERE attacker_id = ? OR defender_id = ?
     `).get(characterId, characterId) as { count: number };
 
     // 배틀 히스토리 조회
-    const battles = db.prepare(`
+    const battles = await db.prepare(`
       SELECT 
         b.*,
         CASE 
@@ -186,13 +186,13 @@ export async function GET(req: NextRequest) {
 
     // 통계 포함 옵션
     if (includeStats) {
-      const stats = calculateBattleStats(characterId);
+      const stats = await calculateBattleStats(characterId);
       response.stats = stats;
     }
 
     // 타임라인 포함 옵션
     if (includeTimeline) {
-      const timeline = generateTimeline(characterId);
+      const timeline = await generateTimeline(characterId);
       response.timeline = timeline;
     }
 
@@ -254,9 +254,9 @@ export async function GET(req: NextRequest) {
 }
 
 // 배틀 통계 계산
-function calculateBattleStats(characterId: string): BattleStats {
+async function calculateBattleStats(characterId: string): Promise<BattleStats> {
   // 기본 통계
-  const basicStats = db.prepare(`
+  const basicStats = await db.prepare(`
     SELECT 
       COUNT(*) as total_battles,
       SUM(CASE WHEN winner_id = ? THEN 1 ELSE 0 END) as wins,
@@ -266,7 +266,7 @@ function calculateBattleStats(characterId: string): BattleStats {
   `).get(characterId, characterId, characterId, characterId) as any;
 
   // 평균 점수 변화
-  const avgScoreChange = db.prepare(`
+  const avgScoreChange = await db.prepare(`
     SELECT AVG(
       CASE 
         WHEN attacker_id = ? THEN attacker_score_change
@@ -278,7 +278,7 @@ function calculateBattleStats(characterId: string): BattleStats {
   `).get(characterId, characterId, characterId) as { avg_change: number };
 
   // 현재 연승/연패 계산
-  const recentBattles = db.prepare(`
+  const recentBattles = await db.prepare(`
     SELECT winner_id
     FROM battles
     WHERE (attacker_id = ? OR defender_id = ?) AND winner_id IS NOT NULL
@@ -304,7 +304,7 @@ function calculateBattleStats(characterId: string): BattleStats {
   }
 
   // 가장 많이 만난 상대
-  const favoriteOpponent = db.prepare(`
+  const favoriteOpponent = await db.prepare(`
     SELECT 
       CASE 
         WHEN attacker_id = ? THEN defender_id
@@ -325,7 +325,7 @@ function calculateBattleStats(characterId: string): BattleStats {
   `).get(characterId, characterId, characterId, characterId) as any;
 
   // 천적 (가장 많이 진 상대)
-  const nemesis = db.prepare(`
+  const nemesis = await db.prepare(`
     SELECT 
       CASE 
         WHEN attacker_id = ? THEN defender_id
@@ -371,8 +371,8 @@ function calculateBattleStats(characterId: string): BattleStats {
 }
 
 // 타임라인 생성
-function generateTimeline(characterId: string): TimelinePoint[] {
-  const battles = db.prepare(`
+async function generateTimeline(characterId: string): Promise<TimelinePoint[]> {
+  const battles = await db.prepare(`
     SELECT 
       DATE(created_at) as battle_date,
       COUNT(*) as battle_count,

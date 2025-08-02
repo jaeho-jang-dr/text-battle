@@ -13,14 +13,16 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "setup": "node setup-replit.js",
-    "setup:db": "node add-all-animals.js && node setup-admin.js"
+    "setup:db": "node add-all-animals.js && node setup-admin.js",
+    "db:init": "node scripts/init-postgres.js",
+    "db:migrate": "psql $DATABASE_URL -f scripts/migrate-to-postgres.sql"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.0",
+    "@neondatabase/serverless": "^1.0.1",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.45.0",
     "@types/bcryptjs": "^2.4.6",
-    "@types/better-sqlite3": "^7.6.13",
     "@types/pg": "^8.11.6",
     "@types/uuid": "^10.0.0",
     "bcryptjs": "^3.0.2",

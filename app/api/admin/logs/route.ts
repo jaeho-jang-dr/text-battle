@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 로그 조회 (최근 500개)
-    const logs = db.prepare(`
+    const logs = await db.prepare(`
       SELECT 
         l.*,
         u.email as user_email,

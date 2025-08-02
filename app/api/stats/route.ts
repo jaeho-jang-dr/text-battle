@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -35,26 +35,26 @@ export async function GET(request: NextRequest) {
     }
 
     // 통계 수집
-    const totalUsers = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number };
-    const totalCharacters = db.prepare('SELECT COUNT(*) as count FROM characters WHERE is_active = 1').get() as { count: number };
-    const totalBattles = db.prepare('SELECT COUNT(*) as count FROM battles').get() as { count: number };
-    const activeUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_suspended = 0').get() as { count: number };
-    const suspendedUsers = db.prepare('SELECT COUNT(*) as count FROM users WHERE is_suspended = 1').get() as { count: number };
+    const totalUsers = await db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number };
+    const totalCharacters = await db.prepare('SELECT COUNT(*) as count FROM characters WHERE is_active = 1').get() as { count: number };
+    const totalBattles = await db.prepare('SELECT COUNT(*) as count FROM battles').get() as { count: number };
+    const activeUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_suspended = 0').get() as { count: number };
+    const suspendedUsers = await db.prepare('SELECT COUNT(*) as count FROM users WHERE is_suspended = 1').get() as { count: number };
     
     // 오늘 배틀 수
-    const todayBattles = db.prepare(`
+    const todayBattles = await db.prepare(`
       SELECT COUNT(*) as count FROM battles 
       WHERE date(created_at) = date('now')
     `).get() as { count: number };
 
     // 평균 ELO
-    const avgElo = db.prepare(`
+    const avgElo = await db.prepare(`
       SELECT AVG(elo_score) as avg FROM characters 
       WHERE is_active = 1
     `).get() as { avg: number };
 
     // 상위 캐릭터
-    const topCharacters = db.prepare(`
+    const topCharacters = await db.prepare(`
       SELECT 
         c.*,
         a.emoji,

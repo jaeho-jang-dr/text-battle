@@ -29,11 +29,11 @@ export interface Animal {
     speciality?: string;
     funFact?: string;
   };
-  stats?: {
-    power?: number;
-    defense?: number;
-    speed?: number;
-  };
+  // 전투 능력치
+  attack_power?: number;
+  strength?: number;
+  speed?: number;
+  energy?: number;
   battleCry?: string;
 }
 

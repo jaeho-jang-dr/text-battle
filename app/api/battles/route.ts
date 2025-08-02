@@ -17,25 +17,60 @@ function calculateEloChange(winnerScore: number, loserScore: number): { winnerCh
   return { winnerChange, loserChange };
 }
 
-// 배틀 결과 판정 함수
-async function judgeBattle(attackerText: string, defenderText: string) {
-  // 간단한 판정 로직 (실제로는 AI를 사용할 수 있음)
-  const attackerScore = attackerText.length * Math.random() * 100;
-  const defenderScore = defenderText.length * Math.random() * 100;
+// 배틀 결과 판정 함수 (전투력 20% + 배틀 텍스트 80%)
+async function judgeBattle(
+  attackerText: string, 
+  defenderText: string,
+  attackerCombatPower: number,
+  defenderCombatPower: number
+) {
+  // 1. 배틀 텍스트 점수 계산 (80% 가중치)
+  const textScoreMultiplier = 0.8;
+  const attackerTextScore = attackerText.length * Math.random() * 100;
+  const defenderTextScore = defenderText.length * Math.random() * 100;
   
-  const winner = attackerScore > defenderScore ? 'attacker' : 'defender';
+  // 2. 전투력 점수 계산 (20% 가중치)
+  const combatPowerMultiplier = 0.2;
+  // 전투력을 0-100 범위로 정규화 (최대 전투력 400 기준)
+  const normalizedAttackerPower = (attackerCombatPower / 400) * 100;
+  const normalizedDefenderPower = (defenderCombatPower / 400) * 100;
+  
+  // 3. 최종 점수 계산
+  const attackerFinalScore = (attackerTextScore * textScoreMultiplier) + (normalizedAttackerPower * combatPowerMultiplier);
+  const defenderFinalScore = (defenderTextScore * textScoreMultiplier) + (normalizedDefenderPower * combatPowerMultiplier);
+  
+  const winner = attackerFinalScore > defenderFinalScore ? 'attacker' : 'defender';
+  
+  // 판정 메시지 생성
   const judgment = winner === 'attacker' 
-    ? '공격자의 배틀 텍스트가 더 강렬하고 인상적이었습니다!'
-    : '방어자의 배틀 텍스트가 더 설득력 있고 강력했습니다!';
+    ? '공격자의 배틀 텍스트와 전투력이 더 강렬하고 인상적이었습니다!'
+    : '방어자의 배틀 텍스트와 전투력이 더 설득력 있고 강력했습니다!';
   
-  const reasoning = `공격자는 "${attackerText.substring(0, 30)}..."로 ${winner === 'attacker' ? '승리' : '패배'}했고, ` +
-    `방어자는 "${defenderText.substring(0, 30)}..."로 ${winner === 'defender' ? '승리' : '패배'}했습니다.`;
+  const reasoning = `공격자(전투력: ${attackerCombatPower})는 "${attackerText.substring(0, 30)}..."로 ${winner === 'attacker' ? '승리' : '패배'}했고, ` +
+    `방어자(전투력: ${defenderCombatPower})는 "${defenderText.substring(0, 30)}..."로 ${winner === 'defender' ? '승리' : '패배'}했습니다.`;
   
   const encouragement = winner === 'attacker'
     ? '훌륭한 승리예요! 계속해서 멋진 배틀을 펼쳐보세요!'
     : '아쉽지만 다음엔 더 잘할 수 있을 거예요! 포기하지 마세요!';
   
-  return { winner, judgment, reasoning, encouragement };
+  return { 
+    winner, 
+    judgment, 
+    reasoning, 
+    encouragement,
+    scores: {
+      attacker: {
+        textScore: Math.round(attackerTextScore),
+        combatPower: attackerCombatPower,
+        finalScore: Math.round(attackerFinalScore)
+      },
+      defender: {
+        textScore: Math.round(defenderTextScore),
+        combatPower: defenderCombatPower,
+        finalScore: Math.round(defenderFinalScore)
+      }
+    }
+  };
 }
 
 // POST: 새로운 배틀 생성
@@ -50,7 +85,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -74,12 +109,13 @@ export async function POST(request: NextRequest) {
     const { attackerId, defenderId } = await request.json();
     
     // 사용자 활동 추적
-    updateUserActivity(user.id);
+    await updateUserActivity(user.id);
 
-    // 공격자 캐릭터 확인
-    const attacker = db.prepare(`
+    // 공격자 캐릭터 확인 (전투 능력치 포함)
+    const attacker = await db.prepare(`
       SELECT c.*, a.*, 
-        c.id as char_id, a.id as animal_id
+        c.id as char_id, a.id as animal_id,
+        a.attack_power, a.strength, a.speed, a.energy
       FROM characters c
       JOIN animals a ON c.animal_id = a.id
       WHERE c.id = ? AND c.user_id = ?
@@ -92,11 +128,12 @@ export async function POST(request: NextRequest) {
       }, { status: 404 });
     }
 
-    // 방어자 캐릭터 확인
-    const defender = db.prepare(`
+    // 방어자 캐릭터 확인 (전투 능력치 포함)
+    const defender = await db.prepare(`
       SELECT c.*, a.*, 
         c.id as char_id, a.id as animal_id,
-        c.is_bot as is_bot
+        c.is_bot as is_bot,
+        a.attack_power, a.strength, a.speed, a.energy
       FROM characters c
       JOIN animals a ON c.animal_id = a.id
       WHERE c.id = ? AND c.user_id != ?
@@ -143,8 +180,19 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // 배틀 판정
-    const battleResult = await judgeBattle(attacker.battle_text, defender.battle_text);
+    // 전투력 계산 (각 능력치의 합)
+    const attackerCombatPower = (attacker.attack_power || 50) + (attacker.strength || 50) + 
+                                (attacker.speed || 50) + (attacker.energy || 50);
+    const defenderCombatPower = (defender.attack_power || 50) + (defender.strength || 50) + 
+                                (defender.speed || 50) + (defender.energy || 50);
+    
+    // 배틀 판정 (전투력 포함)
+    const battleResult = await judgeBattle(
+      attacker.battle_text, 
+      defender.battle_text,
+      attackerCombatPower,
+      defenderCombatPower
+    );
     
     // ELO 점수 계산
     const isAttackerWinner = battleResult.winner === 'attacker';
@@ -161,7 +209,7 @@ export async function POST(request: NextRequest) {
     const defenderScoreChange = isAttackerWinner ? -5 : 10;
 
     // 트랜잭션으로 업데이트
-    const updateCharacterStats = db.prepare(`
+    const updateCharacterStats = await db.prepare(`
       UPDATE characters 
       SET 
         base_score = MAX(0, base_score + ?),
@@ -224,7 +272,7 @@ export async function POST(request: NextRequest) {
     );
     
     // 배틀 활동 로그
-    logUserAction(user.id, 'battle_created', {
+    await logUserAction(user.id, 'battle_created', {
       battleId,
       attackerId,
       defenderId,
@@ -265,7 +313,24 @@ export async function POST(request: NextRequest) {
             wins: defender.wins + (!isAttackerWinner ? 1 : 0),
             losses: defender.losses + (!isAttackerWinner ? 0 : 1)
           }
-        }
+        },
+        combatStats: {
+          attacker: {
+            attackPower: attacker.attack_power || 50,
+            strength: attacker.strength || 50,
+            speed: attacker.speed || 50,
+            energy: attacker.energy || 50,
+            totalPower: attackerCombatPower
+          },
+          defender: {
+            attackPower: defender.attack_power || 50,
+            strength: defender.strength || 50,
+            speed: defender.speed || 50,
+            energy: defender.energy || 50,
+            totalPower: defenderCombatPower
+          }
+        },
+        scores: battleResult.scores
       }
     });
   } catch (error) {
@@ -293,7 +358,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 사용자 확인
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -328,7 +393,7 @@ export async function GET(request: NextRequest) {
       `).all(characterId, characterId, user.id, user.id, limit);
     } else {
       // 사용자의 모든 배틀 기록
-      battles = db.prepare(`
+      battles = await db.prepare(`
         SELECT 
           b.*,
           ac.character_name as attacker_name,

@@ -28,7 +28,7 @@ export async function GET(
     const { userId } = params;
 
     // 사용자 정보 조회
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT 
         u.*,
         COUNT(DISTINCT c.id) as character_count,
@@ -49,7 +49,7 @@ export async function GET(
     }
 
     // 사용자의 캐릭터 목록
-    const characters = db.prepare(`
+    const characters = await db.prepare(`
       SELECT 
         c.*,
         a.name as animal_name,
@@ -69,7 +69,7 @@ export async function GET(
     `).all(userId);
 
     // 최근 배틀 기록 (50개)
-    const recentBattles = db.prepare(`
+    const recentBattles = await db.prepare(`
       SELECT 
         b.*,
         ac.character_name as attacker_name,
@@ -96,7 +96,7 @@ export async function GET(
     `).all(userId, userId, userId, userId);
 
     // 경고 기록
-    const warnings = db.prepare(`
+    const warnings = await db.prepare(`
       SELECT 
         w.*,
         c.character_name
@@ -107,7 +107,7 @@ export async function GET(
     `).all(userId);
 
     // 활동 로그 (최근 30일)
-    const activityLogs = db.prepare(`
+    const activityLogs = await db.prepare(`
       SELECT 
         *
       FROM admin_logs
@@ -117,7 +117,7 @@ export async function GET(
     `).all(userId);
 
     // 통계 계산
-    const battleStats = db.prepare(`
+    const battleStats = await db.prepare(`
       SELECT 
         COUNT(DISTINCT b.id) as total_battles,
         COUNT(DISTINCT CASE WHEN b.winner_id = c.id THEN b.id END) as total_wins,

@@ -1,5 +1,5 @@
 
-> kid-text-battle@0.0.6 dev
+> kid-text-battle@0.0.9 dev
 > next dev -p 3008
 
   ▲ Next.js 14.2.0
@@ -7,160 +7,58 @@
   - Environments: .env.local, .env
 
  ✓ Starting...
- ✓ Ready in 1317ms
+ ✓ Ready in 1452ms
  ○ Compiling / ...
- ✓ Compiled / in 2.5s (1203 modules)
- GET / 200 in 2668ms
- ✓ Compiled in 250ms (592 modules)
- ✓ Compiled in 285ms (1203 modules)
- GET / 200 in 106ms
- GET / 200 in 21ms
- ✓ Compiled /api/auth/login in 213ms (666 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- POST /api/auth/login 200 in 264ms
- POST /api/auth/login 200 in 8ms
- ✓ Compiled in 202ms (592 modules)
- ✓ Compiled in 177ms (592 modules)
- ✓ Compiled in 78ms (578 modules)
- ✓ Compiled in 138ms (592 modules)
- ✓ Compiled in 42ms (578 modules)
- ○ Compiling /api/mcp ...
- ✓ Compiled /api/mcp in 1150ms (747 modules)
- POST /api/mcp 405 in 1269ms
- GET /api/mcp 405 in 7ms
- ✓ Compiled in 301ms (578 modules)
- ✓ Compiled in 133ms (592 modules)
- ✓ Compiled in 48ms (578 modules)
- ✓ Compiled /api/mcp/[transport] in 97ms (747 modules)
- GET /api/mcp/stdio 404 in 480ms
- GET /api/mcp/http 404 in 19ms
- POST /api/mcp/http 404 in 18ms
- POST /api/mcp/http 404 in 7ms
- POST /api/mcp/http 404 in 7ms
- ✓ Compiled in 379ms (1340 modules)
- POST /api/mcp/http 404 in 95ms
- POST /api/mcp/http 404 in 7ms
- POST /api/mcp/http 404 in 10ms
- ✓ Compiled in 200ms (1339 modules)
- ✓ Compiled in 213ms (1339 modules)
- POST /api/mcp/http 404 in 56ms
- POST /api/mcp/http 404 in 13ms
- POST /api/mcp/http 404 in 8ms
- ✓ Compiled in 181ms (592 modules)
- ✓ Compiled in 120ms (1325 modules)
- ✓ Compiled /api/mcp-simple in 115ms (749 modules)
- POST /api/mcp-simple 404 in 167ms
- POST /api/mcp-simple 404 in 7ms
- POST /api/mcp-simple 404 in 8ms
- ○ Compiling / ...
- ✓ Compiled / in 617ms (611 modules)
- GET / 200 in 717ms
- ✓ Compiled /icon.svg in 195ms (641 modules)
- GET /icon.svg?936747c01d97c416 200 in 229ms
- ✓ Compiled /api/auth/verify in 188ms (691 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/auth/verify 200 in 227ms
- GET /api/auth/verify 200 in 9ms
- ○ Compiling /play ...
- ✓ Compiled /play in 1419ms (2389 modules)
- ✓ Compiled /api/animals in 129ms (1256 modules)
- ✓ Compiled (1258 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 238ms
- GET /api/characters?userId=a19f15fd-7e35-4a8d-93b7-5224d69ecd5c 200 in 244ms
- GET /api/animals 200 in 9ms
- GET /api/characters?userId=a19f15fd-7e35-4a8d-93b7-5224d69ecd5c 200 in 12ms
- GET /api/animals 200 in 9ms
- ✓ Compiled /api/auth/login in 127ms (1260 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- POST /api/auth/login 200 in 154ms
- GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 16ms
- GET /api/animals 200 in 19ms
- GET /api/animals 200 in 20ms
- GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 24ms
- ✓ Compiled /api/leaderboard in 110ms (1262 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/leaderboard? 200 in 137ms
- GET /api/leaderboard? 200 in 9ms
- GET /api/animals 200 in 11ms
- POST /api/auth/login 200 in 8ms
- GET /api/characters?userId=9b013b3c-d7ea-4551-adcb-88a43d79fd55 200 in 13ms
- GET /api/animals 200 in 13ms
- GET /api/characters?userId=9b013b3c-d7ea-4551-adcb-88a43d79fd55 200 in 12ms
- GET /api/animals 200 in 14ms
- POST /api/characters 200 in 9ms
- GET /api/leaderboard? 200 in 9ms
- GET /api/leaderboard? 200 in 9ms
- GET /api/characters?excludeUserId=9b013b3c-d7ea-4551-adcb-88a43d79fd55 200 in 7ms
- ✓ Compiled /api/battles in 182ms (1235 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- POST /api/battles 200 in 218ms
- ✓ Compiled /api/battles/history in 111ms (1239 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 137ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 8ms
- POST /api/battles 200 in 9ms
- POST /api/battles 200 in 43ms
- POST /api/battles 200 in 19ms
- POST /api/battles 200 in 44ms
- GET /api/characters?excludeUserId=9b013b3c-d7ea-4551-adcb-88a43d79fd55 200 in 10ms
- POST /api/battles 200 in 43ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 8ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 8ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 8ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 7ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 8ms
-Cache hit for character 8674361f-f1db-4756-8d7a-4e3acfb2533a
- GET /api/battles/history?characterId=8674361f-f1db-4756-8d7a-4e3acfb2533a&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
- GET /api/animals 200 in 17ms
- ✓ Compiled /animals in 462ms (2368 modules)
- GET /animals 200 in 547ms
- ✓ Compiled /icon.svg in 124ms (1256 modules)
- GET /icon.svg?936747c01d97c416 200 in 166ms
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 16ms
- GET /api/animals 200 in 15ms
- ✓ Compiled in 295ms (2409 modules)
- ✓ Compiled in 307ms (2409 modules)
- ✓ Compiled in 251ms (2409 modules)
- ✓ Compiled in 413ms (2409 modules)
- ✓ Compiled in 289ms (2329 modules)
- ✓ Compiled /text-guide in 239ms (2321 modules)
- GET /text-guide 200 in 320ms
- ✓ Compiled /icon.svg in 112ms (1210 modules)
- GET /icon.svg?936747c01d97c416 200 in 161ms
- ✓ Compiled in 228ms (2365 modules)
- ✓ Compiled /create-character in 205ms (2357 modules)
- ✓ Compiled in 225ms (2371 modules)
- ✓ Compiled /admin in 272ms (2371 modules)
- ✓ Compiled in 154ms (1163 modules)
- ✓ Compiled /api/admin/login in 296ms (1272 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
+ ✓ Compiled / in 2.8s (1203 modules)
+ HEAD / 200 in 2931ms
+ ✓ Compiled in 287ms (592 modules)
+ ⚠ ./lib/db-sqlite.ts
+export 'initializeDatabase' (reexported as 'initializeDatabase') was not found in './db-init' (possible exports: initializeAppDatabase)
+
+Import trace for requested module:
+./lib/db-sqlite.ts
+./lib/db.ts
+./app/api/auth/verify/route.ts
+🗄️  Using SQLite database
+ GET /api/auth/verify 401 in 407ms
+ ○ Compiling /api/auth/verify ...
+ GET /api/auth/verify 401 in 8ms
+ ✓ Compiled /api/auth/verify in 76ms (669 modules)
+ GET / 200 in 79ms
+ ✓ Compiled /api/animals in 65ms (671 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 87ms
+ ✓ Compiled /api/characters in 85ms (675 modules)
+🗄️  Using SQLite database
+ GET /api/characters 401 in 103ms
+ ✓ Compiled /api/leaderboard in 86ms (677 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard 200 in 108ms
+ GET / 200 in 92ms
+ ✓ Compiled /icon.svg in 291ms (696 modules)
+ GET /icon.svg?936747c01d97c416 200 in 327ms
+ GET /icon.svg?936747c01d97c416 200 in 10ms
+ ✓ Compiled /animals in 325ms (1225 modules)
+ GET /animals 200 in 464ms
+ GET /icon.svg?936747c01d97c416 200 in 34ms
+ ✓ Compiled /api/animals in 63ms (700 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 95ms
+ GET /api/animals 200 in 7ms
+ ✓ Compiled /leaderboard in 233ms (1286 modules)
+ GET /leaderboard 200 in 294ms
+ GET /icon.svg?936747c01d97c416 200 in 13ms
+ ✓ Compiled /api/leaderboard in 62ms (706 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard?sortBy=elo 200 in 89ms
+ GET /api/leaderboard?sortBy=elo 200 in 8ms
+ GET / 200 in 39ms
+ GET /icon.svg?936747c01d97c416 200 in 14ms
+ ✓ Compiled /admin in 197ms (1302 modules)
+ ✓ Compiled /api/admin/login in 74ms (716 modules)
+🗄️  Using SQLite database
 Admin log error (non-critical): SqliteError: FOREIGN KEY constraint failed
+    at Object.run (webpack-internal:///(rsc)/./lib/db-sqlite.ts:28:36)
     at POST (webpack-internal:///(rsc)/./app/api/admin/login/route.ts:67:12)
     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
     at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53238
@@ -183,802 +81,1025 @@ Admin log error (non-critical): SqliteError: FOREIGN KEY constraint failed
     at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
   code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
 }
- POST /api/admin/login 200 in 359ms
- ✓ Compiled /api/admin/stats in 122ms (1274 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/admin/stats 200 in 150ms
- ✓ Compiled in 143ms (1163 modules)
- ✓ Compiled /api/auth/login in 127ms (1278 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- POST /api/auth/login 200 in 160ms
- ✓ Compiled /api/animals in 103ms (1280 modules)
- ✓ Compiled (1282 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 276ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 281ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 19ms
- GET /api/animals 200 in 21ms
- ✓ Compiled in 167ms (1163 modules)
- ✓ Compiled in 176ms (1163 modules)
- ✓ Compiled in 573ms (2351 modules)
- ✓ Compiled /api/characters in 106ms (1243 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- POST /api/characters 200 in 150ms
- ✓ Compiled /api/leaderboard in 82ms (1245 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/leaderboard? 200 in 122ms
- GET /api/leaderboard? 200 in 9ms
- ✓ Compiled /api/battles in 171ms (1248 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
- POST /api/battles 200 in 202ms
- ✓ Compiled in 256ms (2411 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
- POST /api/battles 200 in 44ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 99538f92-61f4-4099-997a-066b818649d7
- POST /api/battles 200 in 44ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 934c6cb3-abd9-4437-a5ba-a81b9b75f345
- POST /api/battles 200 in 45ms
- ✓ Compiled in 236ms (2411 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, dcb4fa0d-f4db-4c5e-a087-9e9f782c29ed
- POST /api/battles 200 in 49ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
- POST /api/battles 200 in 49ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 4211171f-fa64-41fb-a7fb-f23123bb5d23
- POST /api/battles 200 in 42ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, da9cd092-f2f4-4c0b-addd-b5e5b2968422
- POST /api/battles 200 in 42ms
- ✓ Compiled in 261ms (2411 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 8c30f294-8069-493a-a0fc-ff09c5a37c3c
- POST /api/battles 200 in 42ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, e607b965-7fe1-40d6-9533-0ada3c4a1122
- POST /api/battles 200 in 46ms
- ✓ Compiled in 251ms (2411 modules)
- ✓ Compiled in 257ms (2411 modules)
- ✓ Compiled /leaderboard in 301ms (2403 modules)
- GET /leaderboard 200 in 399ms
- ✓ Compiled /icon.svg in 308ms (1279 modules)
- GET /icon.svg?936747c01d97c416 200 in 354ms
- ✓ Compiled /api/auth/verify in 107ms (1281 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/leaderboard?sortBy=elo 200 in 235ms
- GET /api/auth/verify 200 in 246ms
- GET /api/leaderboard?sortBy=elo 200 in 20ms
- GET /api/auth/verify 200 in 19ms
- GET / 200 in 86ms
- GET /icon.svg?936747c01d97c416 200 in 40ms
- GET /api/auth/verify 200 in 43ms
- GET /api/auth/verify 200 in 18ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 25ms
- ✓ Compiled /api/leaderboard in 341ms (1278 modules)
- ✓ Compiled (1280 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 506ms
- GET /api/leaderboard? 200 in 469ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 482ms
- GET /api/animals 200 in 16ms
- GET /api/leaderboard? 200 in 18ms
- ✓ Compiled /api/battles/history in 191ms (1284 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/battles/history?characterId=3d5ffec3-c5f4-488d-a097-21b3acd65fb2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 233ms
-Cache hit for character 3d5ffec3-c5f4-488d-a097-21b3acd65fb2
- GET /api/battles/history?characterId=3d5ffec3-c5f4-488d-a097-21b3acd65fb2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 27ms
-Force refresh requested for character 3d5ffec3-c5f4-488d-a097-21b3acd65fb2 - invalidating cache
- GET /api/battles/history?characterId=3d5ffec3-c5f4-488d-a097-21b3acd65fb2&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753799990394 200 in 12ms
-Force refresh requested for character 3d5ffec3-c5f4-488d-a097-21b3acd65fb2 - invalidating cache
- GET /api/battles/history?characterId=3d5ffec3-c5f4-488d-a097-21b3acd65fb2&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753799993774 200 in 10ms
- ✓ Compiled /api/characters/[characterId]/battle-text in 202ms (1247 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- PATCH /api/characters/3d5ffec3-c5f4-488d-a097-21b3acd65fb2/battle-text 200 in 436ms
- PATCH /api/characters/3d5ffec3-c5f4-488d-a097-21b3acd65fb2/battle-text 200 in 28ms
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- ✓ Compiled /api/characters in 73ms (1245 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/characters?excludeUserId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 103ms
- ✓ Compiled /api/battles in 195ms (1248 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
- POST /api/battles 200 in 224ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
- POST /api/battles 200 in 10ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
- POST /api/battles 200 in 43ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
- POST /api/battles 200 in 43ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 99538f92-61f4-4099-997a-066b818649d7
- POST /api/battles 200 in 42ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, dcb4fa0d-f4db-4c5e-a087-9e9f782c29ed
- POST /api/battles 200 in 42ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, 4211171f-fa64-41fb-a7fb-f23123bb5d23
- POST /api/battles 200 in 46ms
-Battle completed - invalidating cache for characters: 3d5ffec3-c5f4-488d-a097-21b3acd65fb2, da9cd092-f2f4-4c0b-addd-b5e5b2968422
- POST /api/battles 200 in 10ms
- GET /leaderboard 200 in 87ms
- ✓ Compiled /icon.svg in 135ms (1273 modules)
- GET /icon.svg?936747c01d97c416 200 in 212ms
- ✓ Compiled /api/auth/verify in 202ms (1275 modules)
- ✓ Compiled (1277 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/auth/verify 200 in 338ms
- GET /api/leaderboard?sortBy=elo 200 in 344ms
- GET /api/auth/verify 200 in 19ms
- GET /api/leaderboard?sortBy=elo 200 in 23ms
- ✓ Compiled / in 213ms (1279 modules)
- GET / 200 in 290ms
- GET /icon.svg?936747c01d97c416 200 in 20ms
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/auth/verify 200 in 60ms
- GET /api/auth/verify 200 in 23ms
- ✓ Compiled /api/animals in 82ms (1281 modules)
- ✓ Compiled (1283 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 261ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 271ms
- GET /api/animals 200 in 27ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 30ms
- GET /api/leaderboard? 200 in 29ms
- GET /api/leaderboard? 200 in 11ms
- ○ Compiling /_not-found ...
- ✓ Compiled /_not-found in 519ms (2437 modules)
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 579ms
- ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
- ✓ Compiled in 742ms (2339 modules)
- GET /play 200 in 387ms
- ✓ Compiled /_not-found in 242ms (2342 modules)
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 319ms
- ✓ Compiled /icon.svg in 120ms (1219 modules)
- GET /icon.svg?936747c01d97c416 200 in 173ms
- GET /icon.svg?936747c01d97c416 200 in 26ms
- ✓ Compiled /api/auth/verify in 273ms (1269 modules)
- ✓ Compiled (1271 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/auth/verify 200 in 423ms
- GET /api/animals 200 in 427ms
- GET /api/auth/verify 200 in 29ms
- ✓ Compiled /api/characters in 125ms (1275 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 333ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 343ms
+ POST /api/admin/login 200 in 100ms
+ ✓ Compiled /api/admin/stats in 97ms (718 modules)
+🗄️  Using SQLite database
+ GET /api/admin/stats 200 in 125ms
+ ✓ Compiled /api/auth/login in 113ms (722 modules)
+🗄️  Using SQLite database
+ POST /api/auth/login 200 in 136ms
+ ○ Compiling /play ...
+ ✓ Compiled /play in 1516ms (2430 modules)
+🗄️  Using SQLite database
  GET /api/animals 200 in 24ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 24ms
- GET /api/animals 200 in 15ms
- ✓ Compiled /api/leaderboard in 101ms (1277 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/leaderboard? 200 in 125ms
- GET /api/leaderboard? 200 in 11ms
- ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
- ✓ Compiled in 223ms (2430 modules)
- GET /play 200 in 82ms
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 20ms
- GET /icon.svg?936747c01d97c416 200 in 27ms
- GET /icon.svg?936747c01d97c416 200 in 13ms
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 22ms
- GET /api/auth/verify 200 in 26ms
- GET /api/animals 200 in 21ms
- GET /api/auth/verify 200 in 19ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 27ms
- GET /api/animals 200 in 31ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 26ms
- GET /api/animals 200 in 25ms
- GET /api/leaderboard? 200 in 27ms
+ ✓ Compiled /api/characters in 92ms (1285 modules)
+🗄️  Using SQLite database
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 121ms
+ GET /api/leaderboard? 200 in 9ms
+ GET /api/leaderboard? 200 in 7ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 9ms
+ ✓ Compiled /api/battles in 111ms (1288 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 135ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 8ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 42ms
+ ⨯ ./app/api/battles/history/route.ts
+Error: 
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:256:1]
+ [2m256[0m | // 배틀 통계 계산
+ [2m257[0m | function calculateBattleStats(characterId: string): BattleStats {
+ [2m258[0m |   // 기본 통계
+ [2m259[0m |   const basicStats = await db.prepare(`
+     : [31;1m                           ^^[0m
+ [2m260[0m |     SELECT 
+ [2m261[0m |       COUNT(*) as total_battles,
+ [2m262[0m |       SUM(CASE WHEN winner_id = ? THEN 1 ELSE 0 END) as wins,
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:266:1]
+ [2m266[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m267[0m | 
+ [2m268[0m |   // 평균 점수 변화
+ [2m269[0m |   const avgScoreChange = await db.prepare(`
+     : [31;1m                               ^^[0m
+ [2m270[0m |     SELECT AVG(
+ [2m271[0m |       CASE 
+ [2m272[0m |         WHEN attacker_id = ? THEN attacker_score_change
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:278:1]
+ [2m278[0m |   `).get(characterId, characterId, characterId) as { avg_change: number };
+ [2m279[0m | 
+ [2m280[0m |   // 현재 연승/연패 계산
+ [2m281[0m |   const recentBattles = await db.prepare(`
+     : [31;1m                              ^^[0m
+ [2m282[0m |     SELECT winner_id
+ [2m283[0m |     FROM battles
+ [2m284[0m |     WHERE (attacker_id = ? OR defender_id = ?) AND winner_id IS NOT NULL
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:304:1]
+ [2m304[0m |   }
+ [2m305[0m | 
+ [2m306[0m |   // 가장 많이 만난 상대
+ [2m307[0m |   const favoriteOpponent = await db.prepare(`
+     : [31;1m                                 ^^[0m
+ [2m308[0m |     SELECT 
+ [2m309[0m |       CASE 
+ [2m310[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:325:1]
+ [2m325[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m326[0m | 
+ [2m327[0m |   // 천적 (가장 많이 진 상대)
+ [2m328[0m |   const nemesis = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m329[0m |     SELECT 
+ [2m330[0m |       CASE 
+ [2m331[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:372:1]
+ [2m372[0m | 
+ [2m373[0m | // 타임라인 생성
+ [2m374[0m | function generateTimeline(characterId: string): TimelinePoint[] {
+ [2m375[0m |   const battles = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m376[0m |     SELECT 
+ [2m377[0m |       DATE(created_at) as battle_date,
+ [2m378[0m |       COUNT(*) as battle_count,
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/api/battles/history/route.ts
+ ⨯ ./app/api/battles/history/route.ts
+Error: 
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:256:1]
+ [2m256[0m | // 배틀 통계 계산
+ [2m257[0m | function calculateBattleStats(characterId: string): BattleStats {
+ [2m258[0m |   // 기본 통계
+ [2m259[0m |   const basicStats = await db.prepare(`
+     : [31;1m                           ^^[0m
+ [2m260[0m |     SELECT 
+ [2m261[0m |       COUNT(*) as total_battles,
+ [2m262[0m |       SUM(CASE WHEN winner_id = ? THEN 1 ELSE 0 END) as wins,
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:266:1]
+ [2m266[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m267[0m | 
+ [2m268[0m |   // 평균 점수 변화
+ [2m269[0m |   const avgScoreChange = await db.prepare(`
+     : [31;1m                               ^^[0m
+ [2m270[0m |     SELECT AVG(
+ [2m271[0m |       CASE 
+ [2m272[0m |         WHEN attacker_id = ? THEN attacker_score_change
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:278:1]
+ [2m278[0m |   `).get(characterId, characterId, characterId) as { avg_change: number };
+ [2m279[0m | 
+ [2m280[0m |   // 현재 연승/연패 계산
+ [2m281[0m |   const recentBattles = await db.prepare(`
+     : [31;1m                              ^^[0m
+ [2m282[0m |     SELECT winner_id
+ [2m283[0m |     FROM battles
+ [2m284[0m |     WHERE (attacker_id = ? OR defender_id = ?) AND winner_id IS NOT NULL
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:304:1]
+ [2m304[0m |   }
+ [2m305[0m | 
+ [2m306[0m |   // 가장 많이 만난 상대
+ [2m307[0m |   const favoriteOpponent = await db.prepare(`
+     : [31;1m                                 ^^[0m
+ [2m308[0m |     SELECT 
+ [2m309[0m |       CASE 
+ [2m310[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:325:1]
+ [2m325[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m326[0m | 
+ [2m327[0m |   // 천적 (가장 많이 진 상대)
+ [2m328[0m |   const nemesis = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m329[0m |     SELECT 
+ [2m330[0m |       CASE 
+ [2m331[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:372:1]
+ [2m372[0m | 
+ [2m373[0m | // 타임라인 생성
+ [2m374[0m | function generateTimeline(characterId: string): TimelinePoint[] {
+ [2m375[0m |   const battles = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m376[0m |     SELECT 
+ [2m377[0m |       DATE(created_at) as battle_date,
+ [2m378[0m |       COUNT(*) as battle_count,
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/api/battles/history/route.ts
+ ○ Compiling /_not-found ...
+ ⨯ ./app/api/battles/history/route.ts
+Error: 
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:256:1]
+ [2m256[0m | // 배틀 통계 계산
+ [2m257[0m | function calculateBattleStats(characterId: string): BattleStats {
+ [2m258[0m |   // 기본 통계
+ [2m259[0m |   const basicStats = await db.prepare(`
+     : [31;1m                           ^^[0m
+ [2m260[0m |     SELECT 
+ [2m261[0m |       COUNT(*) as total_battles,
+ [2m262[0m |       SUM(CASE WHEN winner_id = ? THEN 1 ELSE 0 END) as wins,
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:266:1]
+ [2m266[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m267[0m | 
+ [2m268[0m |   // 평균 점수 변화
+ [2m269[0m |   const avgScoreChange = await db.prepare(`
+     : [31;1m                               ^^[0m
+ [2m270[0m |     SELECT AVG(
+ [2m271[0m |       CASE 
+ [2m272[0m |         WHEN attacker_id = ? THEN attacker_score_change
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:278:1]
+ [2m278[0m |   `).get(characterId, characterId, characterId) as { avg_change: number };
+ [2m279[0m | 
+ [2m280[0m |   // 현재 연승/연패 계산
+ [2m281[0m |   const recentBattles = await db.prepare(`
+     : [31;1m                              ^^[0m
+ [2m282[0m |     SELECT winner_id
+ [2m283[0m |     FROM battles
+ [2m284[0m |     WHERE (attacker_id = ? OR defender_id = ?) AND winner_id IS NOT NULL
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:304:1]
+ [2m304[0m |   }
+ [2m305[0m | 
+ [2m306[0m |   // 가장 많이 만난 상대
+ [2m307[0m |   const favoriteOpponent = await db.prepare(`
+     : [31;1m                                 ^^[0m
+ [2m308[0m |     SELECT 
+ [2m309[0m |       CASE 
+ [2m310[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:325:1]
+ [2m325[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m326[0m | 
+ [2m327[0m |   // 천적 (가장 많이 진 상대)
+ [2m328[0m |   const nemesis = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m329[0m |     SELECT 
+ [2m330[0m |       CASE 
+ [2m331[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:372:1]
+ [2m372[0m | 
+ [2m373[0m | // 타임라인 생성
+ [2m374[0m | function generateTimeline(characterId: string): TimelinePoint[] {
+ [2m375[0m |   const battles = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m376[0m |     SELECT 
+ [2m377[0m |       DATE(created_at) as battle_date,
+ [2m378[0m |       COUNT(*) as battle_count,
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/api/battles/history/route.ts
+ ⨯ ./app/api/battles/history/route.ts
+Error: 
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:256:1]
+ [2m256[0m | // 배틀 통계 계산
+ [2m257[0m | function calculateBattleStats(characterId: string): BattleStats {
+ [2m258[0m |   // 기본 통계
+ [2m259[0m |   const basicStats = await db.prepare(`
+     : [31;1m                           ^^[0m
+ [2m260[0m |     SELECT 
+ [2m261[0m |       COUNT(*) as total_battles,
+ [2m262[0m |       SUM(CASE WHEN winner_id = ? THEN 1 ELSE 0 END) as wins,
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:266:1]
+ [2m266[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m267[0m | 
+ [2m268[0m |   // 평균 점수 변화
+ [2m269[0m |   const avgScoreChange = await db.prepare(`
+     : [31;1m                               ^^[0m
+ [2m270[0m |     SELECT AVG(
+ [2m271[0m |       CASE 
+ [2m272[0m |         WHEN attacker_id = ? THEN attacker_score_change
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:278:1]
+ [2m278[0m |   `).get(characterId, characterId, characterId) as { avg_change: number };
+ [2m279[0m | 
+ [2m280[0m |   // 현재 연승/연패 계산
+ [2m281[0m |   const recentBattles = await db.prepare(`
+     : [31;1m                              ^^[0m
+ [2m282[0m |     SELECT winner_id
+ [2m283[0m |     FROM battles
+ [2m284[0m |     WHERE (attacker_id = ? OR defender_id = ?) AND winner_id IS NOT NULL
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:304:1]
+ [2m304[0m |   }
+ [2m305[0m | 
+ [2m306[0m |   // 가장 많이 만난 상대
+ [2m307[0m |   const favoriteOpponent = await db.prepare(`
+     : [31;1m                                 ^^[0m
+ [2m308[0m |     SELECT 
+ [2m309[0m |       CASE 
+ [2m310[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:325:1]
+ [2m325[0m |   `).get(characterId, characterId, characterId, characterId) as any;
+ [2m326[0m | 
+ [2m327[0m |   // 천적 (가장 많이 진 상대)
+ [2m328[0m |   const nemesis = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m329[0m |     SELECT 
+ [2m330[0m |       CASE 
+ [2m331[0m |         WHEN attacker_id = ? THEN defender_id
+     `----
+
+  [31mx[0m await isn't allowed in non-async function
+     ,-[[36;1;4m/home/drjang00/DevEnvironments/kid-text-battle/app/api/battles/history/route.ts[0m:372:1]
+ [2m372[0m | 
+ [2m373[0m | // 타임라인 생성
+ [2m374[0m | function generateTimeline(characterId: string): TimelinePoint[] {
+ [2m375[0m |   const battles = await db.prepare(`
+     : [31;1m                        ^^[0m
+ [2m376[0m |     SELECT 
+ [2m377[0m |       DATE(created_at) as battle_date,
+ [2m378[0m |       COUNT(*) as battle_count,
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/api/battles/history/route.ts
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 500 in 2094ms
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 500 in 37ms
+ GET /play 500 in 37ms
+ GET /play 500 in 14ms
+ GET /play 500 in 14ms
+ GET / 500 in 11ms
+ GET / 500 in 15ms
+ ✓ Compiled /_not-found in 647ms (2575 modules)
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 200 in 13ms
+ GET /_next/static/webpack/d2efc503fe8db17a.webpack.hot-update.json 404 in 725ms
+ GET / 200 in 20ms
+ ✓ Compiled /icon.svg in 318ms (1259 modules)
+ GET /icon.svg?936747c01d97c416 200 in 356ms
+ GET /icon.svg?936747c01d97c416 200 in 23ms
+ ✓ Compiled /api/auth/verify in 107ms (1314 modules)
+🗄️  Using SQLite database
+ GET /api/auth/verify 200 in 149ms
+ GET /api/auth/verify 200 in 12ms
+ ✓ Compiled /api/animals in 112ms (1318 modules)
+ ✓ Compiled (1320 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 248ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 254ms
+ ✓ Compiled /api/leaderboard in 105ms (1322 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 129ms
  GET /api/leaderboard? 200 in 12ms
- ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
- ✓ Compiled in 224ms (2430 modules)
- GET /play 200 in 114ms
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 20ms
- GET /icon.svg?936747c01d97c416 200 in 30ms
- GET /icon.svg?936747c01d97c416 200 in 13ms
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 23ms
- GET /api/auth/verify 200 in 21ms
- GET /api/animals 200 in 23ms
- GET /api/auth/verify 200 in 24ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 20ms
- GET /api/animals 200 in 22ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 25ms
- GET /api/animals 200 in 30ms
- GET /api/leaderboard? 200 in 28ms
- GET /api/leaderboard? 200 in 19ms
- ✓ Compiled in 417ms (2444 modules)
- ✓ Compiled in 250ms (2444 modules)
- ✓ Compiled in 254ms (1167 modules)
- ✓ Compiled in 200ms (1167 modules)
- ✓ Compiled in 420ms (2444 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 38ms
- GET /api/animals 200 in 46ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 38ms
- GET /api/leaderboard? 200 in 32ms
- GET /api/animals 200 in 35ms
- GET /api/leaderboard? 200 in 16ms
- ✓ Compiled in 368ms (2412 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 27ms
- GET /api/animals 200 in 31ms
- GET /api/leaderboard? 200 in 15ms
- GET /api/leaderboard? 200 in 12ms
- ✓ Compiled in 298ms (2412 modules)
- ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
- ✓ Compiled in 283ms (2398 modules)
- GET /play 200 in 365ms
- ✓ Compiled /_not-found in 254ms (2401 modules)
- GET /.well-known/appspecific/com.chrome.devtools.json 404 in 318ms
- ✓ Compiled /icon.svg in 162ms (1275 modules)
- GET /icon.svg?936747c01d97c416 200 in 219ms
- GET /icon.svg?936747c01d97c416 200 in 18ms
- ✓ Compiled /api/auth/verify in 174ms (1277 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/auth/verify 200 in 319ms
- GET /api/animals 200 in 292ms
- GET /api/auth/verify 200 in 31ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 28ms
- GET /api/animals 200 in 30ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 33ms
- GET /api/animals 200 in 40ms
- GET /api/leaderboard? 200 in 41ms
- GET /api/leaderboard? 200 in 15ms
- ✓ Compiled in 305ms (2444 modules)
- GET /play 200 in 72ms
- GET /icon.svg?936747c01d97c416 200 in 24ms
- GET /icon.svg?936747c01d97c416 200 in 28ms
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/auth/verify 200 in 34ms
- GET /api/animals 200 in 34ms
- GET /api/auth/verify 200 in 14ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 20ms
- GET /api/animals 200 in 26ms
- GET /api/characters?userId=8545d52f-8a3d-49df-8056-64ab2eee446b 200 in 32ms
- GET /api/leaderboard? 200 in 32ms
- GET /api/animals 200 in 37ms
- GET /api/leaderboard? 200 in 15ms
- ✓ Compiled /api/animals in 436ms (1192 modules)
- ✓ Compiled (1245 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 620ms
- ✓ Compiled /api/auth/login in 137ms (1249 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- POST /api/auth/login 200 in 174ms
- ✓ Compiled /api/characters in 98ms (1251 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 224ms
- GET /api/characters?userId=0fd87d19-8704-4c85-b788-8ac2a5464361 200 in 231ms
- POST /api/characters 200 in 12ms
- ✓ Compiled /api/leaderboard in 234ms (1245 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/leaderboard? 200 in 259ms
- GET /api/leaderboard? 200 in 10ms
- ✓ Compiled /api/battles in 150ms (1248 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, b6f809a9-cb4f-417a-bfd8-3e1250da982e
- POST /api/battles 200 in 182ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, 99538f92-61f4-4099-997a-066b818649d7
- POST /api/battles 200 in 16ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ ✓ Compiled in 156ms (1346 modules)
+ ✓ Compiled in 143ms (1346 modules)
+ ✓ Compiled /api/battles/history in 281ms (1326 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=test&limit=5&offset=0&includeStats=true&includeTimeline=true 401 in 312ms
+ GET /api/battles/history?characterId=8d6949bb-f30d-47aa-84ed-9f8fbeb2bb04&limit=5&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 9ms
+Cache hit for character 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 15ms
+Force refresh requested for character 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2 - invalidating cache
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753828273234 200 in 17ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 13ms
+ ✓ Compiled /api/battles in 234ms (1294 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 276ms
+ ✓ Compiled /api/characters/[characterId]/battle-text in 102ms (1296 modules)
+🗄️  Using SQLite database
+🗄️  Using SQLite database
+ PATCH /api/characters/5e2d0ecd-8d17-4d82-a402-1005ffab9cd2/battle-text 200 in 319ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 10ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, b6f809a9-cb4f-417a-bfd8-3e1250da982e
  POST /api/battles 200 in 43ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 8ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, 4211171f-fa64-41fb-a7fb-f23123bb5d23
+ POST /api/battles 200 in 42ms
+ PATCH /api/characters/5e2d0ecd-8d17-4d82-a402-1005ffab9cd2/battle-text 200 in 21ms
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 10ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 42ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, 934c6cb3-abd9-4437-a5ba-a81b9b75f345
+ POST /api/battles 200 in 46ms
+ POST /api/battles 404 in 11ms
+ POST /api/battles 404 in 44ms
+ POST /api/battles 404 in 42ms
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 13ms
+Cache hit for character 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 9ms
+Force refresh requested for character 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2 - invalidating cache
+ GET /api/battles/history?characterId=5e2d0ecd-8d17-4d82-a402-1005ffab9cd2&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753828400498 200 in 9ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, 4211171f-fa64-41fb-a7fb-f23123bb5d23
+ POST /api/battles 200 in 9ms
+ ✓ Compiled /api/animals in 250ms (1294 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 274ms
+ ✓ Compiled /api/auth/login in 179ms (1296 modules)
+🗄️  Using SQLite database
+ POST /api/auth/login 200 in 205ms
+ ✓ Compiled /api/characters in 83ms (1298 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 184ms
+ GET /api/characters?userId=65d839c1-25d8-4c97-9c7e-030caad34d0c 200 in 192ms
+ POST /api/characters 200 in 11ms
+ ✓ Compiled /api/leaderboard in 149ms (1294 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 173ms
+ GET /api/leaderboard? 200 in 8ms
+ GET /api/characters?excludeUserId=65d839c1-25d8-4c97-9c7e-030caad34d0c 200 in 13ms
+ ✓ Compiled /api/battles in 78ms (1297 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: da2f07de-909b-42d2-a359-064a2edd8c0d, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 100ms
+ GET /api/characters?excludeUserId=65d839c1-25d8-4c97-9c7e-030caad34d0c 200 in 12ms
+Battle completed - invalidating cache for characters: da2f07de-909b-42d2-a359-064a2edd8c0d, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 44ms
+ GET /api/characters?excludeUserId=65d839c1-25d8-4c97-9c7e-030caad34d0c 200 in 11ms
+Battle completed - invalidating cache for characters: da2f07de-909b-42d2-a359-064a2edd8c0d, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 45ms
+ GET /api/characters?excludeUserId=65d839c1-25d8-4c97-9c7e-030caad34d0c 200 in 9ms
+Battle completed - invalidating cache for characters: da2f07de-909b-42d2-a359-064a2edd8c0d, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ POST /api/battles 200 in 43ms
+Battle completed - invalidating cache for characters: da2f07de-909b-42d2-a359-064a2edd8c0d, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 43ms
+Battle completed - invalidating cache for characters: da2f07de-909b-42d2-a359-064a2edd8c0d, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 44ms
+ ✓ Compiled /api/battles/history in 106ms (1296 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=da2f07de-909b-42d2-a359-064a2edd8c0d&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 139ms
+Cache hit for character da2f07de-909b-42d2-a359-064a2edd8c0d
+ GET /api/battles/history?characterId=da2f07de-909b-42d2-a359-064a2edd8c0d&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 12ms
+Force refresh requested for character da2f07de-909b-42d2-a359-064a2edd8c0d - invalidating cache
+ GET /api/battles/history?characterId=da2f07de-909b-42d2-a359-064a2edd8c0d&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753828540522 200 in 8ms
+ ✓ Compiled in 434ms (2572 modules)
+ ✓ Compiled in 144ms (1344 modules)
+ ✓ Compiled in 138ms (1344 modules)
+ ✓ Compiled in 151ms (1344 modules)
+ ✓ Compiled /api/auth/login in 167ms (1288 modules)
+🗄️  Using SQLite database
+ POST /api/auth/login 200 in 216ms
+ ✓ Compiled /api/animals in 86ms (1290 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 109ms
+ ✓ Compiled /api/characters in 221ms (1292 modules)
+🗄️  Using SQLite database
+ POST /api/characters 200 in 248ms
+ GET /api/characters 200 in 23ms
+ ✓ Compiled /api/characters/[characterId]/battle-text in 205ms (1294 modules)
+🗄️  Using SQLite database
+ PATCH /api/characters/2c2976e0-ffbd-456f-893a-cffa6b607006/battle-text 200 in 251ms
+ GET /api/characters 200 in 10ms
+🗄️  Using SQLite database
+ GET /api/animals 200 in 24ms
+ POST /api/auth/login 200 in 43ms
+ GET /api/characters?userId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 20ms
+ GET /api/animals 200 in 22ms
+ POST /api/characters 200 in 12ms
+ ✓ Compiled /api/leaderboard in 168ms (1294 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 196ms
+ GET /api/leaderboard? 200 in 9ms
+ ✓ Compiled /api/characters/[characterId]/battle-text in 72ms (1296 modules)
+🗄️  Using SQLite database
+ PATCH /api/characters/43aff1e9-cddf-4cbe-a221-8152800e26a5/battle-text 200 in 109ms
+🗄️  Using SQLite database
+ PATCH /api/characters/43aff1e9-cddf-4cbe-a221-8152800e26a5/battle-text 200 in 20ms
+🗄️  Using SQLite database
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 12ms
+ ✓ Compiled /api/battles in 202ms (1295 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 227ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 9ms
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 44ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 9ms
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 45ms
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, b6f809a9-cb4f-417a-bfd8-3e1250da982e
  POST /api/battles 200 in 41ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, dcb4fa0d-f4db-4c5e-a087-9e9f782c29ed
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 46ms
+ ✓ Compiled /api/battles/history in 128ms (1298 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 154ms
+Cache hit for character 43aff1e9-cddf-4cbe-a221-8152800e26a5
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
+Force refresh requested for character 43aff1e9-cddf-4cbe-a221-8152800e26a5 - invalidating cache
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753829376908 200 in 9ms
+Cache hit for character 43aff1e9-cddf-4cbe-a221-8152800e26a5
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 13ms
+Cache hit for character 43aff1e9-cddf-4cbe-a221-8152800e26a5
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
+Cache hit for character 43aff1e9-cddf-4cbe-a221-8152800e26a5
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 14ms
+Cache hit for character 43aff1e9-cddf-4cbe-a221-8152800e26a5
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
+ ✓ Compiled in 969ms (2572 modules)
+ ✓ Compiled /api/animals in 235ms (1288 modules)
+ ✓ Compiled (1290 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 441ms
+ GET /api/characters?userId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 446ms
+ ✓ Compiled /api/leaderboard in 111ms (1292 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 144ms
+ GET /api/leaderboard? 200 in 11ms
+ ✓ Compiled in 287ms (2636 modules)
+ ✓ Compiled in 337ms (2636 modules)
+ ✓ Compiled in 372ms (2636 modules)
+ ✓ Compiled in 266ms (2572 modules)
+ GET /play 200 in 96ms
+ ✓ Compiled /icon.svg in 423ms (1258 modules)
+ GET /icon.svg?936747c01d97c416 200 in 484ms
+ GET /icon.svg?936747c01d97c416 200 in 33ms
+ ✓ Compiled /api/animals in 122ms (1313 modules)
+ ✓ Compiled (1315 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 289ms
+ GET /api/auth/verify 200 in 301ms
+ GET /api/auth/verify 200 in 28ms
+ ✓ Compiled /api/characters in 197ms (1319 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 358ms
+ GET /api/characters?userId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 373ms
+ GET /api/animals 200 in 23ms
+ GET /api/characters?userId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 29ms
+ ✓ Compiled /api/leaderboard in 146ms (1321 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 183ms
+ GET /api/leaderboard? 200 in 10ms
+ ✓ Compiled /api/characters/[characterId]/battle-text in 93ms (1323 modules)
+🗄️  Using SQLite database
+ PATCH /api/characters/43aff1e9-cddf-4cbe-a221-8152800e26a5/battle-text 200 in 134ms
+🗄️  Using SQLite database
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 13ms
+ ✓ Compiled /api/battles in 203ms (1326 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 232ms
+ ✓ Compiled /api/battles/history in 147ms (1329 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 181ms
+Cache hit for character 43aff1e9-cddf-4cbe-a221-8152800e26a5
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 16ms
+Force refresh requested for character 43aff1e9-cddf-4cbe-a221-8152800e26a5 - invalidating cache
+ GET /api/battles/history?characterId=43aff1e9-cddf-4cbe-a221-8152800e26a5&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753851860291 200 in 9ms
+ POST /api/characters 200 in 19ms
+ GET /api/leaderboard? 200 in 17ms
+ GET /api/leaderboard? 200 in 15ms
+ PATCH /api/characters/4826a50d-b7bf-483e-aa05-c459e592caa4/battle-text 200 in 27ms
+🗄️  Using SQLite database
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 11ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 46ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 11ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ POST /api/battles 200 in 40ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 43ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 43ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 15ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 8b19af22-a382-461a-be4e-b8629facef57
+ POST /api/battles 200 in 45ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 10ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 4211171f-fa64-41fb-a7fb-f23123bb5d23
  POST /api/battles 200 in 42ms
- GET /api/characters?excludeUserId=0fd87d19-8704-4c85-b788-8ac2a5464361 200 in 11ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 10ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 0f51e406-5eb6-470e-abed-ef6a226101c2
  POST /api/battles 200 in 42ms
- GET /api/characters?excludeUserId=0fd87d19-8704-4c85-b788-8ac2a5464361 200 in 15ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, 4211171f-fa64-41fb-a7fb-f23123bb5d23
- POST /api/battles 200 in 47ms
- GET /api/characters?excludeUserId=0fd87d19-8704-4c85-b788-8ac2a5464361 200 in 10ms
-Battle completed - invalidating cache for characters: 3f538530-806a-4b0e-9ba5-e78eaec9bdf9, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 10ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ POST /api/battles 200 in 45ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 12ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 43ms
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 16ms
+Cache hit for character 4826a50d-b7bf-483e-aa05-c459e592caa4
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
+Force refresh requested for character 4826a50d-b7bf-483e-aa05-c459e592caa4 - invalidating cache
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753851988986 200 in 11ms
+Cache hit for character 4826a50d-b7bf-483e-aa05-c459e592caa4
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
+Cache hit for character 4826a50d-b7bf-483e-aa05-c459e592caa4
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
+Force refresh requested for character 4826a50d-b7bf-483e-aa05-c459e592caa4 - invalidating cache
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753851999780 200 in 23ms
+Force refresh requested for character 4826a50d-b7bf-483e-aa05-c459e592caa4 - invalidating cache
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753852001216 200 in 15ms
+ PATCH /api/characters/4826a50d-b7bf-483e-aa05-c459e592caa4/battle-text 200 in 32ms
+🗄️  Using SQLite database
+Cache hit for character 4826a50d-b7bf-483e-aa05-c459e592caa4
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 12ms
+Cache hit for character 4826a50d-b7bf-483e-aa05-c459e592caa4
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
+Force refresh requested for character 4826a50d-b7bf-483e-aa05-c459e592caa4 - invalidating cache
+ GET /api/battles/history?characterId=4826a50d-b7bf-483e-aa05-c459e592caa4&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753852012216 200 in 17ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 13ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 4211171f-fa64-41fb-a7fb-f23123bb5d23
+ POST /api/battles 200 in 15ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 13ms
+Battle completed - invalidating cache for characters: 43aff1e9-cddf-4cbe-a221-8152800e26a5, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ POST /api/battles 200 in 45ms
+ POST /api/characters 200 in 11ms
+ GET /api/leaderboard? 200 in 12ms
+ GET /api/leaderboard? 200 in 10ms
+ PATCH /api/characters/eacec617-5d25-42be-b0e4-5e2be4766f8d/battle-text 200 in 41ms
+🗄️  Using SQLite database
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 9ms
+Battle completed - invalidating cache for characters: eacec617-5d25-42be-b0e4-5e2be4766f8d, 2f0131bd-606c-40df-8c9f-ad39c1bcceb8
+ POST /api/battles 200 in 45ms
+ GET /api/characters?userId=77d005ae-565b-4823-832e-4f5cac4a2620&_t=1753852133144 200 in 11ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 12ms
+Battle completed - invalidating cache for characters: 4826a50d-b7bf-483e-aa05-c459e592caa4, 2f0131bd-606c-40df-8c9f-ad39c1bcceb8
  POST /api/battles 200 in 42ms
- ✓ Compiled /api/battles/history in 96ms (1251 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/battles/history?characterId=3f538530-806a-4b0e-9ba5-e78eaec9bdf9&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 124ms
-Cache hit for character 3f538530-806a-4b0e-9ba5-e78eaec9bdf9
- GET /api/battles/history?characterId=3f538530-806a-4b0e-9ba5-e78eaec9bdf9&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 11ms
-Force refresh requested for character 3f538530-806a-4b0e-9ba5-e78eaec9bdf9 - invalidating cache
- GET /api/battles/history?characterId=3f538530-806a-4b0e-9ba5-e78eaec9bdf9&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1753800825995 200 in 26ms
- ✓ Compiled /api/animals in 81ms (1251 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 207ms
- GET /text-guide 200 in 105ms
- ✓ Compiled /icon.svg in 442ms (1218 modules)
- GET /icon.svg?936747c01d97c416 200 in 485ms
- ✓ Compiled /animals in 198ms (1222 modules)
- GET /animals 200 in 303ms
- GET /icon.svg?936747c01d97c416 200 in 22ms
- ✓ Compiled /api/animals in 107ms (1272 modules)
-🔧 데이터베이스 초기화 시작...
-✅ 테이블 생성 완료
-✅ 데이터베이스 초기화 완료!
- GET /api/animals 200 in 150ms
- GET /api/animals 200 in 11ms
- GET / 200 in 49ms
+ GET /api/characters?excludeUserId=77d005ae-565b-4823-832e-4f5cac4a2620 200 in 12ms
+Battle completed - invalidating cache for characters: eacec617-5d25-42be-b0e4-5e2be4766f8d, 4211171f-fa64-41fb-a7fb-f23123bb5d23
+ POST /api/battles 200 in 44ms
+Battle completed - invalidating cache for characters: eacec617-5d25-42be-b0e4-5e2be4766f8d, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ POST /api/battles 200 in 12ms
+Battle completed - invalidating cache for characters: eacec617-5d25-42be-b0e4-5e2be4766f8d, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ POST /api/battles 200 in 14ms
+ GET /api/animals 200 in 24ms
+ ✓ Compiled /api/admin/login in 183ms (1295 modules)
+🗄️  Using SQLite database
+Admin log error (non-critical): SqliteError: FOREIGN KEY constraint failed
+    at Object.run (webpack-internal:///(rsc)/./lib/db-sqlite.ts:28:36)
+    at POST (webpack-internal:///(rsc)/./app/api/admin/login/route.ts:67:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53238
+    at async e_.execute (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44501)
+    at async e_.handle (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54492)
+    at async doRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1372:42)
+    at async cacheEntry.responseCache.get.routeKind (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1594:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1502:28)
+    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1919:24)
+    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
+    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
+}
+ POST /api/admin/login 200 in 230ms
+ ✓ Compiled /api/admin/stats in 110ms (1297 modules)
+🗄️  Using SQLite database
+ GET /api/admin/stats 200 in 147ms
+ ✓ Compiled /api/admin/settings in 110ms (1299 modules)
+🗄️  Using SQLite database
+ GET /api/admin/settings 200 in 131ms
+ GET /api/admin/settings 200 in 10ms
+Setting update error: SqliteError: FOREIGN KEY constraint failed
+    at Object.run (webpack-internal:///(rsc)/./lib/db-sqlite.ts:28:36)
+    at PUT (webpack-internal:///(rsc)/./app/api/admin/settings/route.ts:82:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53238
+    at async e_.execute (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44501)
+    at async e_.handle (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54492)
+    at async doRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1372:42)
+    at async cacheEntry.responseCache.get.routeKind (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1594:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1502:28)
+    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1919:24)
+    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
+    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
+}
+ PUT /api/admin/settings 500 in 10ms
+Setting update error: SqliteError: FOREIGN KEY constraint failed
+    at Object.run (webpack-internal:///(rsc)/./lib/db-sqlite.ts:28:36)
+    at PUT (webpack-internal:///(rsc)/./app/api/admin/settings/route.ts:82:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53238
+    at async e_.execute (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44501)
+    at async e_.handle (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54492)
+    at async doRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1372:42)
+    at async cacheEntry.responseCache.get.routeKind (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1594:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1502:28)
+    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1919:24)
+    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
+    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
+}
+ PUT /api/admin/settings 500 in 44ms
+Setting update error: SqliteError: FOREIGN KEY constraint failed
+    at Object.run (webpack-internal:///(rsc)/./lib/db-sqlite.ts:28:36)
+    at PUT (webpack-internal:///(rsc)/./app/api/admin/settings/route.ts:82:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53238
+    at async e_.execute (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44501)
+    at async e_.handle (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54492)
+    at async doRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1372:42)
+    at async cacheEntry.responseCache.get.routeKind (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1594:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1502:28)
+    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1919:24)
+    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
+    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
+    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  code: 'SQLITE_CONSTRAINT_FOREIGNKEY'
+}
+ PUT /api/admin/settings 500 in 13ms
+ GET / 200 in 148ms
+ ✓ Compiled /icon.svg in 351ms (1258 modules)
+ GET /icon.svg?936747c01d97c416 200 in 444ms
+ ✓ Compiled /api/auth/login in 216ms (1315 modules)
+🗄️  Using SQLite database
+ POST /api/auth/login 200 in 289ms
+ ✓ Compiled /api/animals in 97ms (1317 modules)
+ ✓ Compiled (1319 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 202ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 212ms
+ ✓ Compiled /api/leaderboard in 136ms (1321 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 163ms
+ GET /api/leaderboard? 200 in 12ms
+ ✓ Compiled /api/battles/history in 151ms (1325 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 192ms
+Cache hit for character c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e
+ GET /api/battles/history?characterId=c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
+Force refresh requested for character c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e - invalidating cache
+ GET /api/battles/history?characterId=c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1754115017200 200 in 13ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 8ms
+ ✓ Compiled /api/battles in 120ms (1300 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 162ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 11ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 48ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 12ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, 4211171f-fa64-41fb-a7fb-f23123bb5d23
+ POST /api/battles 200 in 41ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 10ms
+ GET /leaderboard 200 in 71ms
+ ✓ Compiled /icon.svg in 137ms (1327 modules)
+ GET /icon.svg?936747c01d97c416 200 in 189ms
+🗄️  Using SQLite database
+ GET /api/leaderboard?sortBy=elo 200 in 32ms
+ ✓ Compiled /api/auth/verify in 158ms (1329 modules)
+🗄️  Using SQLite database
+ GET /api/auth/verify 200 in 295ms
+ GET /api/leaderboard?sortBy=elo 200 in 268ms
+ GET /api/auth/verify 200 in 10ms
+ GET /api/auth/verify 200 in 12ms
+ GET /api/auth/verify 200 in 10ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, 3d5ffec3-c5f4-488d-a097-21b3acd65fb2
+ POST /api/battles 200 in 18ms
+ GET /api/leaderboard?sortBy=elo 200 in 11ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 43ms
+ GET /api/leaderboard?sortBy=elo 200 in 11ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 44ms
+ GET /api/leaderboard?sortBy=elo 200 in 14ms
+ GET / 200 in 89ms
  GET /icon.svg?936747c01d97c416 200 in 25ms
- ✓ Compiled in 595ms (2353 modules)
- ✓ Compiled in 290ms (2353 modules)
- ✓ Compiled in 280ms (2353 modules)
- ✓ Compiled in 409ms (2353 modules)
- ✓ Compiled in 238ms (1165 modules)
- ✓ Compiled in 215ms (1165 modules)
- ✓ Compiled /_not-found in 421ms (2342 modules)
- GET /_next/static/css/css-app_globals_css.css?v=1753801696144 404 in 522ms
- ✓ Compiled in 168ms (1167 modules)
- ⨯ Error: Cannot find module './948.js'
-Require stack:
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/_not-found/page.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js
-    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:55:36
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
-    at Function._load (node:internal/modules/cjs/loader:1211:37)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at __webpack_require__.f.require (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:198:28)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:111:40
-    at Array.reduce (<anonymous>)
-    at __webpack_require__.e (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:110:67)
-    at Array.map (<anonymous>)
-    at __webpack_require__.X (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:162:22)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:17959
-    at Object.<anonymous> (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:18009)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at requirePage (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js:109:84)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:84
-    at async loadComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:26)
-    at async DevServer.findPageComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:710:36)
-    at async DevServer.findPageComponents (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
-    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1905:24)
-    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
-    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
-    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
-    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
-    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
-    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
-    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
-    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
-    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
-    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
-    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/_not-found/page.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js'
-  ],
-  page: '/'
-}
- ○ Compiling /_error ...
- ✓ Compiled /_error in 972ms (2565 modules)
- GET / 200 in 63ms
- GET /_next/static/css/css-app_globals_css.css?v=1753801701307 404 in 18ms
- GET /_next/static/chunks/main-app.js?v=1753801701307 404 in 35ms
- GET /_next/static/chunks/app-pages-internals.js 404 in 35ms
- GET /_next/static/chunks/app/page.js 404 in 32ms
- ✓ Compiled /icon.svg in 285ms (1259 modules)
- GET /icon.svg?936747c01d97c416 200 in 329ms
- ✓ Compiled in 237ms (1350 modules)
- ✓ Compiled in 188ms (1350 modules)
-<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving './vendor-chunks/next' in /home/drjang00/DevEnvironments/kid-text-battle/.next/server for build dependencies doesn't lead to expected result '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/vendor-chunks/next.js', but to 'Error: Can't resolve './vendor-chunks/next' in '/home/drjang00/DevEnvironments/kid-text-battle/.next/server'' instead. Resolving dependencies are ignored for this path.
-<w>  at resolve commonjs file ./vendor-chunks/next (expected /home/drjang00/DevEnvironments/kid-text-battle/.next/server/vendor-chunks/next.js)
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/icon.svg/route.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/icon.svg/route.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w>  at resolve commonjs /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/vendor-chunks'
-<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/mcp/route' in /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server for build dependencies doesn't lead to expected result '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/mcp/route' in '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server'' instead. Resolving dependencies are ignored for this path.
-<w>  at resolve commonjs file ../../../../.next/server/app/api/mcp/route (expected /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js)
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w>  at resolve commonjs /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
- ✓ Compiled in 155ms (1349 modules)
- ✓ Compiled in 290ms (1347 modules)
- ✓ Compiled in 164ms (1347 modules)
- ✓ Compiled in 162ms (1347 modules)
- ✓ Compiled in 199ms (1347 modules)
- ✓ Compiled in 165ms (1347 modules)
- ⨯ Error: Cannot find module './948.js'
-Require stack:
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/icon.svg/route.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js
-    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:55:36
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
-    at Function._load (node:internal/modules/cjs/loader:1211:37)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at __webpack_require__.f.require (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:203:28)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:116:40
-    at Array.reduce (<anonymous>)
-    at __webpack_require__.e (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:115:67)
-    at Array.map (<anonymous>)
-    at __webpack_require__.X (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:167:22)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:17959
-    at Object.<anonymous> (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:18009)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at requirePage (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js:109:84)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:84
-    at async loadComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:26)
-    at async DevServer.findPageComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:710:36)
-    at async DevServer.findPageComponents (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
-    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1905:24)
-    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
-    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
-    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
-    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
-    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
-    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
-    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
-    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
-    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
-    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
-    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/icon.svg/route.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js'
-  ],
-  page: '/'
-}
- ○ Compiling /_error ...
- ✓ Compiled /_error in 1175ms (2562 modules)
- ⨯ Error: Cannot find module './682.js'
-Require stack:
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js
-    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:55:36
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
-    at Function._load (node:internal/modules/cjs/loader:1211:37)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at __webpack_require__.f.require (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:198:28)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:111:40
-    at Array.reduce (<anonymous>)
-    at __webpack_require__.e (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:110:67)
-    at Array.map (<anonymous>)
-    at __webpack_require__.X (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:162:22)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js:1:340
-    at Object.<anonymous> (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js:1:382)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at requirePage (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js:109:84)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:72:65
-    at async Promise.all (index 0)
-    at async loadComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:71:33)
-    at async DevServer.findPageComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:710:36) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js'
-  ]
-}
- GET / 500 in 2254ms
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js'
-<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/mcp/route' in /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server for build dependencies doesn't lead to expected result '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/mcp/route' in '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server'' instead. Resolving dependencies are ignored for this path.
-<w>  at resolve commonjs file ../../../../.next/server/app/api/mcp/route (expected /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js)
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/handle-externals.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/handle-externals.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
-<w>  at resolve commonjs /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
-<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, lstat '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js'
-<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Resolving '../../../../.next/server/app/api/mcp/route' in /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server for build dependencies doesn't lead to expected result '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js', but to 'Error: Can't resolve '../../../../.next/server/app/api/mcp/route' in '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server'' instead. Resolving dependencies are ignored for this path.
-<w>  at resolve commonjs file ../../../../.next/server/app/api/mcp/route (expected /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/api/mcp/route.js)
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-<w>  at file dependencies /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w>  at file /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
-<w>  at resolve commonjs /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/webpack/loaders/next-route-loader/index.js
- ⨯ Error: Cannot find module './948.js'
-Require stack:
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js
-    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:55:36
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
-    at Function._load (node:internal/modules/cjs/loader:1211:37)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at __webpack_require__.f.require (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:198:28)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:111:40
-    at Array.reduce (<anonymous>)
-    at __webpack_require__.e (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:110:67)
-    at Array.map (<anonymous>)
-    at __webpack_require__.X (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:162:22)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:17959
-    at Object.<anonymous> (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/app/page.js:1:18009)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at requirePage (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js:109:84)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:84
-    at async loadComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:98:26)
-    at async DevServer.findPageComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:710:36)
-    at async DevServer.findPageComponents (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:577:20)
-    at async DevServer.renderPageComponent (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1905:24)
-    at async DevServer.renderToResponseImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:1957:32)
-    at async DevServer.pipeImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:915:25)
-    at async NextNodeServer.handleCatchallRenderRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:272:17)
-    at async DevServer.handleRequestImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/base-server.js:811:17)
-    at async /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:339:20
-    at async Span.traceAsyncFn (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/trace/trace.js:154:20)
-    at async DevServer.handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
-    at async invokeRender (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:174:21)
-    at async handleRequest (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:353:24)
-    at async requestHandlerImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js:377:13)
-    at async Server.requestListener (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js:141:13) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js'
-  ],
-  page: '/'
-}
- ⨯ Error: Cannot find module './682.js'
-Require stack:
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js
-- /home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js
-- /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js
-    at Function.<anonymous> (node:internal/modules/cjs/loader:1401:15)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:55:36
-    at defaultResolveImpl (node:internal/modules/cjs/loader:1057:19)
-    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1062:22)
-    at Function._load (node:internal/modules/cjs/loader:1211:37)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at __webpack_require__.f.require (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:198:28)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:111:40
-    at Array.reduce (<anonymous>)
-    at __webpack_require__.e (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:110:67)
-    at Array.map (<anonymous>)
-    at __webpack_require__.X (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js:162:22)
-    at /home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js:1:340
-    at Object.<anonymous> (/home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js:1:382)
-    at Module._compile (node:internal/modules/cjs/loader:1730:14)
-    at Object..js (node:internal/modules/cjs/loader:1895:10)
-    at Module.load (node:internal/modules/cjs/loader:1465:32)
-    at Function._load (node:internal/modules/cjs/loader:1282:12)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:235:24)
-    at Module.<anonymous> (node:internal/modules/cjs/loader:1487:12)
-    at mod.require (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require-hook.js:65:28)
-    at require (node:internal/modules/helpers:135:16)
-    at requirePage (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js:109:84)
-    at /home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:72:65
-    at async Promise.all (index 0)
-    at async loadComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js:71:33)
-    at async DevServer.findPageComponentsImpl (/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/next-server.js:710:36) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/webpack-runtime.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/.next/server/pages/_document.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/require.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/load-components.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/build/utils.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-middleware.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/dev/hot-reloader-webpack.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/router-server.js',
-    '/home/drjang00/DevEnvironments/kid-text-battle/node_modules/next/dist/server/lib/start-server.js'
-  ]
-}
- GET / 500 in 41ms
+ GET /api/auth/verify 200 in 16ms
+ GET /api/auth/verify 200 in 19ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 24ms
+ GET /api/animals 200 in 28ms
+ GET /api/leaderboard? 200 in 11ms
+ GET /api/leaderboard? 200 in 10ms
+ ✓ Compiled /api/characters/[characterId]/battle-text in 173ms (1326 modules)
+🗄️  Using SQLite database
+ PATCH /api/characters/c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e/battle-text 200 in 225ms
+🗄️  Using SQLite database
+ ✓ Compiled /api/battles/history in 127ms (1329 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=8c30f294-8069-493a-a0fc-ff09c5a37c3c&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 170ms
+Cache hit for character 8c30f294-8069-493a-a0fc-ff09c5a37c3c
+ GET /api/battles/history?characterId=8c30f294-8069-493a-a0fc-ff09c5a37c3c&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
+Force refresh requested for character 8c30f294-8069-493a-a0fc-ff09c5a37c3c - invalidating cache
+ GET /api/battles/history?characterId=8c30f294-8069-493a-a0fc-ff09c5a37c3c&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1754115103253 200 in 13ms
+ GET /api/animals 200 in 13ms
+ ✓ Compiled /api/auth/login in 103ms (1331 modules)
+🗄️  Using SQLite database
+ POST /api/auth/login 200 in 130ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 24ms
+ GET /api/animals 200 in 21ms
+ POST /api/characters 200 in 21ms
+ GET /api/leaderboard? 200 in 19ms
+ GET /api/leaderboard? 200 in 15ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 12ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ POST /api/battles 200 in 47ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 12ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 2f0131bd-606c-40df-8c9f-ad39c1bcceb8
+ POST /api/battles 200 in 44ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 12ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 43ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 10ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 0f51e406-5eb6-470e-abed-ef6a226101c2
+ POST /api/battles 200 in 42ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, da9cd092-f2f4-4c0b-addd-b5e5b2968422
+ POST /api/battles 200 in 44ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 44ms
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 14ms
+Cache hit for character a1d3726c-838c-4f31-9683-9d40d7e9aef8
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 10ms
+Force refresh requested for character a1d3726c-838c-4f31-9683-9d40d7e9aef8 - invalidating cache
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1754115218606 200 in 11ms
+Force refresh requested for character a1d3726c-838c-4f31-9683-9d40d7e9aef8 - invalidating cache
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1754115219856 200 in 13ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd&_t=1754115226394 200 in 17ms
+ ✓ Compiled in 253ms (1228 modules)
+ ✓ Compiled in 832ms (2572 modules)
+ ✓ Compiled in 194ms (1344 modules)
+ ✓ Compiled in 222ms (1344 modules)
+ ✓ Compiled in 134ms (1344 modules)
+ ✓ Compiled in 168ms (1344 modules)
+ ✓ Compiled in 169ms (1344 modules)
+ ✓ Compiled in 153ms (1344 modules)
+ ✓ Compiled in 769ms (2574 modules)
+ ✓ Compiled /api/animals in 296ms (1289 modules)
+ ✓ Compiled in 1ms (1291 modules)
+ ✓ Compiled in 0ms (1291 modules)
+ ✓ Compiled in 0ms (1291 modules)
+🗄️  Using SQLite database
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 728ms
+ ✓ Compiled /api/leaderboard in 0ms (1291 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 853ms
+ ✓ Compiled in 0ms (1293 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 431ms
+ GET /api/leaderboard? 200 in 22ms
+ ✓ Compiled in 498ms (2638 modules)
+ ✓ Compiled in 849ms (2576 modules)
+ ✓ Compiled /api/animals in 197ms (1290 modules)
+ ✓ Compiled (1292 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 352ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 358ms
+ ✓ Compiled /api/leaderboard in 92ms (1294 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 126ms
+ GET /api/leaderboard? 200 in 13ms
+ ✓ Compiled in 340ms (2640 modules)
+ ✓ Compiled in 446ms (2640 modules)
+ ✓ Compiled in 478ms (2576 modules)
+ GET /play 200 in 98ms
+ ✓ Compiled /icon.svg in 383ms (1260 modules)
+ GET /icon.svg?936747c01d97c416 200 in 435ms
+ ✓ Compiled /api/animals in 106ms (1315 modules)
+ ✓ Compiled in 0ms (1317 modules)
+ ✓ Compiled in 0ms (1317 modules)
+ ✓ Compiled in 0ms (1317 modules)
+🗄️  Using SQLite database
+ GET /icon.svg?936747c01d97c416 200 in 430ms
+ GET /api/auth/verify 200 in 448ms
+ ✓ Compiled /api/characters in 0ms (1317 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 557ms
+ ✓ Compiled in 1ms (1321 modules)
+ ✓ Compiled in 0ms (1321 modules)
+ ✓ Compiled in 0ms (1321 modules)
+🗄️  Using SQLite database
+ GET /api/auth/verify 200 in 515ms
+🗄️  Using SQLite database
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 616ms
+ GET /api/animals 200 in 485ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 33ms
+ ✓ Compiled /api/leaderboard in 133ms (1323 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 325ms
+ GET /api/leaderboard? 200 in 334ms
+ GET /api/leaderboard? 200 in 14ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 14ms
+ ✓ Compiled /api/battles in 246ms (1326 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, b6f809a9-cb4f-417a-bfd8-3e1250da982e
+ POST /api/battles 200 in 282ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 12ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 44ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 24ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 4211171f-fa64-41fb-a7fb-f23123bb5d23
+ POST /api/battles 200 in 48ms
+ GET /play 200 in 79ms
+ GET /icon.svg?936747c01d97c416 200 in 22ms
+ GET /api/auth/verify 200 in 21ms
+ GET /api/auth/verify 200 in 56ms
+ GET /api/animals 200 in 66ms
+ GET /icon.svg?936747c01d97c416 200 in 66ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 67ms
+ GET /api/animals 200 in 36ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 36ms
+ GET /api/leaderboard? 200 in 40ms
+ GET /api/animals 200 in 36ms
+ GET /api/leaderboard? 200 in 25ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 11ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 8b19af22-a382-461a-be4e-b8629facef57
+ POST /api/battles 200 in 43ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ POST /api/battles 200 in 43ms
+ ✓ Compiled /api/battles/history in 173ms (1329 modules)
+🗄️  Using SQLite database
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 210ms
+Cache hit for character a1d3726c-838c-4f31-9683-9d40d7e9aef8
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true 200 in 23ms
+Force refresh requested for character a1d3726c-838c-4f31-9683-9d40d7e9aef8 - invalidating cache
+ GET /api/battles/history?characterId=a1d3726c-838c-4f31-9683-9d40d7e9aef8&limit=20&offset=0&includeStats=true&includeTimeline=true&_t=1754116528372 200 in 12ms
+ ✓ Compiled /api/characters/[characterId]/battle-text in 157ms (1331 modules)
+🗄️  Using SQLite database
+ PATCH /api/characters/a1d3726c-838c-4f31-9683-9d40d7e9aef8/battle-text 200 in 203ms
+🗄️  Using SQLite database
+ ✓ Compiled in 721ms (2576 modules)
+ ✓ Compiled in 405ms (2576 modules)
+ GET /play 200 in 81ms
+ ✓ Compiled /icon.svg in 225ms (1260 modules)
+ GET /icon.svg?936747c01d97c416 200 in 276ms
+ GET /icon.svg?936747c01d97c416 200 in 13ms
+ ✓ Compiled /api/animals in 110ms (1315 modules)
+ ✓ Compiled (1317 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 428ms
+ GET /api/auth/verify 200 in 448ms
+ ✓ Compiled /api/characters in 176ms (1321 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 305ms
+ GET /api/auth/verify 200 in 307ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 318ms
+ GET /api/animals 200 in 26ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 35ms
+ ✓ Compiled /api/leaderboard in 103ms (1323 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 137ms
+ GET /api/leaderboard? 200 in 14ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 11ms
+ ✓ Compiled /api/battles in 251ms (1326 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ POST /api/battles 200 in 278ms
+ GET /play 200 in 69ms
+ GET /icon.svg?936747c01d97c416 200 in 26ms
+ GET /api/auth/verify 200 in 22ms
+ GET /api/animals 200 in 32ms
+ GET /api/auth/verify 200 in 39ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 36ms
+ GET /api/animals 200 in 31ms
+ GET /api/characters?userId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 30ms
+ GET /api/leaderboard? 200 in 33ms
+ GET /api/animals 200 in 32ms
+ GET /api/leaderboard? 200 in 16ms
+ GET /api/characters?excludeUserId=5ca9a886-7e90-4c9d-b1ba-7ad5d8fae9cd 200 in 12ms
+Battle completed - invalidating cache for characters: a1d3726c-838c-4f31-9683-9d40d7e9aef8, 8b19af22-a382-461a-be4e-b8629facef57
+ POST /api/battles 200 in 42ms
+ GET /api/animals 200 in 25ms
+ ✓ Compiled /api/auth/login in 112ms (1328 modules)
+🗄️  Using SQLite database
+ POST /api/auth/login 200 in 145ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 23ms
+ GET /api/animals 200 in 26ms
+ GET /api/leaderboard? 200 in 12ms
+ GET /api/leaderboard? 200 in 13ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 9ms
+Battle completed - invalidating cache for characters: 5e2d0ecd-8d17-4d82-a402-1005ffab9cd2, 414bb705-a4da-48ee-bc50-0bc6bf63f93f
+ POST /api/battles 200 in 45ms
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, ad449073-828d-4b9c-9b5a-bdb2a9854cc0
+ POST /api/battles 200 in 17ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 17ms
+Battle completed - invalidating cache for characters: 8c30f294-8069-493a-a0fc-ff09c5a37c3c, 99538f92-61f4-4099-997a-066b818649d7
+ POST /api/battles 200 in 44ms
 [?25h

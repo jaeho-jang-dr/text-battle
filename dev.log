@@ -1,0 +1,40 @@
+
+> kid-text-battle@0.0.9 dev
+> next dev -p 3008
+
+  ▲ Next.js 14.2.0
+  - Local:        http://localhost:3008
+  - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1723ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.9s (1203 modules)
+ HEAD / 200 in 3068ms
+ ✓ Compiled in 294ms (592 modules)
+ GET / 200 in 58ms
+ ✓ Compiled /icon.svg in 287ms (641 modules)
+ GET /icon.svg?936747c01d97c416 200 in 342ms
+ ✓ Compiled /api/auth/verify in 283ms (696 modules)
+🗄️  Using SQLite database
+ GET /api/auth/verify 200 in 337ms
+ GET /api/auth/verify 200 in 10ms
+ ○ Compiling /play ...
+ ✓ Compiled /play in 1407ms (2398 modules)
+ ✓ Compiled /api/animals in 98ms (1263 modules)
+ ✓ Compiled (1265 modules)
+🗄️  Using SQLite database
+ GET /api/animals 200 in 208ms
+ GET /api/characters?userId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 214ms
+ ✓ Compiled /api/leaderboard in 91ms (1267 modules)
+🗄️  Using SQLite database
+ GET /api/leaderboard? 200 in 110ms
+ GET /api/leaderboard? 200 in 8ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 10ms
+ ✓ Compiled /api/battles in 101ms (1270 modules)
+🗄️  Using SQLite database
+Battle completed - invalidating cache for characters: c3d3846d-d44e-43d7-be1c-cd6b2bb8c69e, 8b19af22-a382-461a-be4e-b8629facef57
+ POST /api/battles 200 in 125ms
+ GET /api/characters?excludeUserId=c91744eb-01d1-4cc6-ba45-9c6b0cc260b7 200 in 9ms
+Battle completed - invalidating cache for characters: 8c30f294-8069-493a-a0fc-ff09c5a37c3c, 8b19af22-a382-461a-be4e-b8629facef57
+ POST /api/battles 200 in 48ms

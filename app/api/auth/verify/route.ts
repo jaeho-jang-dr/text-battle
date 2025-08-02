@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 토큰으로 사용자 조회
-    const user = db.prepare(`
+    const user = await db.prepare(`
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 캐릭터 조회
-    const characters = db.prepare(`
+    const characters = await db.prepare(`
       SELECT c.*, a.*,
         c.id as id, c.character_name, c.battle_text, c.base_score, c.wins, c.losses,
         a.id as animal_id, a.name as animal_name

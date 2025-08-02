@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 상위 100명의 배틀 통계
-    const battleStats = db.prepare(`
+    const battleStats = await db.prepare(`
       WITH battle_stats AS (
         SELECT 
           c.id,

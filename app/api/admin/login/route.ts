@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     // 관리자 사용자 확인
     try {
-      const adminUser = db.prepare(`
+      const adminUser = await db.prepare(`
         SELECT id, username, display_name, permissions
         FROM admin_users
         WHERE username = ? AND is_active = 1
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
 
       // 관리자 로그인 기록
       try {
-        db.prepare(`
+        await db.prepare(`
           UPDATE admin_users
           SET last_login = CURRENT_TIMESTAMP
           WHERE id = ?
