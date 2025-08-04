@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: kid-text-battle
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3008
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kid-text-battle-db
+          property: connectionString
+
+databases:
+  - name: kid-text-battle-db
+    region: singapore
+    plan: free
+    postgresMajorVersion: 15
