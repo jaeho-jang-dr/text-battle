@@ -4,16 +4,17 @@ primary_region = "nrt"  # Tokyo (한국에서 가장 가까움)
 
 [build]
   [build.args]
-    NODE_VERSION = "18"
+    NODE_VERSION = "20"
 
 [env]
   NODE_ENV = "production"
-  PORT = "3000"
+  PORT = "3008"
   USE_SQLITE = "true"
   DATABASE_PATH = "/data/kid-text-battle.db"
+  DATABASE_URL = "file:/data/kid-text-battle.db"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 3008
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
