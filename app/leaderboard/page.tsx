@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import { User, Character } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import BattlePreparation from '../../components/BattlePreparation';
 
 interface LeaderboardEntry {
   rank: number;
   id: string;
+  userId: string;
   characterName: string;
   animalName: string;
   animalIcon: string;
@@ -21,6 +23,8 @@ interface LeaderboardEntry {
   totalBattles: number;
   winRate: number;
   createdAt: string;
+  battleText?: string;
+  animal?: any;
 }
 
 interface BattleMode {
@@ -35,7 +39,7 @@ export default function LeaderboardPage() {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'score' | 'elo'>('elo');
+  const [sortBy, setSortBy] = useState<'score' | 'elo' | 'base'>('base');
   const [user, setUser] = useState<User | null>(null);
   const [myCharacters, setMyCharacters] = useState<Character[]>([]);
   const [showCharacterSelect, setShowCharacterSelect] = useState(false);
@@ -47,10 +51,12 @@ export default function LeaderboardPage() {
     result: null,
     isBattling: false
   });
+  const [dailyBattleLimit, setDailyBattleLimit] = useState(10);
 
   useEffect(() => {
     checkAuth();
     fetchLeaderboard();
+    loadBattleLimit();
   }, [category, sortBy]);
 
   const checkAuth = async () => {
@@ -105,7 +111,35 @@ export default function LeaderboardPage() {
     }
   };
 
-  const startBattle = (opponent: LeaderboardEntry) => {
+  // 상대 캐릭터의 상세 정보 가져오기
+  const fetchCharacterDetails = async (characterId: string) => {
+    try {
+      const response = await fetch(`/api/characters/${characterId}`);
+      const data = await response.json();
+      if (data.success) {
+        return data.data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to fetch character details:', error);
+      return null;
+    }
+  };
+
+  const loadBattleLimit = async () => {
+    try {
+      const response = await fetch(`/api/settings/battle-limit?_t=${Date.now()}`);
+      const data = await response.json();
+      if (data.success) {
+        setDailyBattleLimit(data.data.dailyBattleLimit);
+        console.log('Battle limit loaded:', data.data.dailyBattleLimit);
+      }
+    } catch (error) {
+      console.error('Failed to load battle limit:', error);
+    }
+  };
+
+  const startBattle = async (opponent: LeaderboardEntry) => {
     if (!user) {
       alert('배틀하려면 로그인이 필요해요!');
       window.location.href = '/';
@@ -118,15 +152,29 @@ export default function LeaderboardPage() {
       return;
     }
 
+    // 상대 캐릭터의 상세 정보 가져오기
+    const opponentDetails = await fetchCharacterDetails(opponent.id);
+    if (opponentDetails) {
+      opponent.battleText = opponentDetails.battleText;
+      opponent.animal = opponentDetails.animal;
+    }
+
     setSelectedOpponent(opponent);
     setShowCharacterSelect(true);
   };
 
-  const selectCharacterForBattle = (character: Character) => {
+  const selectCharacterForBattle = async (character: Character) => {
     // 봇과의 배틀은 일일 제한 없음
-    if (!selectedOpponent?.isBot && character.activeBattlesToday >= 10) {
-      alert('이 캐릭터는 오늘 배틀을 모두 마쳤어요!\n🤖 대기 계정과는 무제한 배틀이 가능해요!');
+    if (!selectedOpponent?.isBot && character.activeBattlesToday >= dailyBattleLimit) {
+      alert(`이 캐릭터는 오늘 배틀을 모두 마쳤어요! (${dailyBattleLimit}회)\n🤖 대기 계정과는 무제한 배틀이 가능해요!`);
       return;
+    }
+
+    // 내 캐릭터의 상세 정보 가져오기 (배틀 텍스트 포함)
+    const characterDetails = await fetchCharacterDetails(character.id);
+    if (characterDetails) {
+      character.battleText = characterDetails.battleText;
+      character.animal = characterDetails.animal;
     }
 
     setBattleMode({
@@ -260,6 +308,19 @@ export default function LeaderboardPage() {
         >
           <h2 className="text-2xl font-bold mb-6 text-center">📊 순위 결정 방법</h2>
           <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-green-50 rounded-2xl p-6">
+              <h3 className="font-bold text-green-700 mb-3 flex items-center gap-2">
+                <span className="text-2xl">📈</span> 기본 점수
+              </h3>
+              <ul className="space-y-2 text-gray-700">
+                <li>• <strong>시작 점수</strong>: 모든 캐릭터는 1000점으로 시작</li>
+                <li>• <strong>승리</strong>: +10점</li>
+                <li>• <strong>패배</strong>: -5점 (최소 0점)</li>
+                <li>• <strong>특징</strong>: 많이 플레이할수록 증가</li>
+                <li>• <strong>용도</strong>: 활동량 측정</li>
+                <li>• <strong>보너스</strong>: 연승 시 추가 점수 가능</li>
+              </ul>
+            </div>
             <div className="bg-blue-50 rounded-2xl p-6">
               <h3 className="font-bold text-blue-700 mb-3 flex items-center gap-2">
                 <span className="text-2xl">🎯</span> ELO 점수 (실력 점수)
@@ -272,22 +333,10 @@ export default function LeaderboardPage() {
                 <li>• <strong>공정성</strong>: 실력이 비슷한 상대와 매칭 유도</li>
               </ul>
             </div>
-            <div className="bg-green-50 rounded-2xl p-6">
-              <h3 className="font-bold text-green-700 mb-3 flex items-center gap-2">
-                <span className="text-2xl">📈</span> 기본 점수
-              </h3>
-              <ul className="space-y-2 text-gray-700">
-                <li>• <strong>승리</strong>: +10점</li>
-                <li>• <strong>패배</strong>: -5점 (최소 0점)</li>
-                <li>• <strong>특징</strong>: 많이 플레이할수록 증가</li>
-                <li>• <strong>용도</strong>: 활동량 측정</li>
-                <li>• <strong>보너스</strong>: 연승 시 추가 점수 가능</li>
-              </ul>
-            </div>
           </div>
           <div className="mt-6 bg-purple-50 rounded-2xl p-4 text-center">
             <p className="text-purple-700">
-              💡 <strong>팁</strong>: ELO 점수로 정렬하면 실력 순위를, 기본 점수로 정렬하면 활동 순위를 볼 수 있어요!
+              💡 <strong>팁</strong>: 기본 점수로 정렬하면 활동 순위를, ELO 점수로 정렬하면 실력 순위를 볼 수 있어요!
             </p>
           </div>
         </motion.div>
@@ -318,8 +367,8 @@ export default function LeaderboardPage() {
                 onChange={(e) => setSortBy(e.target.value as 'score' | 'elo')}
                 className="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500"
               >
+                <option value="base">📊 기본 점수</option>
                 <option value="elo">🎯 실력 점수</option>
-                <option value="score">📊 기본 점수</option>
               </select>
             </div>
           </div>
@@ -350,7 +399,9 @@ export default function LeaderboardPage() {
                   {entries.map((entry) => (
                     <tr 
                       key={entry.id} 
-                      className={`border-b-2 ${getRankColor(entry.rank)} hover:bg-opacity-70 transition-colors`}
+                      className={`border-b-2 ${getRankColor(entry.rank)} hover:bg-opacity-70 transition-colors ${
+                        user && entry.userId === user.id ? 'ring-2 ring-blue-400' : ''
+                      }`}
                     >
                       <td className="px-4 py-4">
                         <div className="text-2xl font-bold">
@@ -378,10 +429,10 @@ export default function LeaderboardPage() {
                       </td>
                       <td className="px-4 py-4 text-center">
                         <div className="font-bold text-lg">
-                          {sortBy === 'score' ? entry.baseScore : entry.eloScore}
+                          {sortBy === 'base' || sortBy === 'score' ? entry.baseScore : entry.eloScore}
                         </div>
                         <div className="text-sm text-gray-600">
-                          {sortBy === 'score' ? `ELO: ${entry.eloScore}` : `기본: ${entry.baseScore}`}
+                          {sortBy === 'base' || sortBy === 'score' ? `ELO: ${entry.eloScore}` : `기본: ${entry.baseScore}`}
                         </div>
                       </td>
                       <td className="px-4 py-4 text-center">
@@ -400,8 +451,10 @@ export default function LeaderboardPage() {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-center">
-                        {isMyCharacter(entry.id) ? (
-                          <span className="text-sm text-gray-500">내 캐릭터</span>
+                        {user && entry.userId === user.id ? (
+                          <div className="text-sm text-gray-500 font-medium">
+                            나의 캐릭터
+                          </div>
                         ) : (
                           <div className="flex flex-col items-center gap-1">
                             <motion.button
@@ -490,9 +543,9 @@ export default function LeaderboardPage() {
                 <button
                   key={character.id}
                   onClick={() => selectCharacterForBattle(character)}
-                  disabled={!selectedOpponent?.isBot && character.activeBattlesToday >= 10}
+                  disabled={!selectedOpponent?.isBot && character.activeBattlesToday >= dailyBattleLimit}
                   className={`p-4 rounded-xl border-2 transition-all ${
-                    !selectedOpponent?.isBot && character.activeBattlesToday >= 10
+                    !selectedOpponent?.isBot && character.activeBattlesToday >= dailyBattleLimit
                       ? 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-50'
                       : 'bg-white border-blue-400 hover:bg-blue-50 hover:border-blue-600'
                   }`}
@@ -509,7 +562,7 @@ export default function LeaderboardPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm">
-                        오늘 배틀: {character.activeBattlesToday}/10
+                        오늘 배틀: {character.activeBattlesToday}/{dailyBattleLimit}
                       </p>
                       <p className="text-xs text-gray-600">
                         {character.wins}승 {character.losses}패
@@ -538,42 +591,18 @@ export default function LeaderboardPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-4xl w-full">
             {!battleMode.result ? (
-              <>
-                <h2 className="text-3xl font-bold text-center mb-6">⚔️ 배틀 준비!</h2>
-                
-                <div className="flex justify-between items-center mb-8">
-                  <div className="text-center">
-                    <div className="text-6xl mb-2">{battleMode.myCharacter?.animal?.emoji || '🐾'}</div>
-                    <h3 className="text-xl font-bold">{battleMode.myCharacter?.characterName}</h3>
-                    <p className="text-sm text-gray-600">나의 캐릭터</p>
-                  </div>
-                  
-                  <div className="text-4xl animate-pulse">VS</div>
-                  
-                  <div className="text-center">
-                    <div className="text-6xl mb-2">{battleMode.opponent?.animalIcon || '🐾'}</div>
-                    <h3 className="text-xl font-bold">{battleMode.opponent?.characterName}</h3>
-                    <p className="text-sm text-gray-600">상대 캐릭터</p>
-                  </div>
-                </div>
-
-                <div className="text-center">
-                  <button
-                    onClick={executeBattle}
-                    disabled={battleMode.isBattling}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-xl text-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {battleMode.isBattling ? '배틀 중... ⚔️' : '배틀 시작! 🔥'}
-                  </button>
-                </div>
-
-                <button
-                  onClick={closeBattleMode}
-                  className="mt-6 w-full bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded-lg"
-                >
-                  취소
-                </button>
-              </>
+              <BattlePreparation
+                attacker={battleMode.myCharacter}
+                defender={battleMode.opponent}
+                onBattleStart={executeBattle}
+                onEditBattleText={() => {
+                  // 리더보드에서는 배틀 텍스트 수정을 위해 play 페이지로 이동
+                  window.location.href = '/play';
+                }}
+                onCancel={closeBattleMode}
+                isBattling={battleMode.isBattling}
+                showEditButton={true}
+              />
             ) : (
               <>
                 <h2 className="text-3xl font-bold text-center mb-6">

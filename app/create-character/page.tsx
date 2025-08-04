@@ -13,6 +13,10 @@ interface Animal {
   abilities: string;
   emoji: string;
   color?: string;
+  attack_power: number;
+  strength: number;
+  speed: number;
+  energy: number;
 }
 
 interface Character {
@@ -176,14 +180,79 @@ export default function CreateCharacterPage() {
                 1️⃣ 동물 선택
               </label>
               {selectedAnimal ? (
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 text-center">
-                  <div className="text-6xl mb-2">{selectedAnimal.emoji}</div>
-                  <h3 className="text-xl font-bold">{selectedAnimal.korean_name}</h3>
-                  <p className="text-gray-600 mt-2">{selectedAnimal.description}</p>
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6">
+                  <div className="text-center">
+                    <div className="text-6xl mb-2">{selectedAnimal.emoji}</div>
+                    <h3 className="text-xl font-bold">{selectedAnimal.korean_name}</h3>
+                    <p className="text-gray-600 mt-2">{selectedAnimal.description}</p>
+                  </div>
+                  
+                  {/* 능력치 표시 */}
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="bg-red-100 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-red-700">⚔️ 공격력</span>
+                        <span className="font-bold text-red-800">{selectedAnimal.attack_power}</span>
+                      </div>
+                      <div className="w-full bg-red-200 rounded-full h-1.5 mt-1">
+                        <div 
+                          className="bg-red-500 h-1.5 rounded-full"
+                          style={{ width: `${selectedAnimal.attack_power}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-100 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-orange-700">💪 힘</span>
+                        <span className="font-bold text-orange-800">{selectedAnimal.strength}</span>
+                      </div>
+                      <div className="w-full bg-orange-200 rounded-full h-1.5 mt-1">
+                        <div 
+                          className="bg-orange-500 h-1.5 rounded-full"
+                          style={{ width: `${selectedAnimal.strength}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-100 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-blue-700">🏃 속도</span>
+                        <span className="font-bold text-blue-800">{selectedAnimal.speed}</span>
+                      </div>
+                      <div className="w-full bg-blue-200 rounded-full h-1.5 mt-1">
+                        <div 
+                          className="bg-blue-500 h-1.5 rounded-full"
+                          style={{ width: `${selectedAnimal.speed}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-100 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-green-700">⚡ 에너지</span>
+                        <span className="font-bold text-green-800">{selectedAnimal.energy}</span>
+                      </div>
+                      <div className="w-full bg-green-200 rounded-full h-1.5 mt-1">
+                        <div 
+                          className="bg-green-500 h-1.5 rounded-full"
+                          style={{ width: `${selectedAnimal.energy}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 text-center text-sm">
+                    <span className="text-gray-600">총 능력치: </span>
+                    <span className="font-bold text-gray-800">
+                      {selectedAnimal.attack_power + selectedAnimal.strength + selectedAnimal.speed + selectedAnimal.energy}
+                    </span>
+                  </div>
+                  
                   <button
                     type="button"
                     onClick={() => router.push('/animals')}
-                    className="mt-4 text-purple-600 hover:text-purple-700 font-bold"
+                    className="mt-4 w-full text-purple-600 hover:text-purple-700 font-bold text-center"
                   >
                     다른 동물 선택하기 →
                   </button>

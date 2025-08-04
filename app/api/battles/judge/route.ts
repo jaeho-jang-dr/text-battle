@@ -162,7 +162,7 @@ function moderateContent(text: string) {
   };
 }
 
-// 배틀 텍스트 평가 함수
+// 배틀 텍스트 평가 함수 (능력치 반영)
 function evaluateBattleText(text: string, character: any): number {
   let score = 50; // 기본 점수
 
@@ -193,7 +193,23 @@ function evaluateBattleText(text: string, character: any): number {
   if (text.includes('?')) score += 3;
   if (/[ㅋㅎㅊㅇ]{2,}/.test(text)) score += 5; // 의성어/의태어
 
-  return Math.max(0, Math.min(100, score)); // 0-100 사이로 제한
+  // 동물 능력치 반영 (총 능력치의 10%를 점수에 반영)
+  if (character.animal) {
+    const totalStats = (character.animal.attack_power || 0) + 
+                      (character.animal.strength || 0) + 
+                      (character.animal.speed || 0) + 
+                      (character.animal.energy || 0);
+    const statBonus = Math.round(totalStats * 0.1);
+    score += statBonus;
+    
+    // 특정 능력치가 높은 경우 추가 보너스
+    if (character.animal.attack_power >= 90) score += 5; // 공격력 특화
+    if (character.animal.speed >= 90) score += 5; // 속도 특화
+    if (character.animal.strength >= 90) score += 5; // 힘 특화
+    if (character.animal.energy >= 90) score += 5; // 에너지 특화
+  }
+
+  return Math.max(0, Math.min(150, score)); // 0-150 사이로 제한 (능력치 보너스 고려)
 }
 
 // 판정 결과 생성 함수
@@ -210,12 +226,43 @@ function generateJudgment(
   const loser = isAttackerWinner ? defenderCharacter : attackerCharacter;
   const winnerText = isAttackerWinner ? attackerText : defenderText;
 
+  // 승자의 가장 높은 능력치 찾기
+  let winnerStrength = '';
+  if (winner.animal) {
+    const stats = {
+      '강력한 공격력': winner.animal.attack_power || 0,
+      '엄청난 힘': winner.animal.strength || 0,
+      '빠른 속도': winner.animal.speed || 0,
+      '끝없는 에너지': winner.animal.energy || 0
+    };
+    const highest = Object.entries(stats).reduce((a, b) => stats[a[0]] > stats[b[0]] ? a : b);
+    if (highest[1] >= 80) {
+      winnerStrength = highest[0];
+    }
+  }
+
   const judgmentTemplates = [
     `${winner.character_name}의 ${winnerText.length > 100 ? '정말 멋진' : '창의적인'} 표현이 승리를 가져다주었어요! 🏆`,
     `와! ${winner.character_name}의 용기와 상상력이 빛났네요! ${loser.character_name}도 정말 잘했어요! 👏`,
     `${winner.character_name}이 이번 배틀에서 승리했어요! 두 친구 모두 훌륭한 배틀이었습니다! ✨`,
     `${winner.character_name}의 특별한 능력이 돋보였어요! ${loser.character_name}도 다음엔 더 멋질 거예요! 🌟`
   ];
+
+  // 능력치가 높은 경우 특별한 멘트 추가
+  if (winnerStrength) {
+    judgmentTemplates.push(
+      `${winner.character_name}의 ${winnerStrength}이(가) 빛을 발했네요! 정말 대단해요! 💪`,
+      `${winnerStrength}을(를) 가진 ${winner.character_name}의 승리! 능력치가 승부를 결정했어요! ⚡`
+    );
+  }
+
+  // 점수 차이가 크면 압도적 승리 멘트
+  if (Math.abs(attackerScore - defenderScore) > 30) {
+    judgmentTemplates.push(
+      `압도적인 승리! ${winner.character_name}이(가) 완벽한 배틀을 보여주었어요! 🎯`,
+      `와우! ${winner.character_name}의 완벽한 승리였어요! 점수 차이가 정말 크네요! 🚀`
+    );
+  }
 
   return judgmentTemplates[Math.floor(Math.random() * judgmentTemplates.length)];
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../lib/db';
 import { filterCharacterName, filterBattleText } from '../../../lib/filters/content-filter';
 import { logUserAction } from '../../../lib/activity-tracker';
+import { getSetting } from '../../../lib/settings-helper';
 import { v4 as uuidv4 } from 'uuid';
 
 // GET: 사용자의 캐릭터 목록 조회
@@ -22,7 +23,11 @@ export async function GET(request: NextRequest) {
           a.korean_name,
           a.emoji,
           a.category,
-          a.description
+          a.description,
+          a.attack_power,
+          a.strength,
+          a.speed,
+          a.energy
         FROM characters c
         JOIN animals a ON c.animal_id = a.id
         WHERE c.user_id = ? AND c.is_active = 1
@@ -41,7 +46,11 @@ export async function GET(request: NextRequest) {
           koreanName: char.korean_name,
           emoji: char.emoji,
           category: char.category,
-          description: char.description
+          description: char.description,
+          attack_power: char.attack_power,
+          strength: char.strength,
+          speed: char.speed,
+          energy: char.energy
         },
         activeBattlesToday: char.active_battles_today || 0
       }));
@@ -62,6 +71,10 @@ export async function GET(request: NextRequest) {
           a.korean_name,
           a.emoji,
           a.category,
+          a.attack_power,
+          a.strength,
+          a.speed,
+          a.energy,
           u.display_name as owner_name
         FROM characters c
         JOIN animals a ON c.animal_id = a.id
@@ -84,7 +97,11 @@ export async function GET(request: NextRequest) {
           name: char.animal_name,
           koreanName: char.korean_name,
           emoji: char.emoji,
-          category: char.category
+          category: char.category,
+          attack_power: char.attack_power,
+          strength: char.strength,
+          speed: char.speed,
+          energy: char.energy
         },
         ownerName: char.owner_name
       }));
@@ -126,7 +143,11 @@ export async function GET(request: NextRequest) {
         a.korean_name,
         a.emoji,
         a.category,
-        a.description
+        a.description,
+        a.attack_power,
+        a.strength,
+        a.speed,
+        a.energy
       FROM characters c
       JOIN animals a ON c.animal_id = a.id
       WHERE c.user_id = ? AND c.is_active = 1
@@ -157,7 +178,11 @@ export async function GET(request: NextRequest) {
           koreanName: char.korean_name,
           emoji: char.emoji,
           category: char.category,
-          description: char.description
+          description: char.description,
+          attack_power: char.attack_power,
+          strength: char.strength,
+          speed: char.speed,
+          energy: char.energy
         },
         activeBattlesToday: char.active_battles_today || 0,
         todayBattles,

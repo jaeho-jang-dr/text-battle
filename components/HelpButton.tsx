@@ -1,9 +1,26 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function HelpButton() {
   const [showHelp, setShowHelp] = useState(false);
+  const [dailyBattleLimit, setDailyBattleLimit] = useState(10);
+
+  useEffect(() => {
+    loadBattleLimit();
+  }, []);
+
+  const loadBattleLimit = async () => {
+    try {
+      const response = await fetch(`/api/settings/battle-limit?_t=${Date.now()}`);
+      const data = await response.json();
+      if (data.success) {
+        setDailyBattleLimit(data.data.dailyBattleLimit);
+      }
+    } catch (error) {
+      console.error('Failed to load battle limit:', error);
+    }
+  };
 
   return (
     <>
@@ -35,7 +52,7 @@ export default function HelpButton() {
                 <h4 className="font-bold mb-2">게임 방법</h4>
                 <ul className="list-disc list-inside space-y-1 text-gray-600">
                   <li>동물 캐릭터를 만들어 배틀에 참여하세요</li>
-                  <li>하루에 최대 10번의 배틀이 가능합니다</li>
+                  <li>하루에 최대 {dailyBattleLimit}번의 배틀이 가능합니다</li>
                   <li>봇과의 배틀은 무제한입니다</li>
                   <li>창의적인 텍스트로 상대방을 설득해보세요</li>
                 </ul>

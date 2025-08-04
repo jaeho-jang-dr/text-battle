@@ -14,6 +14,7 @@ export default function SettingsTab() {
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -51,6 +52,10 @@ export default function SettingsTab() {
       if (data.success) {
         fetchSettings();
         setEditingKey(null);
+        setSaveSuccess(key);
+        
+        // 3초 후 성공 메시지 제거
+        setTimeout(() => setSaveSuccess(null), 3000);
       }
     } catch (error) {
       console.error('Failed to update setting:', error);
@@ -177,6 +182,18 @@ export default function SettingsTab() {
                   )}
                 </div>
               </div>
+              
+              {/* 저장 성공 메시지 */}
+              {saveSuccess === setting.setting_key && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="mt-2 p-2 bg-green-100 text-green-700 rounded-lg text-sm"
+                >
+                  ✅ 설정이 저장되었습니다. 즉시 적용됩니다!
+                </motion.div>
+              )}
             </motion.div>
           ))
         )}

@@ -9,13 +9,27 @@ export default function HomePage() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [dailyBattleLimit, setDailyBattleLimit] = useState(10);
   const { login, guestLogin, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
 
   // 클라이언트 상태 설정
   useEffect(() => {
     setIsClient(true);
+    loadBattleLimit();
   }, []);
+
+  const loadBattleLimit = async () => {
+    try {
+      const response = await fetch(`/api/settings/battle-limit?_t=${Date.now()}`);
+      const data = await response.json();
+      if (data.success) {
+        setDailyBattleLimit(data.data.dailyBattleLimit);
+      }
+    } catch (error) {
+      console.error('Failed to load battle limit:', error);
+    }
+  };
 
   // 이미 로그인된 사용자는 게임 페이지로 리다이렉트 (클라이언트에서만)
   useEffect(() => {
@@ -246,7 +260,7 @@ export default function HomePage() {
                         </li>
                         <li className="flex items-center">
                           <span className="text-green-500 mr-2">✓</span>
-                          하루 10회 배틀 제한
+                          하루 {dailyBattleLimit}회 배틀 제한
                         </li>
                         <li className="flex items-center">
                           <span className="text-green-500 mr-2">✓</span>
@@ -296,7 +310,7 @@ export default function HomePage() {
               <div className="text-3xl mb-3">🎯</div>
               <h3 className="text-lg font-bold text-gray-800 mb-2">일일 배틀 시스템</h3>
               <p className="text-gray-600 text-sm">
-                캐릭터당 하루 10번의 배틀 제한이 있지만, 🤖 연습 상대와는 무제한으로 배틀할 수 있어요!
+                캐릭터당 하루 {dailyBattleLimit}번의 배틀 제한이 있지만, 🤖 연습 상대와는 무제한으로 배틀할 수 있어요!
               </p>
             </div>
 

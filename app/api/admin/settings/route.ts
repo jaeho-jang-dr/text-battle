@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '../../../../lib/db';
+import { invalidateSettingsCache } from '../../../../lib/settings-helper';
 
 // 관리자 토큰 검증 함수
 function verifyAdminToken(request: NextRequest) {
@@ -75,6 +76,9 @@ export async function PUT(request: NextRequest) {
       INSERT INTO admin_logs (id, admin_id, action_type, target_type, details, created_at)
       VALUES (?, 'admin', 'setting_updated', 'setting', ?, CURRENT_TIMESTAMP)
     `).run(logId, JSON.stringify({ key, value }));
+
+    // 설정 캐시 무효화
+    invalidateSettingsCache();
 
     return NextResponse.json({
       success: true,

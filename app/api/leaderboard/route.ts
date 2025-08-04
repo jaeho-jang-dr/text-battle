@@ -5,7 +5,7 @@ import { db } from '../../../lib/db';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const sortBy = searchParams.get('sortBy') || 'elo'; // 'elo' or 'base'
+    const sortBy = searchParams.get('sortBy') || 'base'; // 'elo' or 'base'
     const category = searchParams.get('category'); // 동물 카테고리 필터
 
     // 정렬 기준
@@ -58,6 +58,7 @@ export async function GET(request: NextRequest) {
       return {
         rank: index + 1,
         id: character.id,
+        userId: character.user_id,
         characterName: character.character_name,
         animalName: character.korean_name || '알 수 없음',
         animalIcon: character.icon || '🐾',

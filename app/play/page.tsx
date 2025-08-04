@@ -8,6 +8,8 @@ import BattleOpponents from '../../components/BattleOpponents';
 import AnimalDetailPopup from '../../components/AnimalDetailPopup';
 import BattleHistory from '../../components/BattleHistory';
 import BattleEnergyBar from '../../components/BattleEnergyBar';
+import BattleStatsBar from '../../components/BattleStatsBar';
+import BattlePreparation from '../../components/BattlePreparation';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBattleSound } from '../../hooks/useBattleSound';
 
@@ -49,6 +51,7 @@ export default function PlayPage() {
   const [showBattleHistory, setShowBattleHistory] = useState<{ characterId: string; characterName: string } | null>(null);
   const [refreshingCharacterId, setRefreshingCharacterId] = useState<string | null>(null);
   const [scoreRefreshSuccess, setScoreRefreshSuccess] = useState<string | null>(null);
+  const [dailyBattleLimit, setDailyBattleLimit] = useState(10);
 
   useEffect(() => {
     setIsClient(true);
@@ -63,6 +66,7 @@ export default function PlayPage() {
         setIsLoading(false);
       }
       loadAnimals();
+      loadBattleLimit();
     }
   }, [isClient, isAuthenticated, user]);
 
@@ -84,6 +88,8 @@ export default function PlayPage() {
       const data = await response.json();
       if (data.success) {
         setCharacters(data.data || []);
+        // 캐릭터 로드 시 배틀 제한도 다시 확인
+        loadBattleLimit();
       }
     } catch (error) {
       console.error('Failed to load characters:', error);
@@ -99,6 +105,19 @@ export default function PlayPage() {
       }
     } catch (error) {
       console.error('Failed to load animals:', error);
+    }
+  };
+
+  const loadBattleLimit = async () => {
+    try {
+      const response = await fetch(`/api/settings/battle-limit?_t=${Date.now()}`);
+      const data = await response.json();
+      if (data.success) {
+        setDailyBattleLimit(data.data.dailyBattleLimit);
+        console.log('Battle limit loaded:', data.data.dailyBattleLimit);
+      }
+    } catch (error) {
+      console.error('Failed to load battle limit:', error);
     }
   };
 
@@ -156,12 +175,18 @@ export default function PlayPage() {
 
       const data = await response.json();
       if (data.success) {
-        setCharacters([...characters, data.data]);
+        // 성공 메시지 표시
+        alert('캐릭터가 생성되었습니다!');
+        
+        // 캐릭터 생성 폼 초기화
         setShowCharacterCreation(false);
         setSelectedAnimal(null);
         setCharacterName('');
         setBattleText('');
         setError('');
+        
+        // 캐릭터 목록 새로고침 (데이터베이스와 동기화)
+        await loadCharacters();
       } else {
         setError(data.error || '캐릭터 생성에 실패했습니다');
       }
@@ -176,6 +201,43 @@ export default function PlayPage() {
     setEditingCharacter(character);
     // 기존 배틀 텍스트를 미리 채워넣어서 사용자가 기반으로 수정할 수 있도록 함
     setNewBattleText(character.battleText || '');
+  };
+
+  // 캐릭터 삭제
+  const deleteCharacter = async (characterId: string) => {
+    try {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      const response = await fetch(`/api/characters/${characterId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // 모달 닫기
+        setEditingCharacter(null);
+        setNewBattleText('');
+        setError('');
+        
+        // 성공 메시지 표시
+        alert('캐릭터가 삭제되었습니다!');
+        
+        // 캐릭터 목록 새로고침 (데이터베이스와 동기화)
+        await loadCharacters();
+        
+        // 캐릭터가 모두 삭제되었다면 캐릭터 생성 화면 표시
+        if (data.data.remainingCharacters === 0) {
+          setShowCharacterCreation(true);
+        }
+      } else {
+        setError(data.error || '캐릭터 삭제에 실패했습니다');
+      }
+    } catch (error) {
+      console.error('Character delete error:', error);
+      setError('캐릭터 삭제 중 오류가 발생했습니다');
+    }
   };
 
   // 배틀 텍스트 업데이트
@@ -220,8 +282,8 @@ export default function PlayPage() {
 
   // 배틀 모드 시작
   const startBattleMode = async (character: Character) => {
-    if (character.activeBattlesToday >= 10) {
-      setError('오늘의 배틀 횟수를 모두 사용했어요!');
+    if (character.activeBattlesToday >= dailyBattleLimit) {
+      setError(`오늘의 배틀 횟수를 모두 사용했어요! (${dailyBattleLimit}회)`);
       return;
     }
 
@@ -253,7 +315,13 @@ export default function PlayPage() {
   const executeBattle = async () => {
     if (!battleMode.selectedCharacter || !battleMode.selectedOpponent) return;
 
-    setBattleMode(prev => ({ ...prev, isBattling: true, showEnergyBars: true }));
+    // 배틀 시작 - 능력치 바 표시
+    setBattleMode(prev => ({ 
+      ...prev, 
+      isBattling: true, 
+      showEnergyBars: true,
+      battleResult: null  // 이전 결과 초기화
+    }));
     setError('');
     
     // 배틀 시작 사운드 재생
@@ -274,13 +342,16 @@ export default function PlayPage() {
       });
 
       const data = await response.json();
+      console.log('Battle API Response:', data);
       
       if (data.success) {
-        // 즉시 배틀 결과 저장 (에너지 바 애니메이션용)
-        setBattleMode(prev => ({
-          ...prev,
-          battleResult: data.data
-        }));
+        // 애니메이션을 위해 약간의 딜레이 후 배틀 결과 표시
+        setTimeout(() => {
+          setBattleMode(prev => ({
+            ...prev,
+            battleResult: data.data
+          }));
+        }, 500);
         
         // 에너지 바 애니메이션을 위한 지연
         setTimeout(() => {
@@ -336,6 +407,21 @@ export default function PlayPage() {
     setError('');
   };
 
+  // 상대 캐릭터의 상세 정보 가져오기
+  const fetchCharacterDetails = async (characterId: string) => {
+    try {
+      const response = await fetch(`/api/characters/${characterId}`);
+      const data = await response.json();
+      if (data.success) {
+        return data.data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to fetch character details:', error);
+      return null;
+    }
+  };
+
   // 대기 중인 상대 선택 핸들러
   const handleSelectOpponentFromList = async (opponent: any) => {
     if (characters.length === 0) {
@@ -347,11 +433,18 @@ export default function PlayPage() {
     // 사용 가능한 캐릭터 확인 (봇과의 배틀은 무제한)
     const availableCharacters = opponent.isBot 
       ? characters // 봇과의 배틀은 모든 캐릭터 사용 가능
-      : characters.filter(char => char.activeBattlesToday < 10);
+      : characters.filter(char => char.activeBattlesToday < dailyBattleLimit);
       
     if (availableCharacters.length === 0) {
       alert('모든 캐릭터가 오늘의 배틀을 모두 마쳤어요!\n🤖 대기 계정과는 무제한 배틀이 가능해요!');
       return;
+    }
+
+    // 상대 캐릭터의 상세 정보 가져오기
+    const opponentDetails = await fetchCharacterDetails(opponent.id);
+    if (opponentDetails) {
+      opponent.battleText = opponentDetails.battleText;
+      opponent.animal = opponentDetails.animal;
     }
 
     // 캐릭터가 하나면 바로 선택, 여러 개면 선택 모달
@@ -472,18 +565,18 @@ export default function PlayPage() {
                         </button>
                         <p>🏆 승리: {character.wins}</p>
                         <p>💔 패배: {character.losses}</p>
-                        <p>⚔️ 오늘 배틀: {character.activeBattlesToday}/10</p>
+                        <p>⚔️ 오늘 배틀: {character.activeBattlesToday}/{dailyBattleLimit}</p>
                       </div>
                       <button 
                         onClick={() => startBattleMode(character)}
-                        disabled={character.activeBattlesToday >= 10}
+                        disabled={character.activeBattlesToday >= dailyBattleLimit}
                         className={`w-full mt-4 font-bold py-2 px-4 rounded-lg ${
-                          character.activeBattlesToday >= 10
+                          character.activeBattlesToday >= dailyBattleLimit
                             ? 'bg-gray-400 cursor-not-allowed text-gray-600'
                             : 'bg-blue-500 hover:bg-blue-600 text-white'
                         }`}
                       >
-                        {character.activeBattlesToday >= 10 ? '오늘은 충분히 싸웠어요!' : '배틀하기!'}
+                        {character.activeBattlesToday >= dailyBattleLimit ? '오늘은 충분히 싸웠어요!' : '배틀하기!'}
                       </button>
                       <button
                         onClick={() => startEditBattleText(character)}
@@ -662,7 +755,15 @@ export default function PlayPage() {
                         {battleMode.opponents.slice(0, 9).map((opponent) => (
                           <button
                             key={opponent.id}
-                            onClick={() => setBattleMode(prev => ({ ...prev, selectedOpponent: opponent }))}
+                            onClick={async () => {
+                              // 상대 캐릭터의 상세 정보 가져오기
+                              const opponentDetails = await fetchCharacterDetails(opponent.id);
+                              if (opponentDetails) {
+                                opponent.battleText = opponentDetails.battleText;
+                                opponent.animal = opponentDetails.animal;
+                              }
+                              setBattleMode(prev => ({ ...prev, selectedOpponent: opponent }));
+                            }}
                             className="p-4 bg-gray-50 hover:bg-blue-50 rounded-xl border-2 border-gray-200 hover:border-blue-400 transition-all"
                           >
                             <div className="text-4xl mb-1">{opponent.animal?.emoji || '🐾'}</div>
@@ -674,48 +775,83 @@ export default function PlayPage() {
                     </>
                   )}
 
-                  {/* 에너지 바 표시 (배틀 중) */}
+                  {/* 능력치 바 표시 (배틀 중) */}
                   {battleMode.isBattling && battleMode.showEnergyBars && battleMode.selectedCharacter && battleMode.selectedOpponent && (
                     <div className="mb-8">
-                      <div className="flex justify-between items-center gap-8">
-                        <BattleEnergyBar
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <BattleStatsBar
                           characterName={battleMode.selectedCharacter.characterName}
                           emoji={battleMode.selectedCharacter.animal?.emoji || '🐾'}
-                          maxEnergy={100}
-                          currentEnergy={battleMode.battleResult ? 
-                            (battleMode.battleResult.result.winner === 'attacker' ? 60 : 20) : 100}
+                          stats={{
+                            attack_power: battleMode.selectedCharacter.animal?.attack_power || 50,
+                            strength: battleMode.selectedCharacter.animal?.strength || 50,
+                            speed: battleMode.selectedCharacter.animal?.speed || 50,
+                            energy: battleMode.selectedCharacter.animal?.energy || 50
+                          }}
                           isAttacker={true}
-                          combatPower={battleMode.battleResult?.combatStats?.attacker?.totalPower || 200}
                           showAnimation={battleMode.showEnergyBars}
                           animationDuration={3}
+                          battleResult={battleMode.battleResult ? {
+                            winner: battleMode.battleResult.result.winner,
+                            scoreDifference: Math.abs(battleMode.battleResult.result.attackerScoreChange || 0)
+                          } : undefined}
                         />
-                        <div className="text-4xl animate-pulse">⚔️</div>
-                        <BattleEnergyBar
+                        <BattleStatsBar
                           characterName={battleMode.selectedOpponent.characterName}
                           emoji={(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji || '🐾'}
-                          maxEnergy={100}
-                          currentEnergy={battleMode.battleResult ? 
-                            (battleMode.battleResult.result.winner === 'defender' ? 60 : 20) : 100}
+                          stats={{
+                            attack_power: (battleMode.selectedOpponent as any).animal?.attack_power || battleMode.selectedOpponent.animal?.attack_power || 50,
+                            strength: (battleMode.selectedOpponent as any).animal?.strength || battleMode.selectedOpponent.animal?.strength || 50,
+                            speed: (battleMode.selectedOpponent as any).animal?.speed || battleMode.selectedOpponent.animal?.speed || 50,
+                            energy: (battleMode.selectedOpponent as any).animal?.energy || battleMode.selectedOpponent.animal?.energy || 50
+                          }}
                           isAttacker={false}
-                          combatPower={battleMode.battleResult?.combatStats?.defender?.totalPower || 200}
                           showAnimation={battleMode.showEnergyBars}
                           animationDuration={3}
+                          battleResult={battleMode.battleResult ? {
+                            winner: battleMode.battleResult.result.winner,
+                            scoreDifference: Math.abs(battleMode.battleResult.result.attackerScoreChange || 0)
+                          } : undefined}
                         />
                       </div>
+                      
+                      {/* 배틀 진행 중 메시지 */}
+                      {!battleMode.battleResult && (
+                        <div className="text-center mt-6">
+                          <div className="text-2xl font-bold text-gray-700 animate-pulse">
+                            ⚔️ 배틀 진행 중... ⚔️
+                          </div>
+                          <p className="text-gray-600 mt-2">능력치가 충돌하고 있습니다!</p>
+                        </div>
+                      )}
                     </div>
                   )}
 
-                  {/* 배틀 시작 버튼 */}
+                  {/* 배틀 준비 컨포넌트 사용 */}
                   {battleMode.selectedOpponent && !battleMode.isBattling && (
-                    <div className="text-center">
-                      <button
-                        onClick={executeBattle}
-                        disabled={battleMode.isBattling}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-8 rounded-xl text-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        배틀 시작! 🔥
-                      </button>
-                    </div>
+                    <BattlePreparation
+                      attacker={battleMode.selectedCharacter}
+                      defender={battleMode.selectedOpponent}
+                      onBattleStart={executeBattle}
+                      onEditBattleText={() => {
+                        // 배틀 모드 종료
+                        setBattleMode({
+                          isActive: false,
+                          selectedCharacter: null,
+                          selectedOpponent: null,
+                          opponents: [],
+                          isBattling: false,
+                          battleResult: null,
+                          showEnergyBars: false
+                        });
+                        // 배틀 텍스트 수정 모드 시작
+                        if (battleMode.selectedCharacter) {
+                          startEditBattleText(battleMode.selectedCharacter);
+                        }
+                      }}
+                      onCancel={exitBattleMode}
+                      isBattling={battleMode.isBattling}
+                    />
                   )}
 
                   <button
@@ -731,6 +867,48 @@ export default function PlayPage() {
                   <h2 className="text-3xl font-bold text-center mb-6">
                     {battleMode.battleResult.result.winner === 'attacker' ? '🎉 승리!' : '😢 패배...'}
                   </h2>
+
+                  {/* 능력치 바 표시 (결과 화면에서도 유지) */}
+                  {battleMode.selectedCharacter && battleMode.selectedOpponent && (
+                    <div className="mb-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <BattleStatsBar
+                          characterName={battleMode.selectedCharacter.characterName}
+                          emoji={battleMode.selectedCharacter.animal?.emoji || '🐾'}
+                          stats={{
+                            attack_power: battleMode.selectedCharacter.animal?.attack_power || 50,
+                            strength: battleMode.selectedCharacter.animal?.strength || 50,
+                            speed: battleMode.selectedCharacter.animal?.speed || 50,
+                            energy: battleMode.selectedCharacter.animal?.energy || 50
+                          }}
+                          isAttacker={true}
+                          showAnimation={true}
+                          animationDuration={3}
+                          battleResult={{
+                            winner: battleMode.battleResult.result.winner,
+                            scoreDifference: Math.abs(battleMode.battleResult.result.attackerScoreChange || 0)
+                          }}
+                        />
+                        <BattleStatsBar
+                          characterName={battleMode.selectedOpponent.characterName}
+                          emoji={(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji || '🐾'}
+                          stats={{
+                            attack_power: (battleMode.selectedOpponent as any).animal?.attack_power || battleMode.selectedOpponent.animal?.attack_power || 50,
+                            strength: (battleMode.selectedOpponent as any).animal?.strength || battleMode.selectedOpponent.animal?.strength || 50,
+                            speed: (battleMode.selectedOpponent as any).animal?.speed || battleMode.selectedOpponent.animal?.speed || 50,
+                            energy: (battleMode.selectedOpponent as any).animal?.energy || battleMode.selectedOpponent.animal?.energy || 50
+                          }}
+                          isAttacker={false}
+                          showAnimation={true}
+                          animationDuration={3}
+                          battleResult={{
+                            winner: battleMode.battleResult.result.winner,
+                            scoreDifference: Math.abs(battleMode.battleResult.result.attackerScoreChange || 0)
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="bg-blue-50 rounded-xl p-6 mb-6">
                     <p className="text-xl font-bold mb-2">{battleMode.battleResult.result.judgment}</p>
@@ -795,19 +973,31 @@ export default function PlayPage() {
                 어떤 캐릭터로 도전할까요? 🤔
               </h2>
               
-              <div className="mb-4 text-center">
-                <p className="text-lg">
-                  상대: <span className="font-bold">{battleMode.selectedOpponent.characterName}</span>
-                  ({(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji} {(battleMode.selectedOpponent as any).animalName || battleMode.selectedOpponent.animal?.koreanName})
-                  {(battleMode.selectedOpponent as any).isBot && (
-                    <span className="ml-2 text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
-                      🤖 대기 계정
-                    </span>
-                  )}
-                </p>
-                <p className="text-sm text-gray-600">
-                  ELO: {battleMode.selectedOpponent.eloScore} | 승률: {(battleMode.selectedOpponent as any).winRate || 0}%
-                </p>
+              <div className="mb-6">
+                {/* 상대 캐릭터 정보 */}
+                <div className="bg-red-50 rounded-xl p-4 mb-4">
+                  <div className="text-center mb-3">
+                    <div className="text-5xl mb-2">{(battleMode.selectedOpponent as any).animalIcon || battleMode.selectedOpponent.animal?.emoji || '🐾'}</div>
+                    <h3 className="font-bold text-lg text-red-700">{battleMode.selectedOpponent.characterName}</h3>
+                    <p className="text-sm text-gray-600">
+                      {(battleMode.selectedOpponent as any).animalName || battleMode.selectedOpponent.animal?.koreanName}
+                      {(battleMode.selectedOpponent as any).isBot && (
+                        <span className="ml-2 text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                          🤖 대기 계정
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <div className="bg-white rounded-lg p-3">
+                    <p className="text-sm font-medium text-gray-700 mb-1">📢 배틀 텍스트:</p>
+                    <p className="text-sm text-gray-600 italic">"{(battleMode.selectedOpponent as any).battleText || battleMode.selectedOpponent?.battleText || '배틀 텍스트가 없습니다'}"</p>
+                  </div>
+                  <div className="mt-2 text-center text-sm text-gray-600">
+                    ELO: {battleMode.selectedOpponent.eloScore} | 승률: {(battleMode.selectedOpponent as any).winRate || 0}%
+                  </div>
+                </div>
+                
+                <p className="text-center text-gray-700 font-medium">내 캐릭터를 선택하세요!</p>
               </div>
 
               <div className="grid gap-4 mb-6">
@@ -826,26 +1016,32 @@ export default function PlayPage() {
                     }}
                     className="p-4 rounded-xl border-2 bg-white border-blue-400 hover:bg-blue-50 hover:border-blue-600 transition-all text-left"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl">{character.animal?.emoji || '🐾'}</span>
-                        <div>
-                          <p className="font-bold">{character.characterName}</p>
-                          <p className="text-sm text-gray-600">
-                            {character.animal?.koreanName} | ELO: {character.eloScore}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl">{character.animal?.emoji || '🐾'}</span>
+                          <div>
+                            <p className="font-bold">{character.characterName}</p>
+                            <p className="text-sm text-gray-600">
+                              {character.animal?.koreanName} | ELO: {character.eloScore}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm">
+                            오늘 배틀: {character.activeBattlesToday}/{dailyBattleLimit}
+                            {(battleMode.selectedOpponent as any)?.isBot && (
+                              <span className="text-purple-600"> (무제한)</span>
+                            )}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            {character.wins}승 {character.losses}패
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm">
-                          오늘 배틀: {character.activeBattlesToday}/10
-                          {(battleMode.selectedOpponent as any)?.isBot && (
-                            <span className="text-purple-600"> (무제한)</span>
-                          )}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          {character.wins}승 {character.losses}패
-                        </p>
+                      <div className="bg-gray-50 rounded-lg p-2 mt-2">
+                        <p className="text-xs font-medium text-gray-700">📢 배틀 텍스트:</p>
+                        <p className="text-xs text-gray-600 italic">"{character.battleText || '배틀 텍스트가 없습니다'}"</p>
                       </div>
                     </div>
                   </motion.button>
@@ -885,7 +1081,7 @@ export default function PlayPage() {
           <h3 className="font-bold mb-2">💡 도움말</h3>
           <ul className="text-sm space-y-1">
             <li>• 캐릭터는 최대 3개까지 만들 수 있어요</li>
-            <li>• 하루에 캐릭터당 10번까지 능동 배틀이 가능해요</li>
+            <li>• 하루에 캐릭터당 {dailyBattleLimit}번까지 능동 배틀이 가능해요</li>
             <li>• 🤖 대기 계정과는 무제한으로 배틀할 수 있어요!</li>
             <li>• 배틀 텍스트는 신중하게 작성해주세요!</li>
             <li>• 부적절한 내용은 경고를 받을 수 있어요</li>
@@ -960,23 +1156,37 @@ export default function PlayPage() {
               )}
 
               {/* 버튼 */}
-              <div className="flex gap-4">
-                <button
-                  onClick={updateBattleText}
-                  disabled={newBattleText.length < 10 || newBattleText.length > 100}
-                  className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200"
-                >
-                  수정하기
-                </button>
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <button
+                    onClick={updateBattleText}
+                    disabled={newBattleText.length < 10 || newBattleText.length > 100}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200"
+                  >
+                    수정하기
+                  </button>
+                  <button
+                    onClick={() => {
+                      setEditingCharacter(null);
+                      setNewBattleText('');
+                      setError('');
+                    }}
+                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all duration-200"
+                  >
+                    취소
+                  </button>
+                </div>
+                
+                {/* 캐릭터 삭제 버튼 */}
                 <button
                   onClick={() => {
-                    setEditingCharacter(null);
-                    setNewBattleText('');
-                    setError('');
+                    if (confirm(`정말로 '${editingCharacter.characterName}' 캐릭터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다!`)) {
+                      deleteCharacter(editingCharacter.id);
+                    }
                   }}
-                  className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all duration-200"
+                  className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-bold py-3 px-6 rounded-xl transition-all duration-200 border-2 border-red-300"
                 >
-                  취소
+                  🗑️ 캐릭터 삭제하기
                 </button>
               </div>
             </motion.div>

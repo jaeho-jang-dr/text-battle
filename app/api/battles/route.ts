@@ -3,6 +3,7 @@ import { db } from '../../../lib/db';
 import { filterBattleText } from '../../../lib/filters/content-filter';
 import { updateUserActivity, logUserAction } from '../../../lib/activity-tracker';
 import { battleHistoryCache } from '../../../lib/cache/battle-history-cache';
+import { getSetting } from '../../../lib/settings-helper';
 import { v4 as uuidv4 } from 'uuid';
 
 // ELO 점수 계산 함수
@@ -164,10 +165,12 @@ export async function POST(request: NextRequest) {
 
     // 일일 배틀 제한 확인 (봇과의 배틀은 제한 없음)
     const isDefenderBot = defender.is_bot === 1;
-    if (!isDefenderBot && attacker.active_battles_today >= 10) {
+    const dailyBattleLimit = await getSetting('daily_active_battle_limit', 10);
+    
+    if (!isDefenderBot && attacker.active_battles_today >= dailyBattleLimit) {
       return NextResponse.json({
         success: false,
-        error: '오늘의 배틀 횟수를 모두 사용했습니다 (10회)\n🤖 대기 계정과는 무제한 배틀이 가능해요!'
+        error: `오늘의 배틀 횟수를 모두 사용했습니다 (${dailyBattleLimit}회)\n🤖 대기 계정과는 무제한 배틀이 가능해요!`
       }, { status: 400 });
     }
 

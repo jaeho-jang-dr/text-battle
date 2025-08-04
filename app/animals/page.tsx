@@ -14,6 +14,10 @@ interface Animal {
   emoji: string;
   image_url?: string;
   color?: string;
+  attack_power: number;
+  strength: number;
+  speed: number;
+  energy: number;
 }
 
 export default function AnimalsPage() {
@@ -271,6 +275,72 @@ export default function AnimalsPage() {
                   <span className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${getCategoryColor(selectedAnimal.category)} text-white font-bold`}>
                     {getCategoryName(selectedAnimal.category)}
                   </span>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
+                    <span>📊</span> 능력치
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-red-50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-red-700">⚔️ 공격력</span>
+                        <span className="font-bold text-red-800">{selectedAnimal.attack_power}</span>
+                      </div>
+                      <div className="w-full bg-red-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-red-500 h-2.5 rounded-full transition-all duration-500"
+                          style={{ width: `${selectedAnimal.attack_power}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-orange-700">💪 힘</span>
+                        <span className="font-bold text-orange-800">{selectedAnimal.strength}</span>
+                      </div>
+                      <div className="w-full bg-orange-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-orange-500 h-2.5 rounded-full transition-all duration-500"
+                          style={{ width: `${selectedAnimal.strength}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-blue-700">🏃 속도</span>
+                        <span className="font-bold text-blue-800">{selectedAnimal.speed}</span>
+                      </div>
+                      <div className="w-full bg-blue-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-blue-500 h-2.5 rounded-full transition-all duration-500"
+                          style={{ width: `${selectedAnimal.speed}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-green-700">⚡ 에너지</span>
+                        <span className="font-bold text-green-800">{selectedAnimal.energy}</span>
+                      </div>
+                      <div className="w-full bg-green-200 rounded-full h-2.5">
+                        <div 
+                          className="bg-green-500 h-2.5 rounded-full transition-all duration-500"
+                          style={{ width: `${selectedAnimal.energy}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 text-center p-3 bg-gray-100 rounded-lg">
+                    <span className="text-sm text-gray-600">총 능력치: </span>
+                    <span className="font-bold text-gray-800">
+                      {selectedAnimal.attack_power + selectedAnimal.strength + selectedAnimal.speed + selectedAnimal.energy}
+                    </span>
+                  </div>
                 </div>
 
                 {/* 액션 버튼 */}
