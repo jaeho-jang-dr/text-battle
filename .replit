@@ -1,29 +1,21 @@
 run = "npm run start"
-modules = ["nodejs-20:v8-20240808-44c19a9"]
-hidden = [".config", "package-lock.json", ".next", "node_modules", ".git"]
-compile = "npm run build"
+entrypoint = "app/page.tsx"
 
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
+hidden = [".config", "package-lock.json"]
+
+[nix]
+channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "npm run build:replit && npm run start"]
-deploymentTarget = "cloudrun"
-ignorePorts = false
-buildCommand = "npm install --force && npm run build:replit"
+run = ["sh", "-c", "npm run start"]
 
 [[ports]]
 localPort = 3008
-externalPort = 3008
-
-[nix]
-channel = "stable-23_11"
+externalPort = 80
 
 [env]
 NODE_ENV = "production"
-DATABASE_PATH = "./kid-text-battle.db"
 PORT = "3008"
-NEXT_TELEMETRY_DISABLED = "1"
 
 [packager]
 language = "nodejs"
@@ -33,9 +25,9 @@ packageSearch = true
 guessImports = true
 enabledForHosting = false
 
-[languages]
 [languages.javascript]
 pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
+
 [languages.javascript.languageServer]
 start = "typescript-language-server --stdio"
 

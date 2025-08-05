@@ -5,10 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3008",
     "build": "next build",
-    "build:replit": "rm -rf .next && next build",
-    "build:force": "NODE_OPTIONS='--max-old-space-size=512' next build",
     "start": "next start -p 3008",
-    "replit": "./replit-start.sh",
+    "postinstall": "npm run build",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
