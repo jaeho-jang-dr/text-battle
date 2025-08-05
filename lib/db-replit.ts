@@ -41,18 +41,97 @@ db.pragma('mmap_size = 30000000000');
 const initializeDatabase = () => {
   console.log('🔧 Initializing Replit-optimized database...');
   
-  // Import and run all table creation scripts
-  require('./tables/users');
-  require('./tables/animals');
-  require('./tables/characters');
-  require('./tables/battles');
-  require('./tables/admin_users');
-  
-  console.log('✅ Database initialization complete!');
-  
-  // Log database info
-  const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
-  console.log(`📊 Tables created: ${tables.map(t => t.name).join(', ')}`);
+  try {
+    // Import the main SQLite initialization module instead
+    const sqliteModule = require('./db-sqlite');
+    
+    // Use the existing initialization from db-sqlite
+    if (sqliteModule.initializeDatabase) {
+      sqliteModule.initializeDatabase.call({ db });
+    } else {
+      // Fallback: manually create tables if needed
+      console.log('⚠️ Using fallback table creation...');
+      
+      // Create tables directly here
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          email TEXT UNIQUE NOT NULL,
+          username TEXT,
+          password_hash TEXT,
+          login_token TEXT UNIQUE,
+          token_expires_at DATETIME,
+          warnings INTEGER DEFAULT 0,
+          suspension_count INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+        
+        CREATE TABLE IF NOT EXISTS animals (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          korean_name TEXT NOT NULL,
+          emoji TEXT NOT NULL,
+          description TEXT,
+          abilities TEXT,
+          category TEXT,
+          attack_power INTEGER,
+          strength INTEGER,
+          speed INTEGER,
+          energy INTEGER,
+          color TEXT
+        );
+        
+        CREATE TABLE IF NOT EXISTS characters (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id INTEGER NOT NULL,
+          animal_id INTEGER NOT NULL,
+          character_name TEXT NOT NULL,
+          base_score INTEGER DEFAULT 1000,
+          elo_score INTEGER DEFAULT 1500,
+          daily_battles INTEGER DEFAULT 0,
+          last_battle_date DATE,
+          is_bot INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id),
+          FOREIGN KEY (animal_id) REFERENCES animals(id)
+        );
+        
+        CREATE TABLE IF NOT EXISTS battles (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          attacker_id INTEGER NOT NULL,
+          defender_id INTEGER NOT NULL,
+          winner_id INTEGER,
+          attacker_score_change INTEGER,
+          defender_score_change INTEGER,
+          attacker_elo_change INTEGER,
+          defender_elo_change INTEGER,
+          ai_judgment TEXT,
+          ai_reasoning TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (attacker_id) REFERENCES characters(id),
+          FOREIGN KEY (defender_id) REFERENCES characters(id),
+          FOREIGN KEY (winner_id) REFERENCES characters(id)
+        );
+        
+        CREATE TABLE IF NOT EXISTS admin_users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT UNIQUE NOT NULL,
+          password_hash TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+    }
+    
+    console.log('✅ Database initialization complete!');
+    
+    // Log database info
+    const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+    console.log(`📊 Tables created: ${tables.map((t: any) => t.name).join(', ')}`);
+  } catch (error) {
+    console.error('❌ Database initialization error:', error);
+    throw error;
+  }
 };
 
 // Auto-initialize on first import
