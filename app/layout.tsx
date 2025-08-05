@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./global.css";
 import AdminButton from "../components/AdminButton";
 import { AuthProvider } from "../contexts/AuthContext";
 
