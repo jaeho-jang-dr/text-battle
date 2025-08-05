@@ -8,8 +8,7 @@ import {
   BattleStats,
   BattleInsight 
 } from '../types/battle-history';
-import { formatDistanceToNow } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { formatRelativeTime } from '../lib/utils/time-utils';
 
 interface BattleHistoryProps {
   characterId: string;
@@ -153,10 +152,7 @@ export default function BattleHistory({ characterId, characterName, onClose }: B
         </div>
 
         <div className="text-sm text-gray-500">
-          {formatDistanceToNow(new Date(entry.createdAt), { 
-            addSuffix: true, 
-            locale: ko 
-          })}
+          {formatRelativeTime(entry.createdAt)}
         </div>
       </div>
     </motion.div>
