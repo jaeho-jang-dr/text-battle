@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./global.css";
 import AdminButton from "../components/AdminButton";
 import { AuthProvider } from "../contexts/AuthContext";
 
@@ -15,7 +14,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="min-h-screen" suppressHydrationWarning>
+      <head>
+        <style>{`
+          * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+          }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+          }
+        `}</style>
+      </head>
+      <body suppressHydrationWarning>
         <AuthProvider>
           {children}
           <AdminButton />
