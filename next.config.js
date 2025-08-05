@@ -62,6 +62,9 @@ const nextConfig = {
     serverComponentsExternalPackages: ['better-sqlite3', 'bcryptjs']
   },
   
+  // CSS 모듈 설정
+  transpilePackages: ['tailwindcss', 'autoprefixer'],
+  
   // SWC 비활성화 (Replit 호환성)
   swcMinify: false
 }
