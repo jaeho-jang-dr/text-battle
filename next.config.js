@@ -30,7 +30,7 @@ const nextConfig = {
   },
   
   // 개발 환경에서 React DevTools 비활성화 및 경로 별칭 설정
-  webpack: (config, { dev }) => {
+  webpack: (config, { dev, isServer }) => {
     if (dev) {
       config.resolve.alias = {
         ...config.resolve.alias,
@@ -44,8 +44,26 @@ const nextConfig = {
       '@': __dirname,
     }
     
+    // Replit 환경 최적화
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    
     return config
-  }
+  },
+  
+  // Replit 전용 추가 설정
+  experimental: {
+    serverComponentsExternalPackages: ['better-sqlite3', 'bcryptjs']
+  },
+  
+  // SWC 비활성화 (Replit 호환성)
+  swcMinify: false
 }
 
 module.exports = nextConfig

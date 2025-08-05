@@ -2,6 +2,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚀 자동 실행 에이전트
+
+### Replit 배포 자동 감지
+다음 키워드가 감지되면 자동으로 DevOps Replit Agent가 활성화됩니다:
+- "replit 배포", "레플릿 배포", "replit에 배포"
+- "deploy to replit", "replit deployment"
+- "온라인 배포" + "무료", "웹 호스팅" + "간단한"
+
+**자동 실행 시:**
+1. 프로젝트 구조 분석
+2. 필요한 Replit 설정 파일 생성 (.replit, replit.nix)
+3. 데이터베이스 설정 가이드 제공
+4. 배포 체크리스트 실행
+
+**관련 파일:**
+- `/agents/devops-replit-agent.md` - 메인 가이드
+- `/agents/replit-quick-start.md` - 빠른 시작
+- `/agents/replit-database-guide.md` - DB 설정
+- `/agents/replit-deployment-templates.md` - 코드 템플릿
+
 ## Project Overview
 
 Kid Text Battle is a child-friendly online text battle game for elementary school children (ages 7-10) featuring animal characters. The project uses SQLite for local development and includes bot opponents for unlimited practice battles.

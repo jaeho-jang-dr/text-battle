@@ -1,16 +1,16 @@
-run = "./replit-build.sh && npm run start"
+run = "npm run start"
 modules = ["nodejs-20:v8-20240808-44c19a9"]
-hidden = [".config", "package-lock.json", ".next"]
-compile = "./replit-build.sh"
+hidden = [".config", "package-lock.json", ".next", "node_modules", ".git"]
+compile = "npm run build"
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [deployment]
-run = ["sh", "-c", "./replit-build.sh && npm run start"]
+run = ["sh", "-c", "npm run build && npm run start"]
 deploymentTarget = "cloudrun"
 ignorePorts = false
-buildCommand = "./replit-build.sh"
+buildCommand = "npm install && npm run build"
 
 [[ports]]
 localPort = 3008
@@ -21,8 +21,9 @@ channel = "stable-23_11"
 
 [env]
 NODE_ENV = "production"
-DATABASE_URL = "file:./kid-text-battle.db"
+DATABASE_PATH = "./kid-text-battle.db"
 PORT = "3008"
+NEXT_TELEMETRY_DISABLED = "1"
 
 [packager]
 language = "nodejs"
