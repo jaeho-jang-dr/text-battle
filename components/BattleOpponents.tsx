@@ -2,38 +2,22 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Character } from '@/types';
+import { Character, BattleOpponent } from '@/types';
 
 interface BattleOpponentsProps {
   currentCharacter: Character | null;
-  onSelectOpponent: (opponent: any) => void;
+  onSelectOpponent: (opponent: BattleOpponent) => void;
   onRefresh?: () => void;
 }
 
-interface LeaderboardEntry {
-  rank: number;
-  id: string;
-  characterName: string;
-  animalName: string;
-  animalIcon: string;
-  animalCategory: string;
-  playerName: string;
-  isGuest: boolean;
-  isBot?: boolean;
-  baseScore: number;
-  eloScore: number;
-  wins: number;
-  losses: number;
-  totalBattles: number;
-  winRate: number;
-}
+// Remove local interface and use the imported BattleOpponent type
 
 export default function BattleOpponents({ 
   currentCharacter, 
   onSelectOpponent,
   onRefresh 
 }: BattleOpponentsProps) {
-  const [opponents, setOpponents] = useState<LeaderboardEntry[]>([]);
+  const [opponents, setOpponents] = useState<BattleOpponent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
@@ -55,7 +39,7 @@ export default function BattleOpponents({
       if (data.success) {
         // 자신의 캐릭터를 제외한 상대만 표시
         const filteredOpponents = data.data.leaderboard.filter(
-          (entry: LeaderboardEntry) => entry.id !== currentCharacter?.id
+          (entry: BattleOpponent) => entry.id !== currentCharacter?.id
         );
         setOpponents(filteredOpponents.slice(0, 10)); // 상위 10명만 표시
       }
@@ -66,7 +50,7 @@ export default function BattleOpponents({
     }
   };
 
-  const getScoreDifference = (opponent: LeaderboardEntry) => {
+  const getScoreDifference = (opponent: BattleOpponent) => {
     if (!currentCharacter) return 0;
     return opponent.eloScore - currentCharacter.eloScore;
   };

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { animalCharacteristics, calculateTotalPower, getStatGrade } from '@/lib/animal-stats';
 
 interface Animal {
   id: number;
@@ -104,77 +105,57 @@ export default function AnimalsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100">
+    <main className="min-h-screen pb-20">
       {/* 헤더 */}
-      <header className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 shadow-lg">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">🦁 동물 도감</h1>
-              <p className="text-purple-200">다양한 동물들을 만나보세요!</p>
-            </div>
-            <button
-              onClick={() => router.push('/')}
-              className="bg-white/20 hover:bg-white/30 backdrop-blur px-6 py-3 rounded-xl font-bold transition-all duration-200 transform hover:scale-105"
-            >
-              🏠 홈으로 돌아가기
-            </button>
+      <header className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-4 shadow-lg sticky top-0 z-40">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">🦁 동물 도감</h1>
+            <p className="text-sm opacity-90">총 {animals.length}종의 동물 친구들</p>
           </div>
+          <div className="text-2xl animate-bounce">📚</div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="px-4 py-4">
         {/* 검색 바 */}
-        <div className="max-w-2xl mx-auto mb-6">
+        <div className="mb-4">
           <div className="relative">
             <input
               type="text"
-              placeholder="동물 이름을 검색해보세요..."
+              placeholder="동물 검색..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-3 pl-12 pr-4 text-lg border-2 border-purple-300 rounded-full focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-3 pl-10 pr-4 text-base border-2 border-gray-200 rounded-full focus:outline-none focus:border-green-500 bg-white"
             />
-            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-2xl">🔍</span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xl">🔍</span>
           </div>
         </div>
 
-        {/* 통계 표시 */}
-        {stats && (
-          <div className="text-center mb-6">
-            <p className="text-lg text-gray-600">
-              전체 <span className="font-bold text-purple-600">{stats.total}</span>마리의 동물이 있어요!
-            </p>
-          </div>
-        )}
         
-        {/* 카테고리 필터 */}
-        <div className="flex flex-wrap justify-center gap-4 mb-8">
+        {/* 카테고리 필터 - 횡스크롤 */}
+        <div className="flex gap-3 mb-4 overflow-x-auto no-scrollbar pb-2">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-6 py-3 rounded-full font-bold transition-all duration-200 transform hover:scale-105 ${
+            className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
               selectedCategory === 'all'
-                ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-md'
+                : 'bg-white text-gray-700 border border-gray-200'
             }`}
           >
-            전체 보기
+            전체보기
           </button>
           {['current', 'mythical', 'prehistoric'].map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-bold transition-all duration-200 transform hover:scale-105 ${
+              className={`px-4 py-2 rounded-full font-medium whitespace-nowrap transition-all ${
                 selectedCategory === category
-                  ? `bg-gradient-to-r ${getCategoryColor(category)} text-white shadow-lg`
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
+                  ? `bg-gradient-to-r ${getCategoryColor(category)} text-white shadow-md`
+                  : 'bg-white text-gray-700 border border-gray-200'
               }`}
             >
-              <span>{getCategoryName(category)}</span>
-              {stats && (
-                <span className="ml-2 text-sm opacity-90">
-                  ({stats.byCategory[category as keyof typeof stats.byCategory]})
-                </span>
-              )}
+              {getCategoryName(category)}
             </button>
           ))}
         </div>
@@ -191,29 +172,48 @@ export default function AnimalsPage() {
             <p className="text-gray-600">검색 결과가 없어요...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-            {filteredAnimals.map((animal, index) => (
-              <motion.div
-                key={animal.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(index * 0.02, 1) }}
-                whileHover={{ scale: 1.1, zIndex: 10 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedAnimal(animal)}
-                className="bg-white rounded-xl shadow-md p-4 cursor-pointer hover:shadow-xl transition-all duration-200 relative"
-                style={{
-                  backgroundColor: animal.color ? `${animal.color}15` : 'white',
-                  borderColor: animal.color || '#e5e7eb',
-                  borderWidth: '1px',
-                  borderStyle: 'solid'
-                }}
-              >
-                <div className="text-4xl text-center mb-2" style={{ color: animal.color || 'inherit' }}>{animal.emoji}</div>
-                <h3 className="font-bold text-center text-xs text-gray-800 line-clamp-1">{animal.korean_name}</h3>
-                <div className={`mt-2 h-0.5 rounded-full bg-gradient-to-r ${getCategoryColor(animal.category)}`} />
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-3 gap-3">
+            {filteredAnimals.map((animal, index) => {
+              const animalData = animalCharacteristics[animal.korean_name];
+              const totalPower = animalData ? calculateTotalPower(animalData.baseStats) : 0;
+              const grade = animalData ? getStatGrade(totalPower) : { grade: '?', color: 'text-gray-400' };
+              
+              return (
+                <motion.div
+                  key={animal.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: Math.min(index * 0.02, 0.5) }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedAnimal(animal)}
+                  className="mobile-card p-3 cursor-pointer relative overflow-hidden"
+                >
+                  {/* 등급 배지 */}
+                  {animalData && (
+                    <div className={`absolute top-1 right-1 font-bold text-xs ${grade.color}`}>
+                      {grade.grade}
+                    </div>
+                  )}
+                  
+                  {/* 동물 이모지 */}
+                  <div className="text-4xl text-center mb-1">{animal.emoji}</div>
+                  
+                  {/* 동물 이름 */}
+                  <h3 className="font-bold text-center text-xs text-gray-800 mb-1">{animal.korean_name}</h3>
+                  
+                  {/* 전투력 */}
+                  {animalData && (
+                    <div className="text-center">
+                      <span className="text-xs text-gray-500">💪</span>
+                      <span className="text-xs font-medium text-gray-700"> {totalPower}</span>
+                    </div>
+                  )}
+                  
+                  {/* 카테고리 표시 */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${getCategoryColor(animal.category)}`} />
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -236,45 +236,114 @@ export default function AnimalsPage() {
               className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             >
               {/* 모달 헤더 */}
-              <div className={`bg-gradient-to-r ${getCategoryColor(selectedAnimal.category)} p-8 text-white relative`}>
+              <div className={`bg-gradient-to-r ${getCategoryColor(selectedAnimal.category)} p-6 text-white relative`}>
                 <button
                   onClick={() => setSelectedAnimal(null)}
-                  className="absolute top-4 right-4 text-3xl hover:scale-110 transition-transform"
+                  className="absolute top-3 right-3 text-2xl bg-white/20 w-8 h-8 rounded-full flex items-center justify-center"
                 >
                   ✕
                 </button>
-                <div className="text-8xl text-center mb-4">{selectedAnimal.emoji}</div>
-                <h2 className="text-3xl font-bold text-center">{selectedAnimal.korean_name}</h2>
-                <p className="text-xl text-center mt-2 opacity-90">{selectedAnimal.name}</p>
+                <div className="text-6xl text-center mb-2">{selectedAnimal.emoji}</div>
+                <h2 className="text-2xl font-bold text-center">{selectedAnimal.korean_name}</h2>
+                <p className="text-sm text-center mt-1 opacity-90">{selectedAnimal.name}</p>
               </div>
 
               {/* 모달 내용 */}
-              <div className="p-8">
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
+              <div className="p-6">
+                {/* 캐릭터 스탯 */}
+                {(() => {
+                  const animalData = animalCharacteristics[selectedAnimal.korean_name];
+                  if (animalData) {
+                    const totalPower = calculateTotalPower(animalData.baseStats);
+                    const grade = getStatGrade(totalPower);
+                    
+                    return (
+                      <div className="mb-6">
+                        <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
+                          <span>📊</span> 기본 능력치
+                        </h3>
+                        
+                        {/* 전투력 및 등급 */}
+                        <div className="bg-gray-100 rounded-lg p-3 mb-3 flex items-center justify-between">
+                          <div>
+                            <span className="text-sm text-gray-600">총 전투력</span>
+                            <div className="text-2xl font-bold">{totalPower}</div>
+                          </div>
+                          <div className={`text-3xl font-bold ${grade.color}`}>
+                            {grade.grade}
+                          </div>
+                        </div>
+                        
+                        {/* 각 스탯 */}
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-16 text-sm">💚 체력</span>
+                            <div className="flex-1 stat-bar">
+                              <div className="stat-bar-fill" style={{ width: `${animalData.baseStats.hp}%` }} />
+                            </div>
+                            <span className="w-10 text-right font-medium">{animalData.baseStats.hp}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="w-16 text-sm">⚔️ 공격</span>
+                            <div className="flex-1 stat-bar">
+                              <div className="stat-bar-fill bg-gradient-to-r from-red-400 to-red-600" style={{ width: `${animalData.baseStats.power}%` }} />
+                            </div>
+                            <span className="w-10 text-right font-medium">{animalData.baseStats.power}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="w-16 text-sm">🛡️ 방어</span>
+                            <div className="flex-1 stat-bar">
+                              <div className="stat-bar-fill bg-gradient-to-r from-blue-400 to-blue-600" style={{ width: `${animalData.baseStats.defense}%` }} />
+                            </div>
+                            <span className="w-10 text-right font-medium">{animalData.baseStats.defense}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="w-16 text-sm">💨 속도</span>
+                            <div className="flex-1 stat-bar">
+                              <div className="stat-bar-fill bg-gradient-to-r from-yellow-400 to-yellow-600" style={{ width: `${animalData.baseStats.speed}%` }} />
+                            </div>
+                            <span className="w-10 text-right font-medium">{animalData.baseStats.speed}</span>
+                          </div>
+                          
+                          <div className="flex items-center gap-2">
+                            <span className="w-16 text-sm">✨ 특수</span>
+                            <div className="flex-1 stat-bar">
+                              <div className="stat-bar-fill bg-gradient-to-r from-purple-400 to-purple-600" style={{ width: `${animalData.baseStats.special}%` }} />
+                            </div>
+                            <span className="w-10 text-right font-medium">{animalData.baseStats.special}</span>
+                          </div>
+                        </div>
+                        
+                        {/* 특수 능력 */}
+                        <div className="mt-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                          <h4 className="font-bold text-sm text-purple-700 mb-1">🌟 {animalData.ability}</h4>
+                          <p className="text-xs text-gray-600">{animalData.description}</p>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+                
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
                     <span>📖</span> 설명
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">{selectedAnimal.description}</p>
+                  <p className="text-sm text-gray-700 leading-relaxed">{selectedAnimal.description}</p>
                 </div>
 
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
                     <span>⚡</span> 특수 능력
                   </h3>
-                  <p className="text-gray-700 leading-relaxed">{selectedAnimal.abilities}</p>
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-                    <span>🏷️</span> 분류
-                  </h3>
-                  <span className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${getCategoryColor(selectedAnimal.category)} text-white font-bold`}>
-                    {getCategoryName(selectedAnimal.category)}
-                  </span>
+                  <p className="text-sm text-gray-700 leading-relaxed">{selectedAnimal.abilities}</p>
                 </div>
 
                 {/* 액션 버튼 */}
-                <div className="mt-8">
+                <div className="mt-6">
                   {isLoggedIn ? (
                     <div className="flex gap-4">
                       <button

@@ -63,7 +63,11 @@ export async function POST(request: NextRequest) {
     }
 
     // 기존 사용자 확인
-    const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const existingUser = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as { 
+      id: number; 
+      email: string; 
+      is_guest: number;
+    } | undefined;
 
     const token = uuidv4();
     const tokenExpiresAt = new Date();
@@ -82,10 +86,10 @@ export async function POST(request: NextRequest) {
       const user = db.prepare('SELECT * FROM users WHERE id = ?').get(existingUser.id);
       
       // 활동 추적
-      updateUserActivity(existingUser.id);
+      updateUserActivity(existingUser.id.toString());
       
       // 로그 기록
-      logUserAction(existingUser.id, 'user_login', { 
+      logUserAction(existingUser.id.toString(), 'user_login', { 
         email,
         isNewUser: false 
       });

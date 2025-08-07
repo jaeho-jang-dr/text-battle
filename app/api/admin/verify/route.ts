@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       SELECT id, email, created_at 
       FROM users 
       WHERE token = ?
-    `).get(token);
+    `).get(token) as { id: number; email: string; created_at: string } | undefined;
     
     if (!user) {
       return NextResponse.json({

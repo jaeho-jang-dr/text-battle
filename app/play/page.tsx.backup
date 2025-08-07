@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { User, Character, Animal, BattleOpponent } from '@/types';
+import { User, Character, Animal } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import BattleOpponents from '@/components/BattleOpponents';
 
@@ -10,7 +10,7 @@ interface BattleMode {
   isActive: boolean;
   selectedCharacter: Character | null;
   opponents: Character[];
-  selectedOpponent: Character | BattleOpponent | null;
+  selectedOpponent: Character | null;
   battleResult: any | null;
   isBattling: boolean;
 }
@@ -255,7 +255,7 @@ export default function PlayPage() {
 
         // 캐릭터 정보 업데이트
         const updatedCharacters = characters.map(char => {
-          if (char.id === battleMode.selectedCharacter?.id) {
+          if (char.id === battleMode.selectedCharacter.id) {
             return {
               ...char,
               activeBattlesToday: char.activeBattlesToday + 1,
@@ -292,7 +292,7 @@ export default function PlayPage() {
   };
 
   // 대기 중인 상대 선택 핸들러
-  const handleSelectOpponentFromList = async (opponent: BattleOpponent) => {
+  const handleSelectOpponentFromList = async (opponent: any) => {
     if (characters.length === 0) {
       alert('먼저 캐릭터를 만들어주세요!');
       setShowCharacterCreation(true);
@@ -657,6 +657,8 @@ export default function PlayPage() {
             </motion.div>
             </>
           )}
+        </div>
+
 
         {/* 배틀 모드 UI */}
         <AnimatePresence>
@@ -706,10 +708,7 @@ export default function PlayPage() {
                         >
                           {battleMode.selectedOpponent ? (
                             <>
-                              <div className="emoji-xl mb-2">
-                                {('animal' in battleMode.selectedOpponent && battleMode.selectedOpponent.animal?.emoji) || 
-                                 ('animalIcon' in battleMode.selectedOpponent && battleMode.selectedOpponent.animalIcon) || '🐾'}
-                              </div>
+                              <div className="emoji-xl mb-2">{battleMode.selectedOpponent.animalIcon || '🐾'}</div>
                               <h3 className="font-bold">{battleMode.selectedOpponent.characterName}</h3>
                               <p className="text-xs text-gray-600">
                                 상대
@@ -900,14 +899,10 @@ export default function PlayPage() {
                 
                 {/* 상대 정보 */}
                 <div className="mobile-card mb-4 text-center bg-gradient-to-br from-purple-50 to-pink-50">
-                  <div className="emoji-lg mb-2">
-                    {('animal' in battleMode.selectedOpponent && battleMode.selectedOpponent.animal?.emoji) || 
-                     ('animalIcon' in battleMode.selectedOpponent && battleMode.selectedOpponent.animalIcon) || '🐾'}
-                  </div>
+                  <div className="emoji-lg mb-2">{battleMode.selectedOpponent.animalIcon}</div>
                   <p className="font-bold">{battleMode.selectedOpponent.characterName}</p>
                   <p className="text-sm text-gray-600">
-                    {('animal' in battleMode.selectedOpponent && battleMode.selectedOpponent.animal?.koreanName) || 
-                     ('animalName' in battleMode.selectedOpponent && battleMode.selectedOpponent.animalName) || '동물'}
+                    {battleMode.selectedOpponent.animalName}
                     {battleMode.selectedOpponent.isBot && (
                       <span className="block text-purple-600 mt-1">
                         🤖 대기 계정 (무제한)
@@ -916,7 +911,7 @@ export default function PlayPage() {
                   </p>
                   <div className="flex justify-center gap-4 mt-2 text-xs">
                     <span>ELO: {battleMode.selectedOpponent.eloScore}</span>
-                    <span>승률: {'winRate' in battleMode.selectedOpponent ? battleMode.selectedOpponent.winRate : Math.round((battleMode.selectedOpponent.wins / (battleMode.selectedOpponent.wins + battleMode.selectedOpponent.losses)) * 100 || 0)}%</span>
+                    <span>승률: {battleMode.selectedOpponent.winRate}%</span>
                   </div>
                 </div>
 

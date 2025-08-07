@@ -22,9 +22,17 @@ export async function GET(request: Request) {
       params.push(parseInt(limit));
     }
     
-    const animals = params.length > 0 
+    const animals = (params.length > 0 
       ? db.prepare(query).all(...params)
-      : db.prepare(query).all();
+      : db.prepare(query).all()) as Array<{
+        id: number;
+        name: string;
+        korean_name: string;
+        category: string;
+        description: string;
+        abilities: string;
+        emoji: string;
+      }>;
 
     // Add statistics
     const stats = {

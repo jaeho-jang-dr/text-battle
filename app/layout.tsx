@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AdminButton from "@/components/AdminButton";
+import MobileNavigation from "@/components/MobileNavigation";
 
 export const metadata: Metadata = {
   title: "Kid Text Battle",
@@ -15,8 +16,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-screen">
-        {children}
-        <AdminButton />
+        <div className="app-container">
+          {children}
+          <MobileNavigation />
+          <AdminButton />
+        </div>
       </body>
     </html>
   );

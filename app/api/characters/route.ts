@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
         JOIN animals a ON c.animal_id = a.id
         WHERE c.user_id = ? AND c.is_active = 1
         ORDER BY c.created_at ASC
-      `).all(userId);
+      `).all(userId) as any[];
 
       const formattedCharacters = characters.map(char => ({
         ...char,
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         AND u.is_suspended = 0
         ORDER BY c.base_score DESC
         LIMIT 20
-      `).all(excludeUserId);
+      `).all(excludeUserId) as any[];
 
       const formattedOpponents = opponents.map(char => ({
         ...char,
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
-    `).get(token);
+    `).get(token) as { id: number; is_suspended: number; email: string } | undefined;
 
     if (!user) {
       return NextResponse.json({
@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
       JOIN animals a ON c.animal_id = a.id
       WHERE c.user_id = ? AND c.is_active = 1
       ORDER BY c.created_at ASC
-    `).all(user.id);
+    `).all(user.id) as any[];
 
     // 각 캐릭터의 오늘 배틀 횟수 확인
     const charactersWithStatus = characters.map(char => {
@@ -191,7 +191,7 @@ export async function POST(request: NextRequest) {
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
-    `).get(token);
+    `).get(token) as { id: number; is_suspended: number; email: string } | undefined;
 
     if (!user) {
       return NextResponse.json({
@@ -214,7 +214,7 @@ export async function POST(request: NextRequest) {
     const nameFilter = filterCharacterName(characterName);
     if (!nameFilter.isClean) {
       // 경고 기록
-      await recordWarning(user.id, 'character_name', characterName, nameFilter.warningType);
+      await recordWarning(user.id.toString(), 'character_name', characterName, nameFilter.warningType);
       
       return NextResponse.json({
         success: false,
@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
     const textFilter = filterBattleText(battleText);
     if (!textFilter.isClean) {
       // 경고 기록
-      await recordWarning(user.id, 'battle_text', battleText, textFilter.warningType);
+      await recordWarning(user.id.toString(), 'battle_text', battleText, textFilter.warningType);
       
       return NextResponse.json({
         success: false,
@@ -257,7 +257,7 @@ export async function POST(request: NextRequest) {
     stmt.run(characterId, user.id, animalId, characterName, battleText);
     
     // 로그 기록
-    logUserAction(user.id, 'character_created', {
+    logUserAction(user.id.toString(), 'character_created', {
       characterId,
       characterName,
       animalId
@@ -271,7 +271,7 @@ export async function POST(request: NextRequest) {
       FROM characters c
       JOIN animals a ON c.animal_id = a.id
       WHERE c.id = ?
-    `).get(characterId);
+    `).get(characterId) as any;
 
     // 동물 데이터 구조 정리
     character.animal = {

@@ -22,7 +22,7 @@ export async function PATCH(
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
-    `).get(token);
+    `).get(token) as { id: number } | undefined;
 
     if (!user) {
       return NextResponse.json({
@@ -35,7 +35,7 @@ export async function PATCH(
     const character = db.prepare(`
       SELECT * FROM characters 
       WHERE id = ? AND user_id = ? AND is_active = 1
-    `).get(params.characterId, user.id);
+    `).get(params.characterId, user.id) as { character_name: string; battle_text: string } | undefined;
 
     if (!character) {
       return NextResponse.json({
@@ -80,8 +80,8 @@ export async function PATCH(
       `).run(user.id);
 
       // 3회 경고 시 정지
-      const updatedUser = db.prepare('SELECT warning_count FROM users WHERE id = ?').get(user.id);
-      if (updatedUser.warning_count >= 3) {
+      const updatedUser = db.prepare('SELECT warning_count FROM users WHERE id = ?').get(user.id) as { warning_count: number } | undefined;
+      if (updatedUser && updatedUser.warning_count >= 3) {
         db.prepare(`
           UPDATE users 
           SET is_suspended = 1, 
@@ -106,7 +106,7 @@ export async function PATCH(
     updateStmt.run(battleText, params.characterId);
 
     // 로그 기록
-    logUserAction(user.id, 'battle_text_updated', {
+    logUserAction(user.id.toString(), 'battle_text_updated', {
       characterId: params.characterId,
       characterName: character.character_name,
       oldText: character.battle_text,

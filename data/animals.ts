@@ -209,6 +209,7 @@ export const animals: Animal[] = [
 ];
 
 // 카테고리별 동물 가져오기
+type AnimalCategory = 'current' | 'mythical' | 'prehistoric' | 'legend';
 export const getAnimalsByCategory = (category: AnimalCategory) => {
   return animals.filter(animal => animal.category === category);
 };

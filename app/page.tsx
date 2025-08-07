@@ -1,12 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [showLogin, setShowLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [dailyBattleLimit, setDailyBattleLimit] = useState<number>(10);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    // 배틀 제한 횟수 가져오기
+    fetch('/api/settings/battle-limit')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setDailyBattleLimit(data.data.dailyBattleLimit);
+        }
+      })
+      .catch(error => {
+        console.error('Failed to fetch battle limit:', error);
+      });
+  }, []);
 
   const handleGuestPlay = () => {
     // 게스트로 바로 게임 시작
@@ -42,23 +60,82 @@ export default function Home() {
     }
   };
 
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-100 to-green-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* 헤더 */}
-        <header className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-blue-600 mb-2">
-            🦁 동물 텍스트 배틀 🦄
-          </h1>
-          <p className="text-xl text-gray-700">
-            동물 친구들과 함께하는 재미있는 텍스트 배틀!
-          </p>
-        </header>
+  // 자동 슬라이드
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % 3);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
-        {/* 로그인 옵션 */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
-          <h2 className="text-2xl font-bold text-center mb-6">
-            어떻게 시작할까요? 🎮
+  const features = [
+    {
+      icon: '🎮',
+      title: '재미있는 텍스트 배틀',
+      description: '친구들과 함께 즐기는 텍스트 대결!',
+      color: 'from-blue-400 to-blue-600'
+    },
+    {
+      icon: '🦁',
+      title: '80가지 동물 캐릭터',
+      description: '좋아하는 동물로 나만의 캐릭터를 만들어요',
+      color: 'from-green-400 to-green-600'
+    },
+    {
+      icon: '🏆',
+      title: '랭킹 시스템',
+      description: '최고의 텍스트 배틀러가 되어보세요!',
+      color: 'from-yellow-400 to-orange-500'
+    }
+  ];
+
+  return (
+    <main className="min-h-screen pb-20">
+      {/* 상단 헤더 */}
+      <header className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 shadow-lg">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-1">🦁 동물 텍스트 배틀 🦄</h1>
+          <p className="text-sm opacity-90">친구들과 함께하는 재미있는 모험!</p>
+        </div>
+      </header>
+
+      <div className="px-4 py-6 max-w-lg mx-auto">
+        {/* 특징 슬라이드 */}
+        <div className="mobile-card mb-6 overflow-hidden">
+          <div className="relative h-40">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-all duration-500 flex flex-col items-center justify-center text-center p-4 ${
+                  index === currentSlide ? 'opacity-100 translate-x-0' : 
+                  index < currentSlide ? 'opacity-0 -translate-x-full' : 'opacity-0 translate-x-full'
+                }`}
+              >
+                <div className={`text-5xl mb-3 ${index === currentSlide ? 'animate-bounce-in' : ''}`}>
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center space-x-2 mt-4">
+            {features.map((_, index) => (
+              <button
+                key={index}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === currentSlide ? 'bg-blue-500 w-8' : 'bg-gray-300'
+                }`}
+                onClick={() => setCurrentSlide(index)}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* 빠른 시작 카드 */}
+        <div className="mobile-card mb-6">
+          <h2 className="text-xl font-bold text-center mb-4">
+            🎮 빠른 시작
           </h2>
 
           {!showLogin ? (
@@ -66,26 +143,26 @@ export default function Home() {
               {/* 게스트로 바로 시작 버튼 */}
               <button
                 onClick={handleGuestPlay}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl text-xl transition-colors duration-200 flex items-center justify-center gap-3"
+                className="w-full btn-success text-lg flex items-center justify-center gap-2 shadow-md"
               >
-                <span className="text-2xl">🎯</span>
+                <span className="emoji-md">🎯</span>
                 바로 게임 시작하기!
               </button>
 
               {/* 이메일로 로그인 버튼 */}
               <button
                 onClick={() => setShowLogin(true)}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-xl text-xl transition-colors duration-200 flex items-center justify-center gap-3"
+                className="w-full btn-primary text-lg flex items-center justify-center gap-2 shadow-md"
               >
-                <span className="text-2xl">📧</span>
+                <span className="emoji-md">📧</span>
                 이메일로 시작하기
               </button>
 
               {/* 도움말 */}
-              <div className="mt-6 p-4 bg-yellow-100 rounded-xl">
-                <p className="text-center text-gray-700">
-                  <span className="font-bold">💡 도움말:</span> 이메일로 시작하면 
-                  캐릭터를 저장하고 순위를 기록할 수 있어요!
+              <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                <p className="text-sm text-center text-gray-700 flex items-center justify-center gap-1">
+                  <span className="emoji-sm">💡</span>
+                  <span>이메일로 시작하면 캐릭터를 저장할 수 있어요!</span>
                 </p>
               </div>
             </div>
@@ -110,14 +187,14 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setShowLogin(false)}
-                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="flex-1 btn-secondary"
                   disabled={isLoading}
                 >
                   뒤로가기
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200"
+                  className="flex-1 btn-primary"
                   disabled={isLoading}
                 >
                   {isLoading ? '로그인 중...' : '시작하기'}
@@ -127,107 +204,90 @@ export default function Home() {
           )}
         </div>
 
-        {/* 게임 소개 및 네비게이션 */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
-          <h3 className="text-2xl font-bold mb-6 text-center">
-            🎮 게임 방법
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <button
-              onClick={() => window.location.href = '/animals'}
-              className="group cursor-pointer transform transition-all duration-200 hover:scale-105"
-            >
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 text-center hover:shadow-lg">
-                <div className="text-5xl mb-3">🐻</div>
-                <h4 className="font-bold mb-2 text-lg">1. 동물 선택</h4>
-                <p className="text-gray-600 text-sm mb-3">
-                  좋아하는 동물을 골라 캐릭터를 만들어요
-                </p>
-                <p className="text-purple-600 font-bold text-sm group-hover:underline">
-                  동물 도감 보기 →
-                </p>
-              </div>
-            </button>
-            <button
-              onClick={() => window.location.href = '/text-guide'}
-              className="group cursor-pointer transform transition-all duration-200 hover:scale-105"
-            >
-              <div className="bg-gradient-to-br from-green-50 to-yellow-50 rounded-2xl p-6 text-center hover:shadow-lg">
-                <div className="text-5xl mb-3">✍️</div>
-                <h4 className="font-bold mb-2 text-lg">2. 텍스트 작성</h4>
-                <p className="text-gray-600 text-sm mb-3">
-                  100자 이내로 멋진 배틀 텍스트를 써요
-                </p>
-                <p className="text-green-600 font-bold text-sm group-hover:underline">
-                  작성 가이드 보기 →
-                </p>
-              </div>
-            </button>
-            <button
-              onClick={() => window.location.href = '/leaderboard'}
-              className="group cursor-pointer transform transition-all duration-200 hover:scale-105"
-            >
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-6 text-center hover:shadow-lg">
-                <div className="text-5xl mb-3">🏆</div>
-                <h4 className="font-bold mb-2 text-lg">3. 배틀 & 순위</h4>
-                <p className="text-gray-600 text-sm mb-3">
-                  다른 친구들과 배틀하고 순위를 올려요
-                </p>
-                <p className="text-orange-600 font-bold text-sm group-hover:underline">
-                  순위표 보기 →
-                </p>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* 추가 정보 */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <h3 className="text-xl font-bold mb-4 text-center">
-            ✨ 게임 특징
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-blue-50 rounded-xl p-4">
-              <h4 className="font-bold text-blue-700 mb-2">🎯 일일 배틀 제한</h4>
-              <p className="text-sm text-gray-700">
-                캐릭터당 하루 10번까지 배틀 가능해요. 
-                하지만 🤖 대기 계정과는 무제한으로 연습할 수 있어요!
-              </p>
-            </div>
-            <div className="bg-purple-50 rounded-xl p-4">
-              <h4 className="font-bold text-purple-700 mb-2">📊 공정한 점수 시스템</h4>
-              <p className="text-sm text-gray-700">
-                ELO 시스템으로 실력을 정확히 측정해요. 
-                강한 상대를 이기면 더 많은 점수를 얻어요!
-              </p>
-            </div>
-            <div className="bg-green-50 rounded-xl p-4">
-              <h4 className="font-bold text-green-700 mb-2">🦄 다양한 동물들</h4>
-              <p className="text-sm text-gray-700">
-                현존하는 동물 50종, 전설의 동물 15종, 고생대 동물 15종! 
-                총 80종의 다양한 동물로 캐릭터를 만들 수 있어요!
-              </p>
-            </div>
-            <div className="bg-yellow-50 rounded-xl p-4">
-              <h4 className="font-bold text-yellow-700 mb-2">🛡️ 안전한 환경</h4>
-              <p className="text-sm text-gray-700">
-                부적절한 내용은 자동으로 필터링돼요. 
-                모두가 즐거운 게임을 만들어가요!
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 관리자 아이콘 (숨김) */}
-        <div className="fixed bottom-4 right-4">
+        {/* 빠른 메뉴 그리드 */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
           <button
-            onClick={() => window.location.href = '/admin'}
-            className="opacity-20 hover:opacity-100 transition-all duration-300 cursor-pointer hover:scale-110 hover:rotate-12"
-            title="관리자 페이지"
+            onClick={() => router.push('/animals')}
+            className="mobile-card bg-gradient-to-br from-green-50 to-green-100 text-center group"
           >
-            <span className="text-4xl drop-shadow-lg">🦄</span>
+            <div className="emoji-lg mb-2 group-hover:scale-110 transition-transform">🦁</div>
+            <h4 className="font-bold text-base">동물 도감</h4>
+            <p className="text-xs text-gray-600 mt-1">80종의 동물들</p>
+          </button>
+          <button
+            onClick={() => router.push('/play')}
+            className="mobile-card bg-gradient-to-br from-red-50 to-orange-100 text-center group"
+          >
+            <div className="emoji-lg mb-2 group-hover:scale-110 transition-transform">⚔️</div>
+            <h4 className="font-bold text-base">배틀 시작</h4>
+            <p className="text-xs text-gray-600 mt-1">친구와 대결!</p>
+          </button>
+          <button
+            onClick={() => router.push('/leaderboard')}
+            className="mobile-card bg-gradient-to-br from-yellow-50 to-yellow-100 text-center group"
+          >
+            <div className="emoji-lg mb-2 group-hover:scale-110 transition-transform">🏆</div>
+            <h4 className="font-bold text-base">순위표</h4>
+            <p className="text-xs text-gray-600 mt-1">최고의 배틀러</p>
+          </button>
+
+          <button
+            onClick={() => router.push('/text-guide')}
+            className="mobile-card bg-gradient-to-br from-purple-50 to-purple-100 text-center group"
+          >
+            <div className="emoji-lg mb-2 group-hover:scale-110 transition-transform">✍️</div>
+            <h4 className="font-bold text-base">작성 가이드</h4>
+            <p className="text-xs text-gray-600 mt-1">배틀 텍스트 팁</p>
           </button>
         </div>
+
+        {/* 게임 특징 카드들 */}
+        <div className="space-y-3">
+          <div className="mobile-card bg-gradient-to-r from-blue-50 to-blue-100 flex items-start gap-3">
+            <span className="emoji-md flex-shrink-0 mt-1">🎯</span>
+            <div className="flex-1">
+              <h4 className="font-bold text-sm mb-1">일일 배틀 제한</h4>
+              <p className="text-xs text-gray-600">
+                하루 {dailyBattleLimit}번 배틀 가능! 🤖 봇과는 무제한
+              </p>
+            </div>
+          </div>
+          <div className="mobile-card bg-gradient-to-r from-purple-50 to-purple-100 flex items-start gap-3">
+            <span className="emoji-md flex-shrink-0 mt-1">📊</span>
+            <div className="flex-1">
+              <h4 className="font-bold text-sm mb-1">공정한 점수</h4>
+              <p className="text-xs text-gray-600">
+                ELO 시스템으로 실력 측정
+              </p>
+            </div>
+          </div>
+          <div className="mobile-card bg-gradient-to-r from-green-50 to-green-100 flex items-start gap-3">
+            <span className="emoji-md flex-shrink-0 mt-1">🦄</span>
+            <div className="flex-1">
+              <h4 className="font-bold text-sm mb-1">80종의 동물</h4>
+              <p className="text-xs text-gray-600">
+                현존 50종 + 전설 15종 + 고생대 15종
+              </p>
+            </div>
+          </div>
+          <div className="mobile-card bg-gradient-to-r from-yellow-50 to-yellow-100 flex items-start gap-3">
+            <span className="emoji-md flex-shrink-0 mt-1">🛡️</span>
+            <div className="flex-1">
+              <h4 className="font-bold text-sm mb-1">안전한 환경</h4>
+              <p className="text-xs text-gray-600">
+                자동 필터링으로 깨끗한 게임
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 플레이 버튼 - 플로팅 액션 버튼 */}
+        <button
+          onClick={handleGuestPlay}
+          className="fab bg-gradient-to-r from-red-500 to-orange-500 text-white animate-pulse"
+        >
+          <span className="text-2xl">⚔️</span>
+        </button>
       </div>
     </main>
   );

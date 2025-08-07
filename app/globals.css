@@ -1,6 +1,238 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    /* 주요 색상 - 밝고 친근한 색상 */
+    --primary-blue: #4A90E2;
+    --primary-green: #7ED321;
+    --primary-yellow: #FFD93D;
+    --primary-orange: #FF8C42;
+    --primary-purple: #BD10E0;
+    --primary-pink: #FF6B9D;
+    
+    /* 배경 색상 */
+    --bg-gradient-start: #87CEEB;
+    --bg-gradient-end: #98FB98;
+    --card-bg: rgba(255, 255, 255, 0.95);
+    
+    /* 텍스트 색상 */
+    --text-primary: #2C3E50;
+    --text-secondary: #5D6D7E;
+    --text-white: #FFFFFF;
+    
+    /* 그림자 효과 */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+    
+    /* 모바일 안전 영역 */
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+    
+    /* 애니메이션 */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply text-gray-800;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding-top: var(--safe-area-top);
+    padding-bottom: calc(70px + var(--safe-area-bottom));
+  }
+
+  /* 재미있는 제목 폰트 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Jua', sans-serif;
+    @apply leading-tight;
+  }
+
+  /* 버튼 기본 스타일 */
+  button {
+    @apply select-none outline-none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+
+  /* 입력 필드 모바일 최적화 */
+  input, textarea, select {
+    font-size: 16px; /* iOS 줌 방지 */
+  }
+}
+
+@layer components {
+  /* 모바일 카드 스타일 */
+  .mobile-card {
+    @apply bg-white bg-opacity-95 rounded-2xl p-4 shadow-md backdrop-blur-sm;
+    transition: all var(--transition-normal);
+  }
+
+  .mobile-card:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+  }
+
+  /* 주요 버튼 스타일 */
+  .btn-primary {
+    @apply bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200;
+    @apply active:scale-95;
+    min-height: 44px;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all duration-200;
+    @apply active:scale-95;
+    min-height: 44px;
+  }
+
+  .btn-success {
+    @apply bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200;
+    @apply active:scale-95;
+    min-height: 44px;
+  }
+
+  /* 이모지 크기 */
+  .emoji-sm {
+    @apply text-xl;
+  }
+
+  .emoji-md {
+    @apply text-2xl;
+  }
+
+  .emoji-lg {
+    @apply text-4xl;
+  }
+
+  .emoji-xl {
+    @apply text-6xl;
+  }
+
+  /* 모바일 안전 영역 */
+  .safe-top {
+    padding-top: var(--safe-area-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: var(--safe-area-bottom);
+  }
+
+  /* 게임 카드 스타일 */
+  .game-card {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    @apply rounded-2xl p-6 text-white;
+  }
+
+  .game-card::before {
+    content: '';
+    @apply absolute inset-0 bg-white opacity-10;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' fill-opacity='0.03'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* 캐릭터 스탯 바 */
+  .stat-bar {
+    @apply relative h-6 bg-gray-200 rounded-full overflow-hidden;
+  }
+
+  .stat-bar-fill {
+    @apply absolute left-0 top-0 h-full transition-all duration-500;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  }
+
+  /* 플로팅 액션 버튼 */
+  .fab {
+    @apply fixed bottom-20 right-4 w-14 h-14 rounded-full shadow-lg;
+    @apply flex items-center justify-center;
+    @apply transition-all duration-300;
+    z-index: 100;
+  }
+
+  .fab:active {
+    @apply scale-90;
+  }
+}
+
+@layer utilities {
+  /* 텍스트 그라디언트 */
+  .text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* 반짝이는 효과 */
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  /* 펄스 효과 */
+  .pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* 플로팅 효과 */
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+
+  @keyframes floating {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  /* 바운스 효과 */
+  .bounce-slow {
+    animation: bounce 2s infinite;
+  }
+
+  /* 스크롤바 숨기기 */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
 
 /* 애니메이션 클래스 */
 @keyframes fade-in {

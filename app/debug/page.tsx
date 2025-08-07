@@ -23,7 +23,7 @@ export default function DebugPage() {
         entriesCount: data.data?.leaderboard?.length || 0,
         error: data.error
       };
-    } catch (e) {
+    } catch (e: any) {
       results.leaderboard = { error: e.message };
     }
 
@@ -40,7 +40,7 @@ export default function DebugPage() {
         success: data.success,
         error: data.error
       };
-    } catch (e) {
+    } catch (e: any) {
       results.adminLogin = { error: e.message };
     }
 
@@ -57,7 +57,7 @@ export default function DebugPage() {
         hasToken: !!token,
         error: data.error
       };
-    } catch (e) {
+    } catch (e: any) {
       results.authVerify = { error: e.message };
     }
 

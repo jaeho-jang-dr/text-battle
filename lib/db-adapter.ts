@@ -80,18 +80,18 @@ class PostgreSQLAdapter implements DbAdapter {
     const result = await this.query(sql, params);
     return {
       changes: result.rowCount,
-      lastInsertRowid: result.rows[0]?.id
+      lastInsertRowid: result.rows?.[0]?.id
     };
   }
 
   async get(sql: string, params?: any[]) {
     const result = await this.query(sql, params);
-    return result.rows[0];
+    return result.rows?.[0];
   }
 
   async all(sql: string, params?: any[]) {
     const result = await this.query(sql, params);
-    return result.rows;
+    return result.rows || [];
   }
 
   prepare(sql: string) {
@@ -99,17 +99,17 @@ class PostgreSQLAdapter implements DbAdapter {
     return {
       all: async (...params: any[]) => {
         const result = await this.query(sql, params);
-        return result.rows;
+        return result.rows || [];
       },
       get: async (...params: any[]) => {
         const result = await this.query(sql, params);
-        return result.rows[0];
+        return result.rows?.[0];
       },
       run: async (...params: any[]) => {
         const result = await this.query(sql, params);
         return {
           changes: result.rowCount,
-          lastInsertRowid: result.rows[0]?.id
+          lastInsertRowid: result.rows?.[0]?.id
         };
       }
     };

@@ -16,10 +16,7 @@ const nextConfig = {
     NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV || 'development'
   },
   
-  // 실험적 기능
-  experimental: {
-    serverActions: true
-  },
+  // Server Actions are enabled by default in Next.js 14+
   
   // 개발 환경에서 React DevTools 비활성화
   webpack: (config, { dev }) => {

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       SELECT * FROM users 
       WHERE login_token = ? 
       AND datetime(token_expires_at) > datetime('now')
-    `).get(token);
+    `).get(token) as any;
 
     if (!user) {
       return NextResponse.json({
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       FROM characters c
       JOIN animals a ON c.animal_id = a.id
       WHERE c.user_id = ?
-    `).all(user.id);
+    `).all(user.id) as any[];
 
     // 사용자 데이터에 캐릭터 추가
     user.characters = characters.map(char => ({

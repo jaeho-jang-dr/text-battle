@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       LIMIT 100
     `;
 
-    const allCharacters = db.prepare(query).all();
+    const allCharacters = db.prepare(query).all() as any[];
 
     // 카테고리 필터링 (클라이언트 사이드)
     let characters = allCharacters || [];

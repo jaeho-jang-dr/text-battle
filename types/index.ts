@@ -18,11 +18,25 @@ export interface Animal {
   id: number;
   name: string;
   koreanName: string;
-  category: 'current' | 'mythical' | 'prehistoric';
+  category: 'current' | 'mythical' | 'prehistoric' | 'legend';
   description: string;
-  abilities: string;
+  abilities?: string;
   emoji: string;
   imageUrl?: string;
+  detailedInfo?: {
+    habitat: string;
+    food: string;
+    speciality: string;
+    funFact?: string;
+  };
+  stats?: {
+    power?: number;
+    defense?: number;
+    speed?: number;
+    special?: number;
+    hp?: number;
+  };
+  battleCry?: string;
 }
 
 // 캐릭터 타입
@@ -41,6 +55,7 @@ export interface Character {
   wins: number;
   losses: number;
   isActive: boolean;
+  isBot?: boolean;
   createdAt: Date;
   updatedAt: Date;
   lastBattleReset: Date;
@@ -114,6 +129,27 @@ export interface AdminLog {
   targetId?: string;
   details?: any;
   createdAt: Date;
+}
+
+// 배틀 상대 타입 (리더보드에서 사용)
+export interface BattleOpponent {
+  rank: number;
+  id: string;
+  characterName: string;
+  animalName: string;
+  animalIcon: string;
+  animalCategory: string;
+  playerName: string;
+  isGuest: boolean;
+  isBot?: boolean;
+  baseScore: number;
+  eloScore: number;
+  wins: number;
+  losses: number;
+  totalBattles: number;
+  winRate: number;
+  // Character 타입과 호환성을 위한 추가 필드
+  animal?: Animal;
 }
 
 // API 응답 타입
