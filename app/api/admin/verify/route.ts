@@ -1,57 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/db';
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "admin-secret-key";
 
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get('authorization');
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({
-        success: false,
-        error: '인증 토큰이 필요합니다'
-      }, { status: 401 });
+    const token = cookies().get("admin-token")?.value;
+
+    if (!token) {
+      return NextResponse.json(
+        { error: "Not authenticated" },
+        { status: 401 }
+      );
     }
 
-    const token = authHeader.split(' ')[1];
-    
-    // Verify user token first
-    const user = await db.prepare(`
-      SELECT id, email, created_at 
-      FROM users 
-      WHERE token = ?
-    `).get(token);
-    
-    if (!user) {
-      return NextResponse.json({
-        success: false,
-        error: '유효하지 않은 토큰입니다'
-      }, { status: 401 });
-    }
-
-    // Check if user is admin
-    const adminUser = await db.prepare(`
-      SELECT au.id, au.username, au.role 
-      FROM admin_users au
-      WHERE au.username = ?
-    `).get(user.email);
-    
-    return NextResponse.json({
-      success: true,
-      data: {
-        isAdmin: !!adminUser,
-        user: {
-          id: user.id,
-          email: user.email
-        },
-        admin: adminUser || null
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      
+      if (decoded.isAdmin) {
+        return NextResponse.json({ authenticated: true });
       }
-    });
-    
+    } catch (error) {
+      // Invalid token
+    }
+
+    return NextResponse.json(
+      { error: "Not authenticated" },
+      { status: 401 }
+    );
   } catch (error) {
-    console.error('Admin verification error:', error);
-    return NextResponse.json({
-      success: false,
-      error: '관리자 확인 중 오류가 발생했습니다'
-    }, { status: 500 });
+    console.error("Admin verify error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

@@ -1,106 +1,110 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 interface BattleEnergyBarProps {
-  characterName: string;
-  emoji: string;
-  maxEnergy: number;
-  currentEnergy: number;
-  isAttacker: boolean;
-  combatPower: number;
-  showAnimation: boolean;
-  animationDuration?: number;
+  className?: string;
 }
 
-export default function BattleEnergyBar({
-  characterName,
-  emoji,
-  maxEnergy,
-  currentEnergy,
-  isAttacker,
-  combatPower,
-  showAnimation,
-  animationDuration = 2
-}: BattleEnergyBarProps) {
-  const [displayEnergy, setDisplayEnergy] = useState(maxEnergy);
-  
-  useEffect(() => {
-    if (showAnimation) {
-      // 애니메이션 시작 시 전체 에너지로 리셋
-      setDisplayEnergy(maxEnergy);
-      
-      // 약간의 지연 후 에너지 감소 애니메이션 시작
-      const timer = setTimeout(() => {
-        setDisplayEnergy(currentEnergy);
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [showAnimation, currentEnergy, maxEnergy]);
+export default function BattleEnergyBar({ className = "" }: BattleEnergyBarProps) {
+  const [battleStats, setBattleStats] = useState<{
+    dailyBattlesUsed: number;
+    dailyBattlesRemaining: number;
+    canBattleToday: boolean;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const energyPercentage = (displayEnergy / maxEnergy) * 100;
-  
-  // 에너지 바 색상 결정 (에너지가 낮을수록 빨간색)
-  const getEnergyColor = () => {
-    if (energyPercentage > 60) return 'from-green-400 to-green-600';
-    if (energyPercentage > 30) return 'from-yellow-400 to-yellow-600';
-    return 'from-red-400 to-red-600';
+  useEffect(() => {
+    loadBattleStats();
+    // Refresh stats every minute
+    const interval = setInterval(loadBattleStats, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadBattleStats = async () => {
+    try {
+      const response = await fetch("/api/battles/stats");
+      if (!response.ok) throw new Error("Failed to load battle stats");
+      
+      const data = await response.json();
+      setBattleStats(data.data);
+    } catch (err) {
+      console.error("Failed to load battle stats:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  if (loading || !battleStats) {
+    return null;
+  }
+
+  const maxBattles = 10;
+  const percentage = (battleStats.dailyBattlesRemaining / maxBattles) * 100;
+  const isLow = battleStats.dailyBattlesRemaining <= 3;
+  const isEmpty = battleStats.dailyBattlesRemaining === 0;
+
   return (
-    <div className={`flex flex-col ${isAttacker ? 'items-start' : 'items-end'}`}>
-      {/* 캐릭터 정보 */}
-      <div className={`flex items-center gap-3 mb-2 ${!isAttacker && 'flex-row-reverse'}`}>
-        <div className="text-4xl">{emoji}</div>
-        <div className={`${!isAttacker && 'text-right'}`}>
-          <h3 className="font-bold text-lg">{characterName}</h3>
-          <p className="text-sm text-gray-600">전투력: {combatPower}</p>
-        </div>
+    <div className={`bg-gray-800 rounded-lg p-4 ${className}`}>
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-sm font-semibold text-gray-300">Battle Energy</h3>
+        <span className={`text-sm font-bold ${isEmpty ? "text-red-400" : isLow ? "text-yellow-400" : "text-green-400"}`}>
+          {battleStats.dailyBattlesRemaining}/{maxBattles}
+        </span>
       </div>
       
-      {/* 에너지 바 컨테이너 */}
-      <div className="w-64 h-8 bg-gray-200 rounded-full p-1 relative overflow-hidden">
-        {/* 에너지 바 배경 효과 */}
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-200 opacity-50" />
-        
-        {/* 실제 에너지 바 */}
+      <div className="relative h-4 bg-gray-700 rounded-full overflow-hidden">
         <motion.div
-          className={`h-full rounded-full bg-gradient-to-r ${getEnergyColor()} relative overflow-hidden`}
-          initial={{ width: `${(maxEnergy / maxEnergy) * 100}%` }}
-          animate={{ width: `${energyPercentage}%` }}
-          transition={{
-            duration: showAnimation ? animationDuration : 0,
-            ease: "easeInOut"
-          }}
-        >
-          {/* 에너지 바 반짝임 효과 */}
-          <motion.div
-            className="absolute inset-0 bg-white opacity-20"
-            animate={{
-              x: ['0%', '100%', '0%'],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-          />
-        </motion.div>
-        
-        {/* 에너지 수치 표시 */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-sm font-bold text-gray-700">
-            {Math.round(displayEnergy)} / {maxEnergy}
-          </span>
-        </div>
+          className={`absolute top-0 left-0 h-full rounded-full ${
+            isEmpty ? "bg-red-500" : isLow ? "bg-yellow-500" : "bg-green-500"
+          }`}
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 0.5 }}
+        />
       </div>
       
-      {/* 에너지 퍼센티지 */}
-      <div className="mt-1 text-sm text-gray-600">
-        {Math.round(energyPercentage)}%
-      </div>
+      <p className="text-xs text-gray-400 mt-2">
+        {isEmpty 
+          ? "Daily limit reached. Resets at midnight." 
+          : isLow 
+          ? `Only ${battleStats.dailyBattlesRemaining} battles remaining!`
+          : "Battles available today"
+        }
+      </p>
+      
+      {/* Time until reset */}
+      <TimeUntilReset />
     </div>
+  );
+}
+
+function TimeUntilReset() {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const diff = tomorrow.getTime() - now.getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      setTimeLeft(`${hours}h ${minutes}m`);
+    };
+
+    updateTime();
+    const interval = setInterval(updateTime, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <p className="text-xs text-gray-500 mt-1">
+      Resets in {timeLeft}
+    </p>
   );
 }

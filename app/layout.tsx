@@ -1,38 +1,39 @@
-import type { Metadata } from "next";
-import AdminButton from "../components/AdminButton";
-import { AuthProvider } from "../contexts/AuthContext";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { ToastProvider } from '@/contexts/ToastContext'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Kid Text Battle",
-  description: "동물 데이터베이스 프로젝트",
-};
+  title: 'Text Battle Game',
+  description: '12세 이상을 위한 텍스트 배틀 게임',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="ko">
-      <head>
-        <style>{`
-          * {
-            box-sizing: border-box;
-            padding: 0;
-            margin: 0;
-          }
-          body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
-          }
-        `}</style>
-      </head>
-      <body suppressHydrationWarning>
+      <body className={inter.className}>
         <AuthProvider>
-          {children}
-          <AdminButton />
+          <ToastProvider>
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+              {children}
+              
+              {/* Hidden admin entrance */}
+              <div className="fixed bottom-4 right-4">
+                <a href="/admin" className="admin-icon block w-8 h-8 text-white">
+                  🦄
+                </a>
+              </div>
+            </div>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>
-  );
+  )
 }

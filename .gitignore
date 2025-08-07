@@ -1,10 +1,7 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
-.yarn/install-state.gz
 
 # testing
 /coverage
@@ -35,22 +32,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# database
-*.db
-*.db-shm
-*.db-wal
-
-# test files
-test-*.js
-test-*.ts
-check-*.js
-
-# local scripts
-setup-*.js
-add-*.js
-# Replit
-.replit_history
-.cache
-.config
-.upm

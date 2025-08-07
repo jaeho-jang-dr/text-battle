@@ -1,97 +1,81 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/db';
-import { invalidateSettingsCache } from '../../../../lib/settings-helper';
+import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
+import { adminOnly } from "@/lib/admin-auth";
 
-// 관리자 토큰 검증 함수
-function verifyAdminToken(request: NextRequest) {
-  const authHeader = request.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return false;
-  }
-  
-  const token = authHeader.slice(7);
-  return token && token.length > 0;
-}
-
-export async function GET(request: NextRequest) {
+export const GET = adminOnly(async (request: NextRequest) => {
   try {
-    // 관리자 권한 검증
-    if (!verifyAdminToken(request)) {
-      return NextResponse.json({
-        success: false,
-        error: '관리자 권한이 필요합니다'
-      }, { status: 401 });
+    const { data: settings, error } = await supabase
+      .from("game_settings")
+      .select("*")
+      .eq("id", 1)
+      .single();
+
+    if (error && error.code === "PGRST116") {
+      // No settings found, create default
+      const defaultSettings = {
+        id: 1,
+        daily_battle_limit: 10,
+        defensive_battle_limit: 5,
+        attack_battle_limit: 3,
+        base_score: 100,
+        elo_multiplier: 1.5,
+      };
+
+      const { data: newSettings, error: createError } = await supabase
+        .from("game_settings")
+        .insert(defaultSettings)
+        .select()
+        .single();
+
+      if (createError) {
+        throw createError;
+      }
+
+      return NextResponse.json({ settings: newSettings });
     }
 
-    // 모든 설정 조회
-    const settings = await db.prepare(`
-      SELECT * FROM admin_settings
-      ORDER BY setting_key
-    `).all();
+    if (error) {
+      throw error;
+    }
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        settings
-      }
-    });
+    return NextResponse.json({ settings });
   } catch (error) {
-    console.error('Settings fetch error:', error);
-    return NextResponse.json({
-      success: false,
-      error: '설정 조회 중 오류가 발생했습니다'
-    }, { status: 500 });
+    console.error("Admin settings fetch error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch settings" },
+      { status: 500 }
+    );
   }
-}
+});
 
-export async function PUT(request: NextRequest) {
+export const PUT = adminOnly(async (request: NextRequest) => {
   try {
-    // 관리자 권한 검증
-    if (!verifyAdminToken(request)) {
-      return NextResponse.json({
-        success: false,
-        error: '관리자 권한이 필요합니다'
-      }, { status: 401 });
+    const updates = await request.json();
+
+    const { data: settings, error } = await supabase
+      .from("game_settings")
+      .update(updates)
+      .eq("id", 1)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
     }
 
-    const { key, value } = await request.json();
-
-    if (!key || value === undefined) {
-      return NextResponse.json({
-        success: false,
-        error: '설정 키와 값이 필요합니다'
-      }, { status: 400 });
-    }
-
-    // 설정 업데이트
-    await db.prepare(`
-      UPDATE admin_settings
-      SET setting_value = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE setting_key = ?
-    `).run(value, key);
-
-    // 로그 기록
-    const logId = Math.random().toString(36).substring(7);
-    db.prepare(`
-      INSERT INTO admin_logs (id, admin_id, action_type, target_type, details, created_at)
-      VALUES (?, 'admin', 'setting_updated', 'setting', ?, CURRENT_TIMESTAMP)
-    `).run(logId, JSON.stringify({ key, value }));
-
-    // 설정 캐시 무효화
-    invalidateSettingsCache();
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        key,
-        value
-      }
+    // Log admin action
+    await supabase.from("admin_logs").insert({
+      action: "settings_update",
+      details: updates,
+      admin_id: "admin",
     });
+
+    return NextResponse.json({ settings });
   } catch (error) {
-    console.error('Setting update error:', error);
-    return NextResponse.json({
-      success: false,
-      error: '설정 업데이트 중 오류가 발생했습니다'
-    }, { status: 500 });
+    console.error("Admin settings update error:", error);
+    return NextResponse.json(
+      { error: "Failed to update settings" },
+      { status: 500 }
+    );
   }
-}
+});

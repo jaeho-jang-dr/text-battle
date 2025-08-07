@@ -1,215 +1,183 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Character } from '../types';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Character } from "@/types";
+import { motion } from "framer-motion";
 
 interface BattleOpponentsProps {
-  currentCharacter: Character | null;
-  onSelectOpponent: (opponent: any) => void;
-  onRefresh?: () => void;
+  currentCharacter: Character;
 }
 
-interface LeaderboardEntry {
-  rank: number;
-  id: string;
-  characterName: string;
-  animalName: string;
-  animalIcon: string;
-  animalCategory: string;
-  playerName: string;
-  isGuest: boolean;
-  isBot?: boolean;
-  baseScore: number;
-  eloScore: number;
-  wins: number;
-  losses: number;
-  totalBattles: number;
-  winRate: number;
-}
-
-export default function BattleOpponents({ 
-  currentCharacter, 
-  onSelectOpponent,
-  onRefresh 
-}: BattleOpponentsProps) {
-  const [opponents, setOpponents] = useState<LeaderboardEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+export default function BattleOpponents({ currentCharacter }: BattleOpponentsProps) {
+  const router = useRouter();
+  const [opponents, setOpponents] = useState<Character[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [battleStats, setBattleStats] = useState<{
+    dailyBattlesUsed: number;
+    dailyBattlesRemaining: number;
+    canBattleToday: boolean;
+  } | null>(null);
+  const [battling, setBattling] = useState(false);
 
   useEffect(() => {
-    fetchOpponents();
-  }, [selectedCategory]);
+    loadOpponents();
+    loadBattleStats();
+  }, [currentCharacter.id]);
 
-  const fetchOpponents = async () => {
+  const loadOpponents = async () => {
     try {
-      setIsLoading(true);
-      const params = new URLSearchParams();
-      if (selectedCategory !== 'all') {
-        params.append('category', selectedCategory);
-      }
+      const response = await fetch("/api/characters");
+      if (!response.ok) throw new Error("Failed to load opponents");
       
-      const response = await fetch(`/api/leaderboard?${params}`);
       const data = await response.json();
+      // Filter out the current character
+      const availableOpponents = data.data.filter(
+        (char: Character) => char.id !== currentCharacter.id
+      );
       
-      if (data.success) {
-        // 자신의 캐릭터를 제외한 상대만 표시
-        const filteredOpponents = data.data.leaderboard.filter(
-          (entry: LeaderboardEntry) => entry.id !== currentCharacter?.id
-        );
-        setOpponents(filteredOpponents.slice(0, 10)); // 상위 10명만 표시
-      }
-    } catch (error) {
-      console.error('Failed to fetch opponents:', error);
+      setOpponents(availableOpponents);
+    } catch (err) {
+      setError("Failed to load opponents");
+      console.error(err);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const getScoreDifference = (opponent: LeaderboardEntry) => {
-    if (!currentCharacter) return 0;
-    return opponent.eloScore - currentCharacter.eloScore;
+  const loadBattleStats = async () => {
+    try {
+      const response = await fetch("/api/battles/stats");
+      if (!response.ok) throw new Error("Failed to load battle stats");
+      
+      const data = await response.json();
+      setBattleStats(data.data);
+    } catch (err) {
+      console.error("Failed to load battle stats:", err);
+    }
   };
 
-  const getDifficultyColor = (diff: number) => {
-    if (diff > 200) return 'text-red-600'; // 매우 어려움
-    if (diff > 100) return 'text-orange-600'; // 어려움
-    if (diff > -100) return 'text-yellow-600'; // 보통
-    return 'text-green-600'; // 쉬움
+  const startBattle = async (opponentId: string) => {
+    if (battling || !battleStats?.canBattleToday) return;
+    
+    setBattling(true);
+    setError("");
+    
+    try {
+      const response = await fetch("/api/battles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attackerId: currentCharacter.id,
+          defenderId: opponentId
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create battle");
+      }
+      
+      // Navigate to battle result
+      router.push(`/battle/${data.data.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to start battle");
+      setBattling(false);
+      // Reload battle stats in case limits were reached
+      loadBattleStats();
+    }
   };
 
-  const getDifficultyText = (diff: number) => {
-    if (diff > 200) return '🔥 매우 강함';
-    if (diff > 100) return '⚡ 강함';
-    if (diff > -100) return '⚔️ 비슷함';
-    return '🌱 약함';
-  };
+  if (loading) {
+    return (
+      <div className="text-center text-gray-400">
+        Loading opponents...
+      </div>
+    );
+  }
 
-  if (!currentCharacter) {
-    return null;
+  if (error) {
+    return (
+      <div className="text-center text-red-400">
+        {error}
+      </div>
+    );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl shadow-xl p-6 mb-8"
-    >
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-purple-800">
-          ⚔️ 대기 중인 상대들
-        </h2>
-        <div className="flex items-center gap-3">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-2 border-2 border-purple-300 rounded-lg focus:outline-none focus:border-purple-500 bg-white"
-          >
-            <option value="all">🌍 전체</option>
-            <option value="current">🦁 현존 동물</option>
-            <option value="mythical">🦄 전설의 동물</option>
-            <option value="prehistoric">🦕 고생대 동물</option>
-          </select>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              fetchOpponents();
-              onRefresh?.();
-            }}
-            className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-lg transition-colors"
-          >
-            🔄
-          </motion.button>
-        </div>
+    <div className="space-y-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold text-white">Choose Your Opponent</h2>
+        {battleStats && (
+          <div className="text-right">
+            <p className="text-sm text-gray-400">
+              Daily Battles: {battleStats.dailyBattlesUsed}/10
+            </p>
+            {battleStats.dailyBattlesRemaining <= 3 && battleStats.dailyBattlesRemaining > 0 && (
+              <p className="text-xs text-yellow-400">
+                Only {battleStats.dailyBattlesRemaining} battles remaining today!
+              </p>
+            )}
+            {!battleStats.canBattleToday && (
+              <p className="text-xs text-red-400">
+                Daily battle limit reached. Reset at midnight.
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
-      {isLoading ? (
-        <div className="text-center py-8">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="text-4xl inline-block"
-          >
-            ⚔️
-          </motion.div>
-          <p className="text-gray-600 mt-2">상대를 찾는 중...</p>
-        </div>
-      ) : opponents.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-600">현재 대기 중인 상대가 없습니다.</p>
-        </div>
-      ) : (
-        <div className="space-y-3 max-h-96 overflow-y-auto">
-          <AnimatePresence>
-            {opponents.map((opponent, index) => {
-              const scoreDiff = getScoreDifference(opponent);
-              return (
-                <motion.div
-                  key={opponent.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="text-3xl">{opponent.animalIcon}</div>
-                      <div>
-                        <div className="font-bold text-lg">
-                          {opponent.rank}위 {opponent.characterName}
-                          {opponent.isBot && (
-                            <span className="ml-2 text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
-                              🤖 대기 계정
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          {opponent.animalName} • ELO: {opponent.eloScore}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {opponent.wins}승 {opponent.losses}패 (승률 {opponent.winRate}%)
-                          {opponent.isBot && (
-                            <span className="ml-2 text-purple-600">
-                              • 무제한 배틀 가능
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div className={`text-sm font-bold ${getDifficultyColor(scoreDiff)}`}>
-                        {getDifficultyText(scoreDiff)}
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => onSelectOpponent(opponent)}
-                        className="mt-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-lg hover:shadow-xl transition-all"
-                      >
-                        ⚔️ 도전하기
-                      </motion.button>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
+      {error && (
+        <div className="bg-red-900/20 border border-red-600 rounded-lg p-3 text-red-400 text-sm">
+          {error}
         </div>
       )}
-
-      <div className="mt-6 text-center">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => window.location.href = '/leaderboard'}
-          className="text-purple-600 hover:text-purple-800 font-medium"
-        >
-          전체 순위 보기 →
-        </motion.button>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {opponents.map((opponent, index) => (
+          <motion.div
+            key={opponent.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="bg-gray-800 rounded-lg p-4 border border-gray-700 hover:border-blue-500 cursor-pointer transition-all"
+            onClick={() => startBattle(opponent.id)}
+          >
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="text-lg font-semibold text-white">{opponent.name}</h3>
+              {opponent.isNPC && (
+                <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded">NPC</span>
+              )}
+            </div>
+            
+            <div className="text-sm text-gray-400 mb-3">
+              <p>ELO: {opponent.eloScore}</p>
+              <p>W/L: {opponent.wins}/{opponent.losses}</p>
+            </div>
+            
+            <div className="bg-gray-700 rounded p-2">
+              <p className="text-xs text-gray-300 italic">"{opponent.battleChat}"</p>
+            </div>
+            
+            <button
+              className={`mt-3 w-full px-3 py-2 rounded transition-colors ${
+                battleStats?.canBattleToday && !battling
+                  ? "bg-red-600 text-white hover:bg-red-700"
+                  : "bg-gray-600 text-gray-400 cursor-not-allowed"
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                startBattle(opponent.id);
+              }}
+              disabled={!battleStats?.canBattleToday || battling}
+            >
+              {battling ? "Starting..." : !battleStats?.canBattleToday ? "Limit Reached" : "Battle!"}
+            </button>
+          </motion.div>
+        ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
