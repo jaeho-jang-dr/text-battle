@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    return NextResponse.json({ data });
+    return NextResponse.json({ characters: data });
   } catch (error) {
     console.error("Get characters error:", error);
     return NextResponse.json(
