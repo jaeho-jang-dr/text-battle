@@ -1,37 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { adminOnly } from "@/lib/admin-auth";
+import { adminOnly } from "@/lib/admin-auth-nextauth";
+import { memoryStore } from "@/lib/db/memory-store";
 
 export const GET = adminOnly(async (request: NextRequest) => {
   try {
     const url = new URL(request.url);
     const search = url.searchParams.get("search");
     const page = parseInt(url.searchParams.get("page") || "1");
-    const limit = parseInt(url.searchParams.get("limit") || "20");
-    const offset = (page - 1) * limit;
+    const pageLimit = parseInt(url.searchParams.get("limit") || "20");
+    const offset = (page - 1) * pageLimit;
 
-    let query = supabase
-      .from("characters")
-      .select("*, users(username, email)", { count: "exact" });
-
+    // Get all characters from memory store
+    const allCharacters = Array.from(memoryStore.characters.values())
+      .sort((a, b) => (b.eloScore || 1000) - (a.eloScore || 1000));
+    
+    let filteredCharacters = allCharacters;
+    
+    // Apply search filter if provided
     if (search) {
-      query = query.ilike("name", `%${search}%`);
+      const searchLower = search.toLowerCase();
+      filteredCharacters = allCharacters.filter(char => 
+        char.name.toLowerCase().includes(searchLower)
+      );
     }
-
-    const { data: characters, error, count } = await query
-      .order("elo_score", { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    if (error) {
-      throw error;
-    }
+    
+    const totalCount = filteredCharacters.length;
+    
+    // Paginate results
+    const paginatedCharacters = filteredCharacters.slice(offset, offset + pageLimit);
+    
+    // Add user data to each character
+    const characters = paginatedCharacters.map(character => {
+      const user = character.userId ? memoryStore.users.get(character.userId) : null;
+      return {
+        ...character,
+        users: user || null
+      };
+    });
 
     return NextResponse.json({
       characters,
-      total: count,
+      total: totalCount,
       page,
-      limit,
-      totalPages: Math.ceil((count || 0) / limit),
+      limit: pageLimit,
+      totalPages: Math.ceil(totalCount / pageLimit),
     });
   } catch (error) {
     console.error("Admin characters fetch error:", error);
@@ -46,26 +58,29 @@ export const PATCH = adminOnly(async (request: NextRequest) => {
   try {
     const { characterId, updates } = await request.json();
 
-    const { data, error } = await supabase
-      .from("characters")
-      .update(updates)
-      .eq("id", characterId)
-      .select()
-      .single();
-
-    if (error) {
-      throw error;
+    const character = memoryStore.characters.get(characterId);
+    if (!character) {
+      return NextResponse.json(
+        { error: "Character not found" },
+        { status: 404 }
+      );
     }
 
+    // Update character
+    await memoryStore.updateCharacter(characterId, updates);
+    const updatedCharacter = memoryStore.characters.get(characterId);
+
     // Log admin action
-    await supabase.from("admin_logs").insert({
+    await memoryStore.createAdminLog({
+      adminId: "admin@example.com",
       action: "character_update",
-      target_id: characterId,
-      details: updates,
-      admin_id: "admin",
+      details: {
+        targetId: characterId,
+        updates: updates
+      }
     });
 
-    return NextResponse.json({ character: data });
+    return NextResponse.json({ character: updatedCharacter });
   } catch (error) {
     console.error("Admin character update error:", error);
     return NextResponse.json(
@@ -79,20 +94,23 @@ export const DELETE = adminOnly(async (request: NextRequest) => {
   try {
     const { characterId } = await request.json();
 
-    const { error } = await supabase
-      .from("characters")
-      .delete()
-      .eq("id", characterId);
-
-    if (error) {
-      throw error;
+    if (!memoryStore.characters.has(characterId)) {
+      return NextResponse.json(
+        { error: "Character not found" },
+        { status: 404 }
+      );
     }
 
+    // Delete character
+    memoryStore.characters.delete(characterId);
+
     // Log admin action
-    await supabase.from("admin_logs").insert({
+    await memoryStore.createAdminLog({
+      adminId: "admin@example.com",
       action: "character_delete",
-      target_id: characterId,
-      admin_id: "admin",
+      details: {
+        targetId: characterId
+      }
     });
 
     return NextResponse.json({ success: true });

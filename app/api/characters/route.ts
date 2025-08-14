@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllCharacters, getCharacterByUserId, createCharacter } from "@/lib/character";
+import { getAllCharacters, getCharacterByUserId, createCharacter } from "@/lib/character-server";
 
 // GET /api/characters - Get all characters or by userId
 export async function GET(request: NextRequest) {
@@ -66,10 +66,12 @@ export async function POST(request: NextRequest) {
     }
     
     return NextResponse.json({ data }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Create character error:", error);
+    console.error("Error details:", error.message);
+    console.error("Stack:", error.stack);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error.message || "Internal server error" },
       { status: 500 }
     );
   }

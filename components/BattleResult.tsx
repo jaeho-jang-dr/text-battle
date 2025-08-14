@@ -86,13 +86,19 @@ export default function BattleResult({
             className="inline-block"
           >
             <motion.h2
-              className="text-3xl md:text-5xl font-bold gradient-text mb-4"
+              className={`text-3xl md:text-5xl font-bold mb-4 ${
+                isAttackerWinner ? "gradient-text" : "text-red-400"
+              }`}
               animate={{
                 scale: [1, 1.1, 1],
-                textShadow: [
+                textShadow: isAttackerWinner ? [
                   "0 0 20px rgba(251, 191, 36, 0.5)",
                   "0 0 40px rgba(251, 191, 36, 0.8)",
                   "0 0 20px rgba(251, 191, 36, 0.5)"
+                ] : [
+                  "0 0 20px rgba(239, 68, 68, 0.5)",
+                  "0 0 40px rgba(239, 68, 68, 0.8)",
+                  "0 0 20px rgba(239, 68, 68, 0.5)"
                 ]
               }}
               transition={{
@@ -100,7 +106,7 @@ export default function BattleResult({
                 repeat: 3,
               }}
             >
-              VICTORY!
+              {isAttackerWinner ? "VICTORY!" : "DEFEAT..."}
             </motion.h2>
           </motion.div>
           <p className="text-xl md:text-2xl text-white">
@@ -207,15 +213,27 @@ export default function BattleResult({
           </motion.div>
         </div>
 
-        {/* Battle Log */}
+        {/* Battle Summary */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
           className="bg-gray-700/50 backdrop-blur rounded-lg p-4 mb-6 border border-gray-600"
         >
-          <h3 className="text-base md:text-lg font-semibold text-gray-300 mb-2">Battle Summary</h3>
-          <p className="text-sm md:text-base text-gray-400 italic">{battle.battleLog}</p>
+          <h3 className="text-base md:text-lg font-semibold text-gray-300 mb-3">전투 분석</h3>
+          <div className="space-y-2">
+            {Array.isArray(battle.battleLog) ? (
+              battle.battleLog.map((log, index) => (
+                <p key={index} className="text-sm md:text-base text-gray-300">
+                  {log}
+                </p>
+              ))
+            ) : (
+              <p className="text-sm md:text-base text-gray-300">
+                {battle.battleLog || "전투 분석을 불러올 수 없습니다."}
+              </p>
+            )}
+          </div>
         </motion.div>
 
         {/* Close Button */}

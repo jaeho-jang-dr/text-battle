@@ -1,19 +1,21 @@
-import { supabase } from "./supabase";
+import { adminDb } from "./firebase-admin";
 import { Character } from "@/types";
 
 // Transform database row to Character type
-function transformCharacter(row: any): Character {
+function transformCharacter(doc: any): Character {
+  const data = doc.data ? doc.data() : doc;
+  const id = doc.id || data.id;
   return {
-    id: row.id,
-    userId: row.user_id,
-    name: row.name,
-    battleChat: row.battle_chat,
-    eloScore: row.elo_score,
-    wins: row.wins,
-    losses: row.losses,
-    isNPC: row.is_npc,
-    createdAt: new Date(row.created_at),
-    updatedAt: new Date(row.updated_at)
+    id,
+    userId: data.userId || data.user_id,
+    name: data.name,
+    battleChat: data.battleChat || data.battle_chat,
+    eloScore: data.eloScore || data.elo_score || 1000,
+    wins: data.wins || 0,
+    losses: data.losses || 0,
+    isNPC: data.isNPC || data.is_npc || false,
+    createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.created_at?.toDate ? data.created_at.toDate() : new Date()),
+    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updated_at?.toDate ? data.updated_at.toDate() : new Date())
   };
 }
 
@@ -55,84 +57,115 @@ export async function createCharacter(
   name: string,
   battleChat: string
 ): Promise<{ data?: Character; error?: string }> {
+  console.log("Creating character for user:", userId, "with name:", name);
+  
   // Validate inputs
   const nameValidation = validateCharacterName(name);
   if (!nameValidation.valid) {
+    console.error("Name validation failed:", nameValidation.error);
     return { error: nameValidation.error };
   }
   
   const chatValidation = validateBattleChat(battleChat);
   if (!chatValidation.valid) {
+    console.error("Chat validation failed:", chatValidation.error);
     return { error: chatValidation.error };
   }
   
-  // Check if user already has a character
-  const { data: existingCharacter } = await supabase
-    .from("characters")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("is_npc", false)
-    .single();
+  try {
+    // Check if user already has a character
+    console.log("Checking for existing character...");
+    const existingSnapshot = await adminDb
+      .collection("characters")
+      .where("userId", "==", userId)
+      .where("isNPC", "==", false)
+      .limit(1)
+      .get();
+      
+    console.log("Existing character check - empty?", existingSnapshot.empty);
     
-  if (existingCharacter) {
-    return { error: "You already have a character" };
+    if (!existingSnapshot.empty) {
+      console.log("User already has a character");
+      return { error: "You already have a character" };
+    }
+  } catch (error) {
+    console.error("Error checking existing character:", error);
+    // Continue with creation even if check fails
   }
   
   // Create the character
-  const { data, error } = await supabase
-    .from("characters")
-    .insert({
-      user_id: userId,
+  try {
+    const characterData = {
+      userId: userId,
       name: name.trim(),
-      battle_chat: battleChat.trim(),
-      elo_score: 1000,
+      battleChat: battleChat.trim(),
+      eloScore: 1000,
       wins: 0,
       losses: 0,
-      is_npc: false,
-    })
-    .select()
-    .single();
+      isNPC: false,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
     
-  if (error) {
-    return { error: "Failed to create character" };
+    console.log("Saving character to database:", characterData);
+    const docRef = await adminDb.collection("characters").add(characterData);
+    console.log("Character saved with ID:", docRef.id);
+    
+    const createdDoc = await docRef.get();
+    const createdData = createdDoc.data();
+    console.log("Retrieved created character:", createdData);
+    
+    const transformed = transformCharacter({ id: docRef.id, ...createdData });
+    console.log("Transformed character:", transformed);
+    
+    return { data: transformed };
+  } catch (error: any) {
+    console.error("Failed to create character:", error);
+    console.error("Error details:", error.message, error.stack);
+    return { error: "Failed to create character: " + error.message };
   }
-  
-  return { data: transformCharacter(data) };
 }
 
 // Get character by ID
 export async function getCharacterById(
   characterId: string
 ): Promise<{ data?: Character; error?: string }> {
-  const { data, error } = await supabase
-    .from("characters")
-    .select("*")
-    .eq("id", characterId)
-    .single();
+  try {
+    const characterDoc = await adminDb.collection("characters").doc(characterId).get();
     
-  if (error || !data) {
+    if (!characterDoc.exists) {
+      return { error: "Character not found" };
+    }
+    
+    return { data: transformCharacter(characterDoc) };
+  } catch (error) {
+    console.error("Failed to get character:", error);
     return { error: "Character not found" };
   }
-  
-  return { data: transformCharacter(data) };
 }
 
 // Get character by user ID
 export async function getCharacterByUserId(
   userId: string
 ): Promise<{ data?: Character; error?: string }> {
-  const { data, error } = await supabase
-    .from("characters")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("is_npc", false)
-    .single();
+  try {
+    const snapshot = await adminDb
+      .collection("characters")
+      .where("userId", "==", userId)
+      .where("isNPC", "==", false)
+      .limit(1)
+      .get();
     
-  if (error || !data) {
+    if (snapshot.empty) {
+      return { error: "Character not found" };
+    }
+    
+    const doc = snapshot.docs[0];
+    return { data: transformCharacter(doc) };
+  } catch (error) {
+    console.error("Failed to get character by user ID:", error);
     return { error: "Character not found" };
   }
-  
-  return { data: transformCharacter(data) };
 }
 
 // Update character battle chat
@@ -148,78 +181,88 @@ export async function updateCharacterBattleChat(
   }
   
   // Verify ownership
-  const { data: character } = await supabase
-    .from("characters")
-    .select("user_id")
-    .eq("id", characterId)
-    .single();
+  try {
+    const characterRef = doc(db, "characters", characterId);
+    const characterDoc = await getDoc(characterRef);
     
-  if (!character || character.user_id !== userId) {
-    return { error: "Unauthorized" };
-  }
-  
-  // Update the battle chat
-  const { data, error } = await supabase
-    .from("characters")
-    .update({
+    if (!characterDoc.exists() || characterDoc.data()?.user_id !== userId) {
+      return { error: "Unauthorized" };
+    }
+    
+    // Update the battle chat
+    await updateDoc(characterRef, {
       battle_chat: battleChat.trim(),
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", characterId)
-    .select()
-    .single();
+      updated_at: serverTimestamp()
+    });
     
-  if (error) {
+    // Get updated document
+    const updatedDoc = await getDoc(characterRef);
+    return { data: transformCharacter(updatedDoc.id, updatedDoc.data()) };
+  } catch (error) {
+    console.error("Failed to update character:", error);
     return { error: "Failed to update character" };
   }
-  
-  return { data: transformCharacter(data) };
 }
 
 // Get all characters (for leaderboard, etc.)
 export async function getAllCharacters(
-  limit = 100,
+  limitValue = 100,
   offset = 0
 ): Promise<{ data?: Character[]; error?: string }> {
-  const { data, error } = await supabase
-    .from("characters")
-    .select("*")
-    .order("elo_score", { ascending: false })
-    .range(offset, offset + limit - 1);
+  try {
+    const charactersRef = collection(db, "characters");
+    const q = query(
+      charactersRef,
+      orderBy("elo_score", "desc"),
+      limit(limitValue + offset)
+    );
+    const snapshot = await getDocs(q);
     
-  if (error) {
+    const allCharacters = snapshot.docs.map(doc => transformCharacter(doc.id, doc.data()));
+    const paginatedCharacters = allCharacters.slice(offset);
+    
+    return { data: paginatedCharacters };
+  } catch (error) {
+    console.error("Failed to fetch characters:", error);
     return { error: "Failed to fetch characters" };
   }
-  
-  return { data: (data || []).map(transformCharacter) };
 }
 
 // Get top characters for leaderboard
 export async function getTopCharacters(
-  limit = 10
+  limitValue = 10
 ): Promise<{ data?: Character[]; error?: string }> {
-  const { data, error } = await supabase
-    .from("characters")
-    .select("*")
-    .order("elo_score", { ascending: false })
-    .limit(limit);
+  try {
+    const charactersRef = collection(db, "characters");
+    const q = query(
+      charactersRef,
+      orderBy("elo_score", "desc"),
+      limit(limitValue)
+    );
+    const snapshot = await getDocs(q);
     
-  if (error) {
+    const characters = snapshot.docs.map(doc => transformCharacter(doc.id, doc.data()));
+    return { data: characters };
+  } catch (error) {
+    console.error("Failed to fetch top characters:", error);
     return { error: "Failed to fetch top characters" };
   }
-  
-  return { data: (data || []).map(transformCharacter) };
 }
 
 // Check if a character name is available
 export async function isCharacterNameAvailable(
   name: string
 ): Promise<boolean> {
-  const { data } = await supabase
-    .from("characters")
-    .select("id")
-    .eq("name", name.trim())
-    .single();
+  try {
+    const snapshot = await adminDb
+      .collection("characters")
+      .where("name", "==", name.trim())
+      .limit(1)
+      .get();
     
-  return !data;
+    return snapshot.empty;
+  } catch (error) {
+    console.error("Failed to check character name availability:", error);
+    return false;
+  }
 }

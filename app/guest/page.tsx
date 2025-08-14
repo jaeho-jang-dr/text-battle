@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import NavigationLayout from "@/components/NavigationLayout";
 
 export default function GuestPage() {
   const [username, setUsername] = useState("");
@@ -25,8 +26,9 @@ export default function GuestPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-purple-900">
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md">
+    <NavigationLayout>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 to-purple-900">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-white text-center mb-4">
           Play as Guest
         </h1>
@@ -80,5 +82,6 @@ export default function GuestPage() {
         </div>
       </div>
     </div>
+  </NavigationLayout>
   );
 }

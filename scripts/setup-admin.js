@@ -1,16 +1,24 @@
 const bcrypt = require('bcryptjs');
-const { createClient } = require('@supabase/supabase-js');
+const admin = require('firebase-admin');
+const path = require('path');
 require('dotenv').config();
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing Supabase credentials');
-  process.exit(1);
+// Initialize Firebase Admin
+if (!admin.apps.length) {
+  const serviceAccountPath = path.join(__dirname, '..', process.env.FIREBASE_SERVICE_ACCOUNT_PATH || 'serviceAccountKey.json');
+  try {
+    const serviceAccount = require(serviceAccountPath);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('Firebase Admin initialized');
+  } catch (error) {
+    console.error('Failed to initialize Firebase Admin:', error);
+    process.exit(1);
+  }
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+const db = admin.firestore();
 
 async function setupAdmin() {
   try {
@@ -19,75 +27,57 @@ async function setupAdmin() {
     console.log('Generated password hash for "1234"');
 
     // Check if admin user exists
-    const { data: existingAdmin } = await supabase
-      .from('users')
-      .select('id')
-      .eq('username', 'admin')
-      .single();
+    const usersRef = db.collection('users');
+    const adminQuery = await usersRef.where('username', '==', 'admin').limit(1).get();
 
-    if (existingAdmin) {
+    if (!adminQuery.empty) {
       // Update existing admin password
-      const { error } = await supabase
-        .from('users')
-        .update({ password_hash: passwordHash })
-        .eq('username', 'admin');
-
-      if (error) {
-        console.error('Error updating admin user:', error);
-      } else {
-        console.log('Admin user password updated successfully');
-      }
+      const adminDoc = adminQuery.docs[0];
+      await adminDoc.ref.update({
+        passwordHash: passwordHash,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+      console.log('Admin user password updated successfully');
     } else {
       // Create new admin user
-      const { error } = await supabase
-        .from('users')
-        .insert({
-          username: 'admin',
-          password_hash: passwordHash,
-          is_guest: false,
-          email: 'admin@textbattle.com'
-        });
-
-      if (error) {
-        console.error('Error creating admin user:', error);
-      } else {
-        console.log('Admin user created successfully');
-      }
+      const newAdminData = {
+        username: 'admin',
+        passwordHash: passwordHash,
+        isGuest: false,
+        email: 'admin@textbattle.com',
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      };
+      
+      await usersRef.add(newAdminData);
+      console.log('Admin user created successfully');
     }
 
-    // Create admin logs table if it doesn't exist
-    console.log('\nSetting up admin logs table...');
-    console.log('Please run the following SQL in your Supabase SQL editor:');
-    console.log(`
--- Admin logs table for audit trail
-CREATE TABLE IF NOT EXISTS admin_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    admin_id VARCHAR(50) NOT NULL,
-    action VARCHAR(50) NOT NULL,
-    target_id VARCHAR(255),
-    details JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+    // Create sample admin log entry
+    console.log('\nCreating sample admin log entry...');
+    const adminLogsRef = db.collection('adminLogs');
+    await adminLogsRef.add({
+      adminId: 'admin',
+      action: 'SETUP',
+      targetId: null,
+      details: {
+        message: 'Admin account created/updated',
+        timestamp: new Date().toISOString()
+      },
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    console.log('Sample admin log created');
 
--- Index for faster queries
-CREATE INDEX IF NOT EXISTS idx_admin_logs_created_at ON admin_logs(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_admin_logs_action ON admin_logs(action);
-
--- Function to get battles by hour (for statistics)
-CREATE OR REPLACE FUNCTION get_battles_by_hour()
-RETURNS TABLE(hour INTEGER, count BIGINT) AS $$
-BEGIN
-    RETURN QUERY
-    SELECT 
-        EXTRACT(HOUR FROM created_at)::INTEGER as hour,
-        COUNT(*)::BIGINT as count
-    FROM battles
-    WHERE created_at >= NOW() - INTERVAL '24 hours'
-    GROUP BY hour
-    ORDER BY hour;
-END;
-$$ LANGUAGE plpgsql;
-    `);
+    // Create Firestore indexes info
+    console.log('\nFirestore Indexes Information:');
+    console.log('Firestore will automatically create indexes for simple queries.');
+    console.log('For complex queries, you may need to create composite indexes.');
+    console.log('\nRecommended indexes for this application:');
+    console.log('1. battles collection: createdAt (DESC) for recent battles');
+    console.log('2. adminLogs collection: createdAt (DESC) for audit trail');
+    console.log('3. characters collection: eloScore (DESC) for leaderboard');
+    console.log('\nThese can be created through the Firebase Console or by following');
+    console.log('the links in error messages when queries require them.');
 
     console.log('\nAdmin setup complete!');
     console.log('You can now login with:');

@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId);
+      allow delete: if false; // Users cannot be deleted
+    }
+    
+    // Characters collection
+    match /characters/{characterId} {
+      allow read: if true; // Public leaderboard
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin);
+      allow delete: if isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+    
+    // NPCs collection
+    match /npcs/{npcId} {
+      allow read: if true; // Public for battles
+      allow write: if false; // Only admin can modify NPCs
+    }
+    
+    // Battles collection
+    match /battles/{battleId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Battles are immutable
+    }
+    
+    // Battle logs collection
+    match /battle_logs/{logId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if false; // Logs are immutable
+    }
+    
+    // Leaderboard collection (denormalized for performance)
+    match /leaderboard/{entryId} {
+      allow read: if true; // Public leaderboard
+      allow write: if false; // Only server can update
+    }
+  }
+}

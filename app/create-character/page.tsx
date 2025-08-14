@@ -1,15 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
+import NavigationLayout from "@/components/NavigationLayout";
 
 export default function CreateCharacterPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [name, setName] = useState("");
   const [battleChat, setBattleChat] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  
+  // Check if user already has a character
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.id) {
+      checkExistingCharacter();
+    }
+  }, [session, status]);
+  
+  const checkExistingCharacter = async () => {
+    try {
+      const response = await fetch("/api/characters/my");
+      if (response.ok) {
+        const data = await response.json();
+        // Check if user has reached the character limit
+        if (data.characters && data.characters.length >= 3) {
+          router.push("/mypage");
+        }
+      }
+    } catch (error) {
+      console.error("Error checking character:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,14 +42,10 @@ export default function CreateCharacterPage() {
     setError("");
 
     try {
-      // Get current user ID
-      const authResponse = await fetch("/api/auth/verify");
-      if (!authResponse.ok) {
+      if (!session?.user?.id) {
         router.push("/");
         return;
       }
-      
-      const { userId } = await authResponse.json();
       
       // Create character
       const response = await fetch("/api/characters", {
@@ -33,7 +54,7 @@ export default function CreateCharacterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId,
+          userId: session.user.id,
           name: name.trim(),
           battleChat: battleChat.trim(),
         }),
@@ -45,8 +66,8 @@ export default function CreateCharacterPage() {
         throw new Error(data.error || "Failed to create character");
       }
 
-      // Redirect to play page
-      router.push("/play");
+      // Redirect to my page
+      router.push("/mypage");
     } catch (err: any) {
       setError(err.message || "Failed to create character");
     } finally {
@@ -54,9 +75,33 @@ export default function CreateCharacterPage() {
     }
   };
 
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+  
+  if (status === "unauthenticated") {
+    router.push("/");
+    return null;
+  }
+  
+  if (status === "loading" || !session) {
+    return (
+      <NavigationLayout>
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+          <div className="text-white">Loading...</div>
+        </div>
+      </NavigationLayout>
+    );
+  }
+  
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center py-8">
-      <motion.div
+    <NavigationLayout>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center py-8">
+        <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className="bg-gray-800 rounded-lg p-8 max-w-md w-full mx-4 border border-gray-700"
@@ -123,6 +168,7 @@ export default function CreateCharacterPage() {
           </div>
         </form>
       </motion.div>
-    </div>
+      </div>
+    </NavigationLayout>
   );
 }

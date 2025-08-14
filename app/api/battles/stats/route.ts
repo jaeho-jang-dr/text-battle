@@ -1,20 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserBattleStats } from "@/lib/battle";
-import { cookies } from "next/headers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-simple";
+import { getUserBattleStats } from "@/lib/battle-server";
 
 // GET /api/battles/stats - Get user's battle statistics
 export async function GET(request: NextRequest) {
   try {
     // Get the current user from session
-    const cookieStore = cookies();
-    const userId = cookieStore.get("userId")?.value;
+    const session = await getServerSession(authOptions);
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }
       );
     }
+    
+    const userId = session.user.id;
     
     // Get battle stats
     const { data: stats, error } = await getUserBattleStats(userId);

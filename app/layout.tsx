@@ -21,15 +21,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <ToastProvider>
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+            <div className="min-h-screen bg-gray-900">
               {children}
-              
-              {/* Hidden admin entrance */}
-              <div className="fixed bottom-4 right-4">
-                <a href="/admin" className="admin-icon block w-8 h-8 text-white">
-                  🦄
-                </a>
-              </div>
             </div>
           </ToastProvider>
         </AuthProvider>

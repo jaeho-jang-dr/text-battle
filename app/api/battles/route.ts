@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createBattle, checkBattleRestrictions, updateBattleRestrictions } from "@/lib/battle";
-import { getCharacterById } from "@/lib/character";
-import { cookies } from "next/headers";
+import { createBattle, checkBattleRestrictions, updateBattleRestrictions } from "@/lib/battle-server";
+import { getCharacterById } from "@/lib/character-server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-simple";
 
 // POST /api/battles - Create a new battle
 export async function POST(request: NextRequest) {
@@ -16,15 +17,16 @@ export async function POST(request: NextRequest) {
     }
     
     // Get the current user from session
-    const cookieStore = cookies();
-    const userId = cookieStore.get("userId")?.value;
+    const session = await getServerSession(authOptions);
     
-    if (!userId) {
+    if (!session?.user?.id) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }
       );
     }
+    
+    const userId = session.user.id;
     
     // Verify that the attacker belongs to the current user
     const { data: attacker, error: attackerError } = await getCharacterById(attackerId);

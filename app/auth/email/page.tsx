@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
+import NavigationLayout from "@/components/NavigationLayout";
 
 export default function EmailAuthPage() {
   const [isSignup, setIsSignup] = useState(false);
@@ -34,8 +35,9 @@ export default function EmailAuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-pink-900">
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md">
+    <NavigationLayout>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-pink-900">
+        <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-white text-center mb-8">
           {isSignup ? "Create Account" : "Sign In"}
         </h1>
@@ -129,6 +131,11 @@ export default function EmailAuthPage() {
               {isSignup ? "Sign In" : "Sign Up"}
             </button>
           </p>
+          {!isSignup && (
+            <p className="text-white/60 text-xs mt-2">
+              개발 환경입니다. 비밀번호를 잊으셨다면 다시 회원가입해주세요.
+            </p>
+          )}
         </div>
 
         <div className="mt-4 text-center">
@@ -138,5 +145,6 @@ export default function EmailAuthPage() {
         </div>
       </div>
     </div>
+  </NavigationLayout>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Character } from "@/types";
 import { motion } from "framer-motion";
+import BattleResultModal from "./BattleResultModal";
 
 interface BattleOpponentsProps {
   currentCharacter: Character;
@@ -18,8 +19,12 @@ export default function BattleOpponents({ currentCharacter }: BattleOpponentsPro
     dailyBattlesUsed: number;
     dailyBattlesRemaining: number;
     canBattleToday: boolean;
+    dailyLimit?: number;
   } | null>(null);
   const [battling, setBattling] = useState(false);
+  const [battleResult, setBattleResult] = useState<any>(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [currentOpponent, setCurrentOpponent] = useState<Character | null>(null);
 
   useEffect(() => {
     loadOpponents();
@@ -61,8 +66,12 @@ export default function BattleOpponents({ currentCharacter }: BattleOpponentsPro
   const startBattle = async (opponentId: string) => {
     if (battling || !battleStats?.canBattleToday) return;
     
+    const opponent = opponents.find(o => o.id === opponentId);
+    if (!opponent) return;
+    
     setBattling(true);
     setError("");
+    setCurrentOpponent(opponent);
     
     try {
       const response = await fetch("/api/battles", {
@@ -80,14 +89,27 @@ export default function BattleOpponents({ currentCharacter }: BattleOpponentsPro
         throw new Error(data.error || "Failed to create battle");
       }
       
-      // Navigate to battle result
-      router.push(`/battle/${data.data.id}`);
+      // Show battle result in modal
+      setBattleResult(data.data);
+      setShowResultModal(true);
+      setBattling(false);
+      
+      // Reload battle stats
+      loadBattleStats();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to start battle");
       setBattling(false);
       // Reload battle stats in case limits were reached
       loadBattleStats();
     }
+  };
+
+  const handleModalClose = () => {
+    setShowResultModal(false);
+    setBattleResult(null);
+    setCurrentOpponent(null);
+    // Reload the page to update character stats
+    window.location.reload();
   };
 
   if (loading) {
@@ -113,7 +135,7 @@ export default function BattleOpponents({ currentCharacter }: BattleOpponentsPro
         {battleStats && (
           <div className="text-right">
             <p className="text-sm text-gray-400">
-              Daily Battles: {battleStats.dailyBattlesUsed}/10
+              Daily Battles: {battleStats.dailyBattlesUsed}/{battleStats.dailyLimit || 20}
             </p>
             {battleStats.dailyBattlesRemaining <= 3 && battleStats.dailyBattlesRemaining > 0 && (
               <p className="text-xs text-yellow-400">
@@ -178,6 +200,14 @@ export default function BattleOpponents({ currentCharacter }: BattleOpponentsPro
           </motion.div>
         ))}
       </div>
+      
+      <BattleResultModal
+        isOpen={showResultModal}
+        onClose={handleModalClose}
+        result={battleResult}
+        currentCharacterId={currentCharacter.id}
+        opponentName={currentOpponent?.name || "Unknown"}
+      />
     </div>
   );
 }

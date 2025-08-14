@@ -1,44 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { adminOnly } from "@/lib/admin-auth";
+import { adminOnly } from "@/lib/admin-auth-nextauth";
+import { memoryStore } from "@/lib/db/memory-store";
 
 export const GET = adminOnly(async (request: NextRequest) => {
   try {
-    const { data: settings, error } = await supabase
-      .from("game_settings")
-      .select("*")
-      .eq("id", 1)
-      .single();
+    // Get all system settings from memory store
+    const settings: Record<string, any> = {};
+    
+    // Convert Map to object for easier frontend consumption
+    Array.from(memoryStore.systemSettings.entries()).forEach(([key, setting]) => {
+      settings[key] = setting.value;
+    });
 
-    if (error && error.code === "PGRST116") {
-      // No settings found, create default
-      const defaultSettings = {
-        id: 1,
-        daily_battle_limit: 10,
-        defensive_battle_limit: 5,
-        attack_battle_limit: 3,
-        base_score: 100,
-        elo_multiplier: 1.5,
-      };
+    // Add additional settings that might not be in systemSettings
+    const defaultSettings = {
+      daily_battle_limit: await memoryStore.getSystemSetting('daily_battle_limit') || 20,
+      battle_cooldown_minutes: await memoryStore.getSystemSetting('battle_cooldown_minutes') || 5,
+      maintenance_mode: await memoryStore.getSystemSetting('maintenance_mode') || false,
+      new_user_bonus_rating: await memoryStore.getSystemSetting('new_user_bonus_rating') || 1000,
+      defensive_battle_limit: 5,
+      attack_battle_limit: 3,
+      base_score: 100,
+      elo_multiplier: 1.5
+    };
 
-      const { data: newSettings, error: createError } = await supabase
-        .from("game_settings")
-        .insert(defaultSettings)
-        .select()
-        .single();
-
-      if (createError) {
-        throw createError;
+    return NextResponse.json({ 
+      settings: {
+        id: "default",
+        ...defaultSettings,
+        ...settings
       }
-
-      return NextResponse.json({ settings: newSettings });
-    }
-
-    if (error) {
-      throw error;
-    }
-
-    return NextResponse.json({ settings });
+    });
   } catch (error) {
     console.error("Admin settings fetch error:", error);
     return NextResponse.json(
@@ -52,25 +44,33 @@ export const PUT = adminOnly(async (request: NextRequest) => {
   try {
     const updates = await request.json();
 
-    const { data: settings, error } = await supabase
-      .from("game_settings")
-      .update(updates)
-      .eq("id", 1)
-      .select()
-      .single();
-
-    if (error) {
-      throw error;
+    // Update each setting in memory store
+    const updateEntries = Object.entries(updates);
+    for (let i = 0; i < updateEntries.length; i++) {
+      const [key, value] = updateEntries[i];
+      await memoryStore.updateSystemSetting(key, value, "admin@example.com");
     }
 
     // Log admin action
-    await supabase.from("admin_logs").insert({
+    await memoryStore.createAdminLog({
+      adminId: "admin@example.com",
       action: "settings_update",
-      details: updates,
-      admin_id: "admin",
+      details: updates
     });
 
-    return NextResponse.json({ settings });
+    // Return updated settings
+    const settings: Record<string, any> = {};
+    Array.from(memoryStore.systemSettings.entries()).forEach(([key, setting]) => {
+      settings[key] = setting.value;
+    });
+
+    return NextResponse.json({ 
+      settings: {
+        id: "default",
+        ...settings,
+        updated_at: new Date()
+      }
+    });
   } catch (error) {
     console.error("Admin settings update error:", error);
     return NextResponse.json(

@@ -2,7 +2,18 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import KakaoProvider from "next-auth/providers/kakao";
 import bcrypt from "bcryptjs";
-import { supabase } from "./supabase";
+import { db } from "./firebase";
+import { 
+  collection, 
+  doc, 
+  getDoc, 
+  getDocs, 
+  setDoc, 
+  query, 
+  where,
+  serverTimestamp
+} from "firebase/firestore";
+import { createCharacter } from "./character";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -36,13 +47,11 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Check if user already exists
-          const { data: existingUser } = await supabase
-            .from("users")
-            .select("id")
-            .eq("email", credentials.email)
-            .single();
+          const usersRef = collection(db, "users");
+          const emailQuery = query(usersRef, where("email", "==", credentials.email));
+          const existingUserSnapshot = await getDocs(emailQuery);
 
-          if (existingUser) {
+          if (!existingUserSnapshot.empty) {
             throw new Error("이미 존재하는 이메일입니다");
           }
 
@@ -50,40 +59,51 @@ export const authOptions: NextAuthOptions = {
           const hashedPassword = await bcrypt.hash(credentials.password, 10);
 
           // Create new user
-          const { data: newUser, error } = await supabase
-            .from("users")
-            .insert({
+          try {
+            const newUserRef = doc(collection(db, "users"));
+            const userData = {
               email: credentials.email,
               username: credentials.username,
               password_hash: hashedPassword,
               is_guest: false,
-            })
-            .select()
-            .single();
+              created_at: serverTimestamp(),
+              updated_at: serverTimestamp()
+            };
+            
+            await setDoc(newUserRef, userData);
 
-          if (error || !newUser) {
+            // Auto-create character for new user
+            try {
+              const defaultBattleChat = `안녕하세요! 저는 ${credentials.username}입니다. 잘 부탁드립니다!`;
+              await createCharacter(newUserRef.id, credentials.username, defaultBattleChat);
+              console.log(`Character created for user ${newUserRef.id}`);
+            } catch (charError) {
+              console.error('Failed to create character:', charError);
+              // Continue with user creation even if character creation fails
+            }
+
+            return {
+              id: newUserRef.id,
+              email: credentials.email,
+              name: credentials.username,
+              isGuest: false,
+            };
+          } catch (error) {
             console.error("Signup error:", error);
             throw new Error("회원가입에 실패했습니다. 다시 시도해주세요");
           }
-
-          return {
-            id: newUser.id,
-            email: newUser.email,
-            name: newUser.username,
-            isGuest: false,
-          };
         } else {
           // Sign in flow
-          const { data: user, error } = await supabase
-            .from("users")
-            .select("*")
-            .eq("email", credentials.email)
-            .single();
+          const usersRef = collection(db, "users");
+          const loginQuery = query(usersRef, where("email", "==", credentials.email));
+          const userSnapshot = await getDocs(loginQuery);
 
-          if (error || !user) {
-            console.error("Login error:", error);
+          if (userSnapshot.empty) {
             throw new Error("이메일 또는 비밀번호가 일치하지 않습니다");
           }
+
+          const userDoc = userSnapshot.docs[0];
+          const user = { id: userDoc.id, ...userDoc.data() };
 
           const isValidPassword = await bcrypt.compare(
             credentials.password,
@@ -122,26 +142,37 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Create guest user
-        const { data: guestUser, error } = await supabase
-          .from("users")
-          .insert({
+        try {
+          const guestUserRef = doc(collection(db, "users"));
+          const guestData = {
             username: credentials.username,
             is_guest: true,
-          })
-          .select()
-          .single();
+            created_at: serverTimestamp(),
+            updated_at: serverTimestamp()
+          };
+          
+          await setDoc(guestUserRef, guestData);
 
-        if (error || !guestUser) {
+          // Auto-create character for guest user
+          try {
+            const defaultBattleChat = `저는 ${credentials.username}입니다! 배틀 준비 완료!`;
+            await createCharacter(guestUserRef.id, credentials.username, defaultBattleChat);
+            console.log(`Character created for guest ${guestUserRef.id}`);
+          } catch (charError) {
+            console.error('Failed to create character for guest:', charError);
+            // Continue with user creation even if character creation fails
+          }
+
+          return {
+            id: guestUserRef.id,
+            email: null,
+            name: credentials.username,
+            isGuest: true,
+          };
+        } catch (error) {
           console.error("Guest user creation error:", error);
           throw new Error("게스트 계정 생성에 실패했습니다");
         }
-
-        return {
-          id: guestUser.id,
-          email: null,
-          name: guestUser.username,
-          isGuest: true,
-        };
         } catch (error) {
           console.error('Guest auth error:', error);
           return null;
@@ -159,11 +190,11 @@ export const authOptions: NextAuthOptions = {
         // For Kakao login
         if (account?.provider === "kakao") {
           // Check if user exists with this Kakao ID
-          const { data: existingUser } = await supabase
-            .from("users")
-            .select("*")
-            .eq("kakao_id", account.providerAccountId)
-            .single();
+          const usersRef = collection(db, "users");
+          const kakaoQuery = query(usersRef, where("kakao_id", "==", account.providerAccountId));
+          const kakaoSnapshot = await getDocs(kakaoQuery);
+          const existingUser = !kakaoSnapshot.empty ? 
+            { id: kakaoSnapshot.docs[0].id, ...kakaoSnapshot.docs[0].data() } : null;
 
           if (existingUser) {
             token.id = existingUser.id;
@@ -171,21 +202,34 @@ export const authOptions: NextAuthOptions = {
             token.isGuest = false;
           } else {
             // Create new user for Kakao login
-            const { data: newUser } = await supabase
-              .from("users")
-              .insert({
+            try {
+              const newUserRef = doc(collection(db, "users"));
+              const userData = {
                 kakao_id: account.providerAccountId,
                 username: user.name || `Player_${Date.now()}`,
                 email: user.email,
                 is_guest: false,
-              })
-              .select()
-              .single();
-
-            if (newUser) {
-              token.id = newUser.id;
-              token.name = newUser.username;
+                created_at: serverTimestamp(),
+                updated_at: serverTimestamp()
+              };
+              
+              await setDoc(newUserRef, userData);
+              
+              // Auto-create character for Kakao user
+              try {
+                const defaultBattleChat = `${userData.username}입니다! 카카오로 참전!`;
+                await createCharacter(newUserRef.id, userData.username, defaultBattleChat);
+                console.log(`Character created for Kakao user ${newUserRef.id}`);
+              } catch (charError) {
+                console.error('Failed to create character for Kakao user:', charError);
+                // Continue with user creation even if character creation fails
+              }
+              
+              token.id = newUserRef.id;
+              token.name = userData.username;
               token.isGuest = false;
+            } catch (error) {
+              console.error("Failed to create Kakao user:", error);
             }
           }
         }

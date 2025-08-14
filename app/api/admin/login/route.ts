@@ -1,51 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { supabase } from "@/lib/supabase";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "admin-secret-key";
+import { signIn } from "next-auth/react";
+import { memoryStore } from "@/lib/db/memory-store";
 
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
 
-    // Check if it's the admin user
-    if (username !== "admin") {
+    // Check admin credentials from memory store
+    // Username must be 'admin' and password must match
+    if (username !== 'admin') {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
     }
 
-    // For initial setup, we'll use a hardcoded password hash for "1234"
-    const adminPasswordHash = "$2a$10$K7L1OJ45/4Y2nIvhRVpCe.FSmhDdWoXehVzJptJ/op0lSsvqNu/1u";
+    const adminUser = await memoryStore.getAdminByEmail('admin@example.com');
     
-    const isValid = await bcrypt.compare(password, adminPasswordHash);
-    
-    if (!isValid) {
+    if (!adminUser || password !== adminUser.password) {
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
       );
     }
 
-    // Create JWT token
-    const token = jwt.sign(
-      { username: "admin", isAdmin: true },
-      JWT_SECRET,
-      { expiresIn: "24h" }
-    );
-
-    // Set cookie
-    cookies().set("admin-token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 86400, // 24 hours
+    // Log admin login
+    await memoryStore.createAdminLog({
+      adminId: adminUser.id,
+      action: "admin_login",
+      details: {
+        loginTime: new Date(),
+        userAgent: request.headers.get('user-agent')
+      }
     });
 
-    return NextResponse.json({ success: true });
+    // Update last login time
+    adminUser.lastLoginAt = new Date();
+    memoryStore.adminUsers.set(adminUser.id, adminUser);
+
+    // Note: The actual session should be handled by NextAuth
+    // This endpoint is just for verification
+    return NextResponse.json({ 
+      success: true,
+      message: "Please use NextAuth login with admin@example.com"
+    });
   } catch (error) {
     console.error("Admin login error:", error);
     return NextResponse.json(

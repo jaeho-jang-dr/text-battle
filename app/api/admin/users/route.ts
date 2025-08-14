@@ -1,37 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { adminOnly } from "@/lib/admin-auth";
+import { adminOnly } from "@/lib/admin-auth-nextauth";
+import { memoryStore } from "@/lib/db/memory-store";
 
 export const GET = adminOnly(async (request: NextRequest) => {
   try {
     const url = new URL(request.url);
     const search = url.searchParams.get("search");
     const page = parseInt(url.searchParams.get("page") || "1");
-    const limit = parseInt(url.searchParams.get("limit") || "20");
-    const offset = (page - 1) * limit;
+    const pageLimit = parseInt(url.searchParams.get("limit") || "20");
+    const offset = (page - 1) * pageLimit;
 
-    let query = supabase
-      .from("users")
-      .select("*, characters(count)", { count: "exact" });
-
+    // Get all users from memory store
+    const allUsers = Array.from(memoryStore.users.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    let filteredUsers = allUsers;
+    
+    // Apply search filter if provided
     if (search) {
-      query = query.or(`username.ilike.%${search}%,email.ilike.%${search}%`);
+      const searchLower = search.toLowerCase();
+      filteredUsers = allUsers.filter(user => 
+        (user.username && user.username.toLowerCase().includes(searchLower)) ||
+        (user.email && user.email.toLowerCase().includes(searchLower))
+      );
     }
-
-    const { data: users, error, count } = await query
-      .order("created_at", { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    if (error) {
-      throw error;
-    }
+    
+    const totalCount = filteredUsers.length;
+    
+    // Paginate results
+    const paginatedUsers = filteredUsers.slice(offset, offset + pageLimit);
+    
+    // Get character count for each user
+    const users = paginatedUsers.map(user => {
+      const userCharacters = Array.from(memoryStore.characters.values())
+        .filter(char => char.userId === user.id);
+      
+      return {
+        ...user,
+        characters: [{ count: userCharacters.length }]
+      };
+    });
 
     return NextResponse.json({
       users,
-      total: count,
+      total: totalCount,
       page,
-      limit,
-      totalPages: Math.ceil((count || 0) / limit),
+      limit: pageLimit,
+      totalPages: Math.ceil(totalCount / pageLimit),
     });
   } catch (error) {
     console.error("Admin users fetch error:", error);
@@ -46,26 +61,33 @@ export const PATCH = adminOnly(async (request: NextRequest) => {
   try {
     const { userId, updates } = await request.json();
 
-    const { data, error } = await supabase
-      .from("users")
-      .update(updates)
-      .eq("id", userId)
-      .select()
-      .single();
-
-    if (error) {
-      throw error;
+    const user = memoryStore.users.get(userId);
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
+    // Update user
+    const updatedUser = {
+      ...user,
+      ...updates,
+      updatedAt: new Date()
+    };
+    memoryStore.users.set(userId, updatedUser);
+
     // Log admin action
-    await supabase.from("admin_logs").insert({
+    await memoryStore.createAdminLog({
+      adminId: "admin@example.com",
       action: "user_update",
-      target_id: userId,
-      details: updates,
-      admin_id: "admin",
+      details: {
+        targetId: userId,
+        updates: updates
+      }
     });
 
-    return NextResponse.json({ user: data });
+    return NextResponse.json({ user: updatedUser });
   } catch (error) {
     console.error("Admin user update error:", error);
     return NextResponse.json(
@@ -79,20 +101,29 @@ export const DELETE = adminOnly(async (request: NextRequest) => {
   try {
     const { userId } = await request.json();
 
-    const { error } = await supabase
-      .from("users")
-      .delete()
-      .eq("id", userId);
-
-    if (error) {
-      throw error;
+    if (!memoryStore.users.has(userId)) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
     }
 
+    // Delete user and their characters
+    memoryStore.users.delete(userId);
+    
+    // Delete user's characters
+    const userCharacters = Array.from(memoryStore.characters.values())
+      .filter(char => char.userId === userId);
+    userCharacters.forEach(char => memoryStore.characters.delete(char.id));
+
     // Log admin action
-    await supabase.from("admin_logs").insert({
+    await memoryStore.createAdminLog({
+      adminId: "admin@example.com",
       action: "user_delete",
-      target_id: userId,
-      admin_id: "admin",
+      details: {
+        targetId: userId,
+        deletedCharacters: userCharacters.length
+      }
     });
 
     return NextResponse.json({ success: true });

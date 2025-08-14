@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
-import { getCharacterByUserId } from "@/lib/character";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-simple";
+import { getCharactersByUserId } from "@/lib/character-server";
 
-// GET /api/characters/my - Get current user's character
-export async function GET(req: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     
@@ -14,21 +13,22 @@ export async function GET(req: NextRequest) {
         { status: 401 }
       );
     }
-    
-    const result = await getCharacterByUserId(session.user.id);
-    
-    if (result.error) {
+
+    const { data: characters, error } = await getCharactersByUserId(session.user.id);
+
+    if (error) {
       return NextResponse.json(
-        { error: result.error },
-        { status: 404 }
+        { error: error },
+        { status: 500 }
       );
     }
-    
-    return NextResponse.json({ character: result.data });
+
+    // Return array of characters
+    return NextResponse.json({ characters: characters || [] });
   } catch (error) {
-    console.error("Error fetching user character:", error);
+    console.error("Get my characters error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to fetch characters" },
       { status: 500 }
     );
   }

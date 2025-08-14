@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getBattleHistory } from "@/lib/battle";
+import { memoryStore } from "@/lib/db/memory-store";
 
 // GET /api/battles/history - Get battle history for a character
 export async function GET(request: NextRequest) {
@@ -16,16 +16,19 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    const { data, error } = await getBattleHistory(characterId, limit, offset);
+    // Get battle history from memory store
+    const battles = Array.from(memoryStore.battles.values())
+      .filter(battle => 
+        battle.player1Id === characterId || battle.player2Id === characterId
+      )
+      .sort((a, b) => {
+        const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
+        const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
+        return dateB.getTime() - dateA.getTime();
+      })
+      .slice(offset, offset + limit);
     
-    if (error) {
-      return NextResponse.json(
-        { error: error },
-        { status: 500 }
-      );
-    }
-    
-    return NextResponse.json({ data });
+    return NextResponse.json({ data: battles });
   } catch (error) {
     console.error("Get battle history error:", error);
     return NextResponse.json(

@@ -1,86 +1,89 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
+import { adminOnly } from "@/lib/admin-auth-nextauth";
+import { memoryStore } from "@/lib/db/memory-store";
 import { npcCharacters } from "@/lib/npc-data";
 
 // POST /api/admin/npcs/init - Initialize NPC characters
-export async function POST(req: NextRequest) {
+export const POST = adminOnly(async (req: NextRequest) => {
   try {
-    // Check if user is admin
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    // Verify admin status (you might want to add an isAdmin field to your user table)
-    const { data: user } = await supabase
-      .from("users")
-      .select("username")
-      .eq("id", session.user.id)
-      .single();
-
-    if (!user || user.username !== "admin") {
-      return NextResponse.json(
-        { error: "Admin access required" },
-        { status: 403 }
-      );
-    }
-
     // Check if NPCs already exist
-    const { data: existingNPCs, error: checkError } = await supabase
-      .from("characters")
-      .select("name")
-      .eq("is_npc", true);
-
-    if (checkError) {
-      return NextResponse.json(
-        { error: "Failed to check existing NPCs" },
-        { status: 500 }
-      );
-    }
-
-    if (existingNPCs && existingNPCs.length > 0) {
+    const existingNPCs = Array.from(memoryStore.characters.values())
+      .filter(char => char.isNPC);
+    
+    if (existingNPCs.length > 0) {
       return NextResponse.json({
         message: `NPCs already initialized. Found ${existingNPCs.length} NPCs.`,
-        count: existingNPCs.length
+        count: existingNPCs.length,
+        npcs: existingNPCs.map(npc => ({
+          id: npc.id,
+          name: npc.name,
+          eloScore: npc.eloScore
+        }))
       });
     }
 
     // Create NPCs
-    const npcsToInsert = npcCharacters.map(npc => ({
-      name: npc.name,
-      battle_chat: npc.battleChat,
-      elo_score: npc.eloScore,
-      wins: 0,
-      losses: 0,
-      is_npc: true,
-      user_id: null
-    }));
-
-    const { data, error } = await supabase
-      .from("characters")
-      .insert(npcsToInsert)
-      .select();
-
-    if (error) {
-      return NextResponse.json(
-        { error: "Failed to create NPCs" },
-        { status: 500 }
-      );
+    const createdNPCs: any[] = [];
+    
+    for (const npc of npcCharacters) {
+      const npcId = `npc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const wins = Math.floor(Math.random() * 100);
+      const losses = Math.floor(Math.random() * 50);
+      const totalBattles = wins + losses;
+      
+      const npcData = {
+        id: npcId,
+        userId: npcId,
+        name: npc.name,
+        type: 'warrior',
+        level: Math.floor(npc.eloScore / 100),
+        experience: 0,
+        experienceToNext: 100,
+        stats: {
+          health: 100 + Math.floor(Math.random() * 50),
+          attack: 20 + Math.floor(Math.random() * 10),
+          defense: 15 + Math.floor(Math.random() * 10),
+          speed: 15 + Math.floor(Math.random() * 10),
+          magic: 10 + Math.floor(Math.random() * 10),
+          critical: 10 + Math.floor(Math.random() * 5),
+          evasion: 5 + Math.floor(Math.random() * 5)
+        },
+        battleChat: npc.battleChat,
+        eloScore: npc.eloScore,
+        rating: npc.eloScore,
+        wins: wins,
+        losses: losses,
+        totalBattles: totalBattles,
+        winRate: totalBattles > 0 ? Math.round((wins / totalBattles) * 100) : 0,
+        dailyBattlesCount: 0,
+        lastBattleTime: null,
+        isNPC: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      memoryStore.characters.set(npcId, npcData);
+      createdNPCs.push({
+        id: npcId,
+        name: npc.name,
+        eloScore: npc.eloScore
+      });
     }
-
+    
+    // Log admin action
+    await memoryStore.createAdminLog({
+      adminId: "admin@example.com",
+      action: "npcs_initialized",
+      details: {
+        count: createdNPCs.length,
+        npcIds: createdNPCs.map(npc => npc.id)
+      }
+    });
+    
     return NextResponse.json({
       message: "NPCs initialized successfully",
-      count: data.length,
-      npcs: data.map(npc => ({
-        name: npc.name,
-        eloScore: npc.elo_score
-      }))
+      count: createdNPCs.length,
+      npcs: createdNPCs
     });
 
   } catch (error) {
@@ -90,4 +93,4 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
