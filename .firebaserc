@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "your-firebase-project-id"
-  }
+    "default": "your-firebase-project-id",
+    "production": "your-production-project-id",
+    "staging": "your-staging-project-id"
+  },
+  "targets": {},
+  "etags": {}
 }

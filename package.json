@@ -5,10 +5,19 @@
   "scripts": {
     "dev": "next dev -p 3009",
     "build": "next build",
+    "build:firebase": "node scripts/build-firebase-windows.js",
+    "build:firebase:unix": "FIREBASE_DEPLOY=true next build",
     "start": "next start -p 3009",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "init-npcs": "npx tsx scripts/init-npcs.ts"
+    "init-npcs": "npx tsx scripts/init-npcs.ts",
+    "firebase:deploy": "npm run build:firebase && firebase deploy",
+    "firebase:deploy:hosting": "npm run build:firebase && firebase deploy --only hosting",
+    "firebase:deploy:rules": "firebase deploy --only firestore:rules,firestore:indexes",
+    "firebase:serve": "npm run build:firebase && firebase serve",
+    "firebase:emulators": "firebase emulators:start",
+    "firebase:init": "firebase init",
+    "setup:firebase": "node scripts/setup-firebase-env.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.0.2",
