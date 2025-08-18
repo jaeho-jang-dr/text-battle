@@ -610,9 +610,9 @@ export async function createBattle(
       await updateBattleRestrictions(attacker.userId);
     }
     
-    // Check if we should include detailed analysis (every 10 battles)
+    // Check if we should include detailed analysis (every 7 battles)
     const attackerBattleCount = attacker.totalBattles || 0;
-    const shouldShowDetailedAnalysis = attackerBattleCount % 10 === 0;
+    const shouldShowDetailedAnalysis = attackerBattleCount % 7 === 0;
     
     // Return battle result with detailed analysis conditionally
     const result = {
