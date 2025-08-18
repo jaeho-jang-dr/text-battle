@@ -80,8 +80,8 @@ export async function GET(request: NextRequest) {
     
     // Sort by ELO score (descending)
     const sortedCharacters = allCharacters.sort((a, b) => {
-      const aElo = a.eloScore || a.elo || 1000;
-      const bElo = b.eloScore || b.elo || 1000;
+      const aElo = a.eloScore || 1000;
+      const bElo = b.eloScore || 1000;
       return bElo - aElo;
     });
     
@@ -91,8 +91,8 @@ export async function GET(request: NextRequest) {
     // Ensure field consistency
     const characters = paginatedCharacters.map(char => ({
       ...char,
-      elo: char.eloScore || char.elo || 1000,
-      eloScore: char.eloScore || char.elo || 1000,
+      elo: char.eloScore || 1000,
+      eloScore: char.eloScore || 1000,
     }));
     
     return NextResponse.json({ 
