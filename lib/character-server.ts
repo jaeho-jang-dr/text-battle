@@ -157,6 +157,7 @@ export async function createCharacter(userId: string, name: string, battleChat: 
       eloScore: 1000,
       wins: 0,
       losses: 0,
+      totalBattles: 0,
       isNPC: false,
       createdAt: new Date(),
       updatedAt: new Date()

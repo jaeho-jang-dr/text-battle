@@ -31,6 +31,8 @@ function transformBattle(doc: any): Battle {
     attackerScore: data.attackerScore || data.attacker_score,
     defenderScore: data.defenderScore || data.defender_score,
     battleLog: data.battleLog || data.battle_log,
+    explanation: data.explanation,
+    tip: data.tip,
     createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.created_at?.toDate ? data.created_at.toDate() : new Date())
   };
 }
@@ -67,6 +69,80 @@ function calculateNewElo(
   const actualScore = won ? 1 : 0;
   
   return Math.round(currentRating + kFactor * (actualScore - expectedScore));
+}
+
+// Battle scoring explanation types
+interface BattleExplanation {
+  reason: string;
+  tip: string;
+}
+
+// Generate battle explanation (50% chance)
+function generateBattleExplanation(
+  attackerChat: string,
+  defenderChat: string,
+  attackerScore: number,
+  defenderScore: number,
+  winnerIsAttacker: boolean
+): BattleExplanation | null {
+  // 50% chance to generate explanation
+  if (Math.random() > 0.5) {
+    return null;
+  }
+
+  const winnerChat = winnerIsAttacker ? attackerChat : defenderChat;
+  const loserChat = winnerIsAttacker ? defenderChat : attackerChat;
+  const scoreDiff = Math.abs(attackerScore - defenderScore);
+  
+  // Analyze chat characteristics
+  const winnerWords = new Set(winnerChat.toLowerCase().split(/\s+/));
+  const loserWords = new Set(loserChat.toLowerCase().split(/\s+/));
+  const winnerLength = winnerChat.length;
+  const loserLength = loserChat.length;
+  
+  // Create explanation based on score difference and chat analysis
+  let reason = "";
+  let tip = "";
+  
+  if (scoreDiff > 30) {
+    // Decisive victory
+    if (winnerWords.size > loserWords.size * 1.5) {
+      reason = "압도적인 어휘력과 창의성으로 완벽한 승리를 거두었습니다!";
+      tip = "다양한 단어를 사용하여 더 풍부한 전투 대사를 만들어보세요.";
+    } else if (winnerLength > loserLength * 1.5) {
+      reason = "상세하고 몰입감 있는 전투 대사로 상대를 압도했습니다!";
+      tip = "전투 대사를 더 길고 자세하게 작성하면 승률이 올라갑니다.";
+    } else {
+      reason = "강렬한 기세와 완벽한 전투 준비로 압승했습니다!";
+      tip = "자신감 있고 강렬한 대사가 전투에 도움이 됩니다.";
+    }
+  } else if (scoreDiff > 15) {
+    // Clear victory
+    if (winnerWords.size > loserWords.size) {
+      reason = "더 다양한 표현으로 우위를 점했습니다.";
+      tip = "같은 단어를 반복하지 말고 다양한 표현을 사용해보세요.";
+    } else if (winnerLength > loserLength) {
+      reason = "더 충실한 전투 대사로 승리를 거머쥐었습니다.";
+      tip = "짧은 대사보다는 상황을 잘 설명하는 대사가 유리합니다.";
+    } else {
+      reason = "전투의 흐름을 잘 읽고 대응하여 승리했습니다.";
+      tip = "캐릭터의 특성을 살린 대사를 작성해보세요.";
+    }
+  } else {
+    // Close battle
+    if (winnerWords.size > loserWords.size) {
+      reason = "근소한 차이지만 더 풍부한 어휘로 승리했습니다.";
+      tip = "작은 차이가 승부를 가릅니다. 계속 연습하세요!";
+    } else if (winnerLength > loserLength) {
+      reason = "아슬아슬한 승부! 조금 더 긴 대사가 승리의 열쇠였습니다.";
+      tip = "비슷한 실력에서는 대사의 길이도 중요한 요소입니다.";
+    } else {
+      reason = "팽팽한 접전 끝에 간신히 승리했습니다!";
+      tip = "실력이 비슷할 때는 운도 중요합니다. 포기하지 마세요!";
+    }
+  }
+  
+  return { reason, tip };
 }
 
 // Simulate AI battle scoring (to be replaced with actual AI later)
@@ -183,6 +259,15 @@ export async function createBattle(
       const winnerId = attackerScore > defenderScore ? attackerId : defenderId;
       const attackerWon = winnerId === attackerId;
       
+      // Generate battle explanation (50% chance)
+      const explanation = generateBattleExplanation(
+        attackerChat,
+        defenderChat,
+        attackerScore,
+        defenderScore,
+        attackerWon
+      );
+      
       // Calculate new ELO ratings
       const attackerWins = attacker.wins || 0;
       const attackerLosses = attacker.losses || 0;
@@ -211,7 +296,7 @@ export async function createBattle(
       
       // Create battle document
       const battleRef = adminDb.collection("battles").doc();
-      const battleData = {
+      const battleData: any = {
         attackerId: attackerId,
         defenderId: defenderId,
         winnerId: winnerId,
@@ -220,6 +305,12 @@ export async function createBattle(
         battleLog: battleLog,
         created_at: new Date()
       };
+      
+      // Add explanation if generated
+      if (explanation) {
+        battleData.explanation = explanation.reason;
+        battleData.tip = explanation.tip;
+      }
       
       transaction.set(battleRef, battleData);
       

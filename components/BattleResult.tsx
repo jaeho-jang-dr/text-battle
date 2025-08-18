@@ -25,7 +25,17 @@ export default function BattleResult({
   useEffect(() => {
     // Fetch updated character data to show new ELO scores
     fetchUpdatedCharacters();
-  }, [battle.id]);
+    
+    // Scroll down if showing detailed analysis
+    if (battle.attackerAnalysis && battle.defenderAnalysis) {
+      setTimeout(() => {
+        const detailAnalysis = document.getElementById('detail-analysis');
+        if (detailAnalysis) {
+          detailAnalysis.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 800);
+    }
+  }, [battle.id, battle.attackerAnalysis, battle.defenderAnalysis]);
 
   const fetchUpdatedCharacters = async () => {
     try {
@@ -213,28 +223,148 @@ export default function BattleResult({
           </motion.div>
         </div>
 
-        {/* Battle Summary */}
+        {/* Simple Battle Summary - Always show */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.6 }}
           className="bg-gray-700/50 backdrop-blur rounded-lg p-4 mb-6 border border-gray-600"
         >
-          <h3 className="text-base md:text-lg font-semibold text-gray-300 mb-3">전투 분석</h3>
-          <div className="space-y-2">
-            {Array.isArray(battle.battleLog) ? (
-              battle.battleLog.map((log, index) => (
-                <p key={index} className="text-sm md:text-base text-gray-300">
-                  {log}
-                </p>
-              ))
-            ) : (
-              <p className="text-sm md:text-base text-gray-300">
-                {battle.battleLog || "전투 분석을 불러올 수 없습니다."}
-              </p>
-            )}
-          </div>
+          <h3 className="text-base md:text-lg font-semibold text-gray-300 mb-3">⚔️ 전투 결과</h3>
+          <p className="text-sm md:text-base text-gray-300">
+            <span className={isAttackerWinner ? "text-blue-400 font-bold" : "text-red-400"}>
+              {attacker.name}
+            </span>
+            {" vs "}
+            <span className={!isAttackerWinner ? "text-blue-400 font-bold" : "text-red-400"}>
+              {defender.name}
+            </span>
+          </p>
+          <p className="text-sm md:text-base text-gray-300 mt-2">
+            🏆 승자: <span className="text-yellow-400 font-bold">{winner.name}</span>
+          </p>
+          <p className="text-sm md:text-base text-gray-300 mt-1">
+            🎯 승부 점수: <span className="text-white">{battle.attackerScore} vs {battle.defenderScore}</span>
+          </p>
         </motion.div>
+
+        {/* Detailed Score Analysis */}
+        {battle.attackerAnalysis && battle.defenderAnalysis && (
+          <motion.div
+            id="detail-analysis"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.65 }}
+            className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 backdrop-blur rounded-lg p-4 mb-6 border-2 border-purple-500/50 shadow-lg relative overflow-hidden"
+          >
+            <h3 className="text-base md:text-lg font-semibold text-gray-300 mb-3">
+              🎉 특별 상세 분석
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Attacker Analysis */}
+              <div className={`space-y-2 ${isAttackerWinner ? 'border-l-4 border-yellow-400 pl-3' : 'opacity-75'}`}>
+                <h4 className="font-semibold text-white">{attacker.name}</h4>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">창의성:</span>
+                    <span className="text-white">{battle.attackerAnalysis.creativity}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">임팩트:</span>
+                    <span className="text-white">{battle.attackerAnalysis.impact}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">집중력:</span>
+                    <span className="text-white">{battle.attackerAnalysis.focus}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">언어적 파워:</span>
+                    <span className="text-white">{battle.attackerAnalysis.linguisticPower}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">전략성:</span>
+                    <span className="text-white">{battle.attackerAnalysis.strategy}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">감정과 기세:</span>
+                    <span className="text-white">{battle.attackerAnalysis.emotionMomentum}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">챗의 길이:</span>
+                    <span className="text-white">{battle.attackerAnalysis.lengthScore}/10</span>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-600 pt-1 mt-1">
+                    <span className="text-gray-300 font-semibold">종합 점수:</span>
+                    <span className="text-yellow-400 font-bold">{battle.attackerAnalysis.totalScore}/10</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Defender Analysis */}
+              <div className={`space-y-2 ${!isAttackerWinner ? 'border-l-4 border-yellow-400 pl-3' : 'opacity-75'}`}>
+                <h4 className="font-semibold text-white">{defender.name}</h4>
+                <div className="space-y-1 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">창의성:</span>
+                    <span className="text-white">{battle.defenderAnalysis.creativity}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">임팩트:</span>
+                    <span className="text-white">{battle.defenderAnalysis.impact}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">집중력:</span>
+                    <span className="text-white">{battle.defenderAnalysis.focus}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">언어적 파워:</span>
+                    <span className="text-white">{battle.defenderAnalysis.linguisticPower}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">전략성:</span>
+                    <span className="text-white">{battle.defenderAnalysis.strategy}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">감정과 기세:</span>
+                    <span className="text-white">{battle.defenderAnalysis.emotionMomentum}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">챗의 길이:</span>
+                    <span className="text-white">{battle.defenderAnalysis.lengthScore}/10</span>
+                  </div>
+                  <div className="flex justify-between border-t border-gray-600 pt-1 mt-1">
+                    <span className="text-gray-300 font-semibold">종합 점수:</span>
+                    <span className="text-yellow-400 font-bold">{battle.defenderAnalysis.totalScore}/10</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Battle Explanation */}
+        {battle.explanation && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="bg-gradient-to-r from-purple-700/30 to-blue-700/30 backdrop-blur rounded-lg p-4 mb-6 border border-purple-500/50"
+          >
+            <h3 className="text-base md:text-lg font-semibold text-purple-300 mb-2 flex items-center">
+              <span className="mr-2">💡</span> 승부의 이유
+            </h3>
+            <p className="text-sm md:text-base text-gray-200 mb-3">
+              {battle.explanation}
+            </p>
+            {battle.tip && (
+              <div className="mt-3 pt-3 border-t border-purple-500/30">
+                <p className="text-sm md:text-base text-blue-300 italic">
+                  <span className="font-semibold">팁:</span> {battle.tip}
+                </p>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         {/* Close Button */}
         <motion.div

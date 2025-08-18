@@ -1,12 +1,13 @@
 {
   "name": "text-battle",
-  "version": "0.1.0",
+  "version": "0.0.8",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3009",
     "build": "next build",
     "start": "next start -p 3009",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "init-npcs": "npx tsx scripts/init-npcs.ts"
   },
   "dependencies": {

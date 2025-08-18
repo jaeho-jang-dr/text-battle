@@ -1,6 +1,7 @@
 // Simple authentication system for development
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import KakaoProvider from "next-auth/providers/kakao";
 import bcrypt from "bcryptjs";
 import { createCharacter } from "./character-server";
 import { memoryStore } from "./db/memory-store";
@@ -11,6 +12,14 @@ const sessions = memoryStore.sessions;
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    // Kakao OAuth Provider (if environment variables are set)
+    ...(process.env.KAKAO_CLIENT_ID && process.env.KAKAO_CLIENT_SECRET ? [
+      KakaoProvider({
+        clientId: process.env.KAKAO_CLIENT_ID,
+        clientSecret: process.env.KAKAO_CLIENT_SECRET,
+      })
+    ] : []),
+    
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -166,11 +175,57 @@ export const authOptions: NextAuthOptions = {
   ],
   
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      // Handle Kakao sign in
+      if (account?.provider === "kakao") {
+        const kakaoId = user.id;
+        const email = user.email || `kakao_${kakaoId}@kakao.local`;
+        const name = user.name || profile?.name || "Kakao User";
+        
+        // Check if user exists
+        let existingUser = await memoryStore.getUserByEmail(email);
+        
+        if (!existingUser) {
+          // Create new user
+          const userId = `kakao_${kakaoId}`;
+          const newUser = {
+            id: userId,
+            email: email,
+            name: name,
+            username: name,
+            password: '', // No password for OAuth users
+            provider: 'kakao',
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+          
+          await memoryStore.createUser(newUser);
+          
+          // Auto-create character
+          try {
+            const defaultBattleChat = `안녕하세요! ${name}입니다!`;
+            await createCharacter(userId, name, defaultBattleChat);
+            console.log(`Character created for Kakao user ${userId}`);
+          } catch (error) {
+            console.error('Failed to create character:', error);
+          }
+        }
+      }
+      
+      return true;
+    },
+    
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.isGuest = user.isGuest || false;
       }
+      
+      // For Kakao users
+      if (account?.provider === "kakao") {
+        token.id = `kakao_${user.id}`;
+      }
+      
       return token;
     },
     
@@ -193,5 +248,5 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   
-  secret: process.env.NEXTAUTH_SECRET || "dev-secret-key-123",
+  secret: process.env.NEXTAUTH_SECRET || "supersecret-text-battle-game-2024",
 };

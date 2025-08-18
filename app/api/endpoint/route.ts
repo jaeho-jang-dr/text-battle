@@ -853,7 +853,7 @@ export async function POST(request: NextRequest) {
         }
         
         // Special abilities activation
-        const abilitiesUsed = [];
+        const abilitiesUsed: string[] = [];
         if (serenaWins && features.serena.abilities.length > 0) {
           // Randomly select 1-3 abilities
           const numAbilities = Math.floor(Math.random() * 3) + 1;

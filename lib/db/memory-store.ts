@@ -122,7 +122,7 @@ if (!globalStore.textBattleStore) {
   const defaultAdmin: AdminUser = {
     id: 'admin_default',
     email: 'admin@example.com',
-    password: '1234', // 프로덕션에서는 해시 처리 필요
+    password: 'admin123', // 프로덕션에서는 해시 처리 필요
     name: '시스템 관리자',
     role: 'superadmin',
     permissions: ['all'],
@@ -189,13 +189,13 @@ if (!globalStore.textBattleStore) {
       experience: 0,
       experienceToNext: 100,
       stats: {
-        health: 100 + Math.floor(Math.random() * 50),
-        attack: 20 + Math.floor(Math.random() * 10),
-        defense: 15 + Math.floor(Math.random() * 10),
-        speed: 15 + Math.floor(Math.random() * 10),
-        magic: 10 + Math.floor(Math.random() * 10),
-        critical: 10 + Math.floor(Math.random() * 5),
-        evasion: 5 + Math.floor(Math.random() * 5)
+        health: 50 + Math.floor(Math.random() * 25),  // 50-75 (was 100-150)
+        attack: 10 + Math.floor(Math.random() * 5),   // 10-15 (was 20-30)
+        defense: 8 + Math.floor(Math.random() * 5),   // 8-13 (was 15-25)
+        speed: 8 + Math.floor(Math.random() * 5),     // 8-13 (was 15-25)
+        magic: 5 + Math.floor(Math.random() * 5),     // 5-10 (was 10-20)
+        critical: 5 + Math.floor(Math.random() * 3),  // 5-8 (was 10-15)
+        evasion: 2 + Math.floor(Math.random() * 3)    // 2-5 (was 5-10)
       },
       battleChat: npc.battleChat,
       eloScore: npc.eloScore,

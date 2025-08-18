@@ -47,27 +47,42 @@ function calculateEloChange(
   return Math.round(kFactor * (actualOutcome - expectedOutcome));
 }
 
-// Calculate battle scores
+// Calculate battle scores using sophisticated chat analysis
 function calculateBattleScores(attacker: Character, defender: Character): {
   attackerScore: number;
   defenderScore: number;
   winnerId: string;
+  attackerAnalysis: BattleChatAnalysis;
+  defenderAnalysis: BattleChatAnalysis;
 } {
   const attackerRating = attacker.rating || attacker.eloScore || DEFAULT_ELO;
   const defenderRating = defender.rating || defender.eloScore || DEFAULT_ELO;
   const eloDiff = attackerRating - defenderRating;
   
-  // Base scores
-  let attackerScore = BASE_SCORE;
-  let defenderScore = BASE_SCORE;
+  // Analyze both characters' battle chats
+  const attackerAnalysis = analyzeBattleChat(attacker);
+  const defenderAnalysis = analyzeBattleChat(defender);
   
-  // Apply ELO difference modifier
-  attackerScore += eloDiff * ELO_MULTIPLIER;
-  defenderScore -= eloDiff * ELO_MULTIPLIER;
+  // Base scores from chat analysis (70% weight)
+  let attackerScore = attackerAnalysis.totalScore * 70;
+  let defenderScore = defenderAnalysis.totalScore * 70;
   
-  // Add randomness
-  attackerScore += Math.random() * 50;
-  defenderScore += Math.random() * 50;
+  // Apply ELO difference modifier (20% weight)
+  const eloModifier = eloDiff * 0.05; // Reduced from 0.1 to give chat more importance
+  attackerScore += eloModifier * 20;
+  defenderScore -= eloModifier * 20;
+  
+  // Add controlled randomness (10% weight)
+  attackerScore += Math.random() * 10;
+  defenderScore += Math.random() * 10;
+  
+  // Special bonuses for excellence in specific areas
+  // If a character excels (8+ score) in any category, give bonus
+  const attackerExcellence = Object.values(attackerAnalysis).filter(v => v >= 8).length;
+  const defenderExcellence = Object.values(defenderAnalysis).filter(v => v >= 8).length;
+  
+  attackerScore += attackerExcellence * 5;
+  defenderScore += defenderExcellence * 5;
   
   // Ensure minimum scores
   attackerScore = Math.max(attackerScore, 10);
@@ -78,98 +93,250 @@ function calculateBattleScores(attacker: Character, defender: Character): {
   return {
     attackerScore: Math.round(attackerScore),
     defenderScore: Math.round(defenderScore),
-    winnerId
+    winnerId,
+    attackerAnalysis,
+    defenderAnalysis
   };
 }
 
-// Analyze battle chat for various factors
-function analyzeBattleChat(character: Character): {
-  focus: number;
-  power: number;
-  creativity: number;
-  harmony: number;
-  intimidation: number;
-} {
+// Enhanced battle chat analysis with multiple sophisticated criteria
+interface BattleChatAnalysis {
+  creativity: number;      // 창의성 - unique word usage, original metaphors
+  impact: number;         // 임팩트 - powerful opening/closing, memorable phrases
+  focus: number;          // 집중력 - consistency, coherent narrative
+  linguisticPower: number; // 언어적파워 - strong verbs, vivid descriptions
+  strategy: number;       // 전략성 - mentions of attack/defense tactics
+  emotionMomentum: number; // 감정과 기세 - emotional intensity, confidence
+  lengthScore: number;    // 챗의 길이 - adequate length for expression
+  totalScore: number;     // Overall score
+}
+
+// Analyze battle chat for sophisticated scoring
+function analyzeBattleChat(character: Character): BattleChatAnalysis {
   const chat = character.battleChat || "";
   const name = character.name;
+  const words = chat.split(/\s+/);
+  const chatLength = chat.length;
   
-  // 집중력 (Focus) - 명확한 목표와 의도가 있는가
-  let focus = 5;
-  if (chat.includes("!") || chat.includes("!!")) focus += 2;
-  if (chat.length > 30 && chat.length < 80) focus += 1;
-  if (chat.includes("파괴") || chat.includes("승리") || chat.includes("이기")) focus += 1;
-  
-  // 힘 (Power) - 강력함을 표현하는 단어들
-  let power = 5;
-  const powerWords = ["파워", "힘", "강력", "최강", "무적", "불꽃", "번개", "폭발", "파괴", "분쇄"];
-  powerWords.forEach(word => {
-    if (chat.includes(word)) power += 1;
-  });
-  
-  // 독창성 (Creativity) - 특별하고 독특한 표현
+  // 1. 창의성 (Creativity) - Unique word usage, original metaphors
   let creativity = 5;
-  if (chat.includes("~") || chat.includes("♪") || chat.includes("★")) creativity += 2;
-  if (chat.split(" ").length > 5) creativity += 1; // 복잡한 문장 구조
-  const uniqueWords = ["흐흐", "크크", "후후", "케케", "음하하", "우하하"];
-  uniqueWords.forEach(word => {
-    if (chat.includes(word)) creativity += 1;
+  const uniqueCharacters = new Set(chat).size;
+  const uniquenessRatio = uniqueCharacters / chat.length;
+  
+  // Special characters and emojis add creativity
+  if (/[~♪★☆♡♥✨🔥⚡️💀👑🗡️⚔️🛡️🎭]/.test(chat)) creativity += 2;
+  
+  // Unique expressions and metaphors
+  const creativePatterns = [
+    /\S+의\s+\S+/,  // "X의 Y" pattern (e.g., "어둠의 지배자")
+    /\S+[으로|로]\s+\S+/,  // Instrumental patterns
+    /마치\s+\S+처럼/,  // Similes
+    /\S+[이|가]\s+\S+[하다|되다]/  // Complex verb patterns
+  ];
+  creativePatterns.forEach(pattern => {
+    if (pattern.test(chat)) creativity += 0.5;
   });
   
-  // 캐릭터와 챗의 조화 (Harmony)
-  let harmony = 5;
-  if (chat.includes(name) || chat.toLowerCase().includes(name.toLowerCase())) harmony += 2;
-  if (name.includes("마왕") && chat.includes("어둠")) harmony += 2;
-  if (name.includes("용") && chat.includes("불")) harmony += 2;
-  if (name.includes("전사") && chat.includes("검")) harmony += 2;
-  
-  // 위협도 (Intimidation)
-  let intimidation = 5;
-  const threatWords = ["죽", "끝", "파멸", "멸망", "절망", "공포", "두려워", "떨어라"];
-  threatWords.forEach(word => {
-    if (chat.includes(word)) intimidation += 1;
+  // Rare/unique words
+  const rareWords = ["운명", "영혼", "차원", "시공간", "영원", "무한", "초월", "각성", "봉인", "심판"];
+  rareWords.forEach(word => {
+    if (chat.includes(word)) creativity += 0.3;
   });
+  
+  // 2. 임팩트 (Impact) - Powerful opening/closing, memorable phrases
+  let impact = 5;
+  
+  // Strong opening
+  if (/^[가-힣]+[!?]+/.test(chat)) impact += 1;  // Starts with exclamation
+  if (/^[어둠|빛|운명|시간|죽음|파멸]/.test(chat)) impact += 0.5;  // Dramatic opening
+  
+  // Strong closing
+  if (/[!?]{2,}$/.test(chat)) impact += 1;  // Multiple punctuation at end
+  if (/[각오|준비|운명|심판|끝][하다|되다|이다]*[!?]*$/.test(chat)) impact += 0.5;
+  
+  // Memorable phrases
+  const impactfulPhrases = [
+    "절대", "영원히", "결코", "반드시", "끝없는", "무한한", "최강의", "전설의",
+    "운명", "심판", "파멸", "멸망", "각성", "초월"
+  ];
+  impactfulPhrases.forEach(phrase => {
+    if (chat.includes(phrase)) impact += 0.3;
+  });
+  
+  // 3. 집중력 (Focus) - Consistency, coherent narrative
+  let focus = 5;
+  
+  // Coherent theme throughout
+  const themeWords = {
+    magic: ["마법", "주문", "마나", "원소", "정령"],
+    warrior: ["검", "칼", "전투", "전사", "무기"],
+    dark: ["어둠", "그림자", "암흑", "심연", "악"],
+    light: ["빛", "성스러운", "신성한", "축복", "정의"],
+    nature: ["자연", "바람", "불", "물", "대지"]
+  };
+  
+  let dominantTheme = 0;
+  Object.values(themeWords).forEach(wordSet => {
+    const themeCount = wordSet.filter(word => chat.includes(word)).length;
+    if (themeCount > dominantTheme) dominantTheme = themeCount;
+  });
+  focus += Math.min(dominantTheme, 2);
+  
+  // Clear intent and structure
+  if (words.length >= 5 && words.length <= 20) focus += 1;  // Good word count
+  if (/[.!?]\s+[가-힣]/.test(chat)) focus += 0.5;  // Multiple sentences
+  
+  // 4. 언어적파워 (Linguistic Power) - Strong verbs, vivid descriptions
+  let linguisticPower = 5;
+  
+  // Strong action verbs
+  const strongVerbs = [
+    "파괴하다", "분쇄하다", "박살내다", "짓밟다", "제압하다", "지배하다",
+    "굴복시키다", "봉인하다", "해방하다", "각성하다", "초월하다", "군림하다"
+  ];
+  strongVerbs.forEach(verb => {
+    if (chat.includes(verb.replace("하다", ""))) linguisticPower += 0.4;
+  });
+  
+  // Vivid adjectives
+  const vividAdjectives = [
+    "압도적인", "절대적인", "무한한", "영원한", "신성한", "저주받은",
+    "불멸의", "전설적인", "초월적인", "궁극의"
+  ];
+  vividAdjectives.forEach(adj => {
+    if (chat.includes(adj.replace("인", "").replace("의", ""))) linguisticPower += 0.3;
+  });
+  
+  // 5. 전략성 (Strategy) - Mentions of attack/defense tactics
+  let strategy = 5;
+  
+  // Attack mentions
+  const attackWords = ["공격", "타격", "일격", "강타", "연타", "콤보", "필살기"];
+  attackWords.forEach(word => {
+    if (chat.includes(word)) strategy += 0.5;
+  });
+  
+  // Defense mentions
+  const defenseWords = ["방어", "수비", "보호", "방패", "막다", "버티다", "견디다"];
+  defenseWords.forEach(word => {
+    if (chat.includes(word)) strategy += 0.5;
+  });
+  
+  // Tactical expressions
+  if (/[준비|대비|각오]/.test(chat)) strategy += 0.5;
+  if (/[약점|급소|빈틈]/.test(chat)) strategy += 0.5;
+  
+  // 6. 감정과 기세 (Emotion & Momentum) - Emotional intensity, confidence
+  let emotionMomentum = 5;
+  
+  // Confidence indicators
+  if (chat.includes("!")) emotionMomentum += 0.5;
+  if (chat.includes("!!") || chat.includes("!!!")) emotionMomentum += 1;
+  if (/[ㅋㅎㅠㅜ]/.test(chat)) emotionMomentum += 0.5;  // Korean emotion characters
+  
+  // Emotional words
+  const emotionWords = [
+    "분노", "격노", "환희", "절망", "공포", "두려움", "기쁨", "슬픔",
+    "증오", "사랑", "열정", "투지", "의지", "결의"
+  ];
+  emotionWords.forEach(word => {
+    if (chat.includes(word)) emotionMomentum += 0.4;
+  });
+  
+  // Battle cries and exclamations
+  const battleCries = ["흐하하", "크하하", "후후", "흐흐", "케케", "음하하", "우하하", "아하하"];
+  battleCries.forEach(cry => {
+    if (chat.includes(cry)) emotionMomentum += 0.5;
+  });
+  
+  // 7. 챗의 길이 (Chat Length) - Adequate length for expression
+  let lengthScore = 5;
+  
+  if (chatLength < 10) {
+    lengthScore = 3;  // Too short
+  } else if (chatLength >= 10 && chatLength < 30) {
+    lengthScore = 6;  // A bit short but acceptable
+  } else if (chatLength >= 30 && chatLength <= 100) {
+    lengthScore = 10;  // Perfect length
+  } else if (chatLength > 100 && chatLength <= 150) {
+    lengthScore = 8;  // Good but a bit long
+  } else {
+    lengthScore = 6;  // Too long
+  }
+  
+  // Normalize all scores to 0-10 range
+  creativity = Math.min(Math.max(creativity, 0), 10);
+  impact = Math.min(Math.max(impact, 0), 10);
+  focus = Math.min(Math.max(focus, 0), 10);
+  linguisticPower = Math.min(Math.max(linguisticPower, 0), 10);
+  strategy = Math.min(Math.max(strategy, 0), 10);
+  emotionMomentum = Math.min(Math.max(emotionMomentum, 0), 10);
+  lengthScore = Math.min(Math.max(lengthScore, 0), 10);
+  
+  // Calculate total score with weights
+  const totalScore = (
+    creativity * 0.15 +
+    impact * 0.15 +
+    focus * 0.15 +
+    linguisticPower * 0.15 +
+    strategy * 0.15 +
+    emotionMomentum * 0.15 +
+    lengthScore * 0.10
+  );
   
   return {
-    focus: Math.min(focus, 10),
-    power: Math.min(power, 10),
-    creativity: Math.min(creativity, 10),
-    harmony: Math.min(harmony, 10),
-    intimidation: Math.min(intimidation, 10)
+    creativity: Math.round(creativity * 10) / 10,
+    impact: Math.round(impact * 10) / 10,
+    focus: Math.round(focus * 10) / 10,
+    linguisticPower: Math.round(linguisticPower * 10) / 10,
+    strategy: Math.round(strategy * 10) / 10,
+    emotionMomentum: Math.round(emotionMomentum * 10) / 10,
+    lengthScore: Math.round(lengthScore * 10) / 10,
+    totalScore: Math.round(totalScore * 10) / 10
   };
 }
 
-// Generate detailed battle analysis
+// Generate detailed battle analysis with scoring breakdown
 function generateBattleAnalysis(
   attacker: Character,
   defender: Character,
   attackerScore: number,
   defenderScore: number,
-  winnerId: string
-): string {
+  winnerId: string,
+  attackerAnalysis: BattleChatAnalysis,
+  defenderAnalysis: BattleChatAnalysis
+): { summary: string; explanation?: string; tip?: string; scoreBreakdown?: string } {
   const winner = winnerId === attacker.id ? attacker : defender;
   const loser = winnerId === attacker.id ? defender : attacker;
-  
-  const winnerAnalysis = analyzeBattleChat(winner);
-  const loserAnalysis = analyzeBattleChat(loser);
+  const winnerAnalysis = winnerId === attacker.id ? attackerAnalysis : defenderAnalysis;
+  const loserAnalysis = winnerId === attacker.id ? defenderAnalysis : attackerAnalysis;
   
   // Find the strongest factors for the winner
-  const winnerStrengths = [];
-  if (winnerAnalysis.focus > loserAnalysis.focus) 
-    winnerStrengths.push(`뛰어난 집중력 (${winnerAnalysis.focus}/10)`);
-  if (winnerAnalysis.power > loserAnalysis.power) 
-    winnerStrengths.push(`압도적인 힘 (${winnerAnalysis.power}/10)`);
-  if (winnerAnalysis.creativity > loserAnalysis.creativity) 
-    winnerStrengths.push(`독창적인 전투 스타일 (${winnerAnalysis.creativity}/10)`);
-  if (winnerAnalysis.harmony > loserAnalysis.harmony) 
-    winnerStrengths.push(`완벽한 캐릭터와의 조화 (${winnerAnalysis.harmony}/10)`);
-  if (winnerAnalysis.intimidation > loserAnalysis.intimidation) 
-    winnerStrengths.push(`상대를 압도하는 위압감 (${winnerAnalysis.intimidation}/10)`);
+  const winnerStrengths: string[] = [];
+  const scoreComparisons = [
+    { name: "창의성", winScore: winnerAnalysis.creativity, loseScore: loserAnalysis.creativity },
+    { name: "임팩트", winScore: winnerAnalysis.impact, loseScore: loserAnalysis.impact },
+    { name: "집중력", winScore: winnerAnalysis.focus, loseScore: loserAnalysis.focus },
+    { name: "언어적 파워", winScore: winnerAnalysis.linguisticPower, loseScore: loserAnalysis.linguisticPower },
+    { name: "전략성", winScore: winnerAnalysis.strategy, loseScore: loserAnalysis.strategy },
+    { name: "감정과 기세", winScore: winnerAnalysis.emotionMomentum, loseScore: loserAnalysis.emotionMomentum },
+    { name: "챗의 길이", winScore: winnerAnalysis.lengthScore, loseScore: loserAnalysis.lengthScore }
+  ];
+  
+  // Sort by winner's advantage
+  scoreComparisons.sort((a, b) => (b.winScore - b.loseScore) - (a.winScore - a.loseScore));
+  
+  // Take top 3 advantages
+  const topAdvantages = scoreComparisons.slice(0, 3).filter(comp => comp.winScore > comp.loseScore);
+  topAdvantages.forEach(adv => {
+    winnerStrengths.push(`${adv.name} (${adv.winScore}/10)`);
+  });
   
   // Generate the summary
   let summary = `${winner.name}의 승리! `;
   
   if (winnerStrengths.length > 0) {
-    summary += `${winner.name}은(는) ${winnerStrengths.join(", ")}으로 상대를 압도했습니다. `;
+    summary += `${winner.name}은(는) ${winnerStrengths.join(", ")}에서 우위를 점했습니다. `;
   }
   
   const scoreDiff = Math.abs(attackerScore - defenderScore);
@@ -181,7 +348,72 @@ function generateBattleAnalysis(
     summary += "압도적인 승리였습니다!";
   }
   
-  return summary;
+  // Generate detailed score breakdown
+  let scoreBreakdown = `\n\n📊 전투 점수 분석:\n`;
+  scoreBreakdown += `${attacker.name}:\n`;
+  scoreBreakdown += `• 창의성: ${attackerAnalysis.creativity}/10\n`;
+  scoreBreakdown += `• 임팩트: ${attackerAnalysis.impact}/10\n`;
+  scoreBreakdown += `• 집중력: ${attackerAnalysis.focus}/10\n`;
+  scoreBreakdown += `• 언어적 파워: ${attackerAnalysis.linguisticPower}/10\n`;
+  scoreBreakdown += `• 전략성: ${attackerAnalysis.strategy}/10\n`;
+  scoreBreakdown += `• 감정과 기세: ${attackerAnalysis.emotionMomentum}/10\n`;
+  scoreBreakdown += `• 챗의 길이: ${attackerAnalysis.lengthScore}/10\n`;
+  scoreBreakdown += `• 종합 점수: ${attackerAnalysis.totalScore}/10\n\n`;
+  
+  scoreBreakdown += `${defender.name}:\n`;
+  scoreBreakdown += `• 창의성: ${defenderAnalysis.creativity}/10\n`;
+  scoreBreakdown += `• 임팩트: ${defenderAnalysis.impact}/10\n`;
+  scoreBreakdown += `• 집중력: ${defenderAnalysis.focus}/10\n`;
+  scoreBreakdown += `• 언어적 파워: ${defenderAnalysis.linguisticPower}/10\n`;
+  scoreBreakdown += `• 전략성: ${defenderAnalysis.strategy}/10\n`;
+  scoreBreakdown += `• 감정과 기세: ${defenderAnalysis.emotionMomentum}/10\n`;
+  scoreBreakdown += `• 챗의 길이: ${defenderAnalysis.lengthScore}/10\n`;
+  scoreBreakdown += `• 종합 점수: ${defenderAnalysis.totalScore}/10`;
+  
+  // Generate explanation and tip
+  let explanation: string | undefined;
+  let tip: string | undefined;
+  
+  // Always provide explanation for better understanding
+  if (scoreDiff > 30) {
+    const excellentScores = Object.entries({
+      creativity: { score: winnerAnalysis.creativity, name: "창의성", tip: "특수문자, 은유, 독특한 표현을 사용하면 창의성이 높아집니다." },
+      impact: { score: winnerAnalysis.impact, name: "임팩트", tip: "강렬한 시작과 끝, 기억에 남는 문구를 사용하세요." },
+      linguisticPower: { score: winnerAnalysis.linguisticPower, name: "언어적 파워", tip: "강력한 동사와 생생한 형용사를 활용하세요." },
+      emotionMomentum: { score: winnerAnalysis.emotionMomentum, name: "감정과 기세", tip: "감정을 담은 표현과 자신감 있는 어조를 사용하세요." }
+    });
+    
+    const bestCategory = Object.entries(excellentScores)
+      .sort((a, b) => b[1].score - a[1].score)[0];
+    
+    if (bestCategory && bestCategory[1].score > 8) {
+      explanation = `뛰어난 ${bestCategory[1].name}(${bestCategory[1].score}/10)이(가) 승리의 결정적 요인이었습니다!`;
+      tip = bestCategory[1].tip;
+    } else {
+      explanation = "전반적으로 균형잡힌 우수한 전투 대사로 완승을 거두었습니다!";
+      tip = "모든 평가 요소를 골고루 신경쓰면 안정적인 승률을 유지할 수 있습니다.";
+    }
+  } else if (scoreDiff > 15) {
+    // Find the biggest difference
+    const biggestDiff = scoreComparisons[0];
+    explanation = `${biggestDiff.name}에서의 우위(${biggestDiff.winScore} vs ${biggestDiff.loseScore})가 승부를 결정지었습니다.`;
+    
+    const categoryTips = {
+      "창의성": "독특한 단어와 표현을 사용해 창의성을 높이세요.",
+      "임팩트": "강렬한 시작과 마무리로 임팩트를 높이세요.",
+      "집중력": "일관된 주제와 명확한 의도로 집중력을 보여주세요.",
+      "언어적 파워": "강력한 동사와 생생한 표현을 사용하세요.",
+      "전략성": "공격과 방어 전술을 언급해 전략성을 드러내세요.",
+      "감정과 기세": "감정을 담고 자신감 있게 표현하세요.",
+      "챗의 길이": "30-100자 사이의 적절한 길이를 유지하세요."
+    };
+    tip = categoryTips[biggestDiff.name] || "모든 요소를 균형있게 발전시키세요.";
+  } else {
+    explanation = "아슬아슬한 승부! 작은 차이가 승패를 갈랐습니다.";
+    tip = "근소한 차이로 승부가 결정되었습니다. 조금만 더 연습하면 역전할 수 있습니다!";
+  }
+  
+  return { summary, explanation, tip, scoreBreakdown };
 }
 
 // Generate battle log (simplified)
@@ -192,9 +424,9 @@ function generateBattleLog(
   defenderScore: number,
   winnerId: string
 ): string[] {
-  // Return the analysis as a single string in an array
+  // Return the analysis summary as a single string in an array
   const analysis = generateBattleAnalysis(attacker, defender, attackerScore, defenderScore, winnerId);
-  return [analysis];
+  return [analysis.summary];
 }
 
 // Check if a user can battle
@@ -278,8 +510,14 @@ export async function createBattle(
       return { data: null, error: "Character not found" };
     }
     
-    // Calculate battle outcome
-    const { attackerScore, defenderScore, winnerId } = calculateBattleScores(attacker, defender);
+    // Calculate battle outcome with detailed analysis
+    const { 
+      attackerScore, 
+      defenderScore, 
+      winnerId,
+      attackerAnalysis,
+      defenderAnalysis
+    } = calculateBattleScores(attacker, defender);
     
     // Calculate ELO changes
     const attackerWon = winnerId === attackerId;
@@ -303,14 +541,22 @@ export async function createBattle(
       defenderGamesPlayed
     );
     
-    // Generate battle log
-    const battleLog = generateBattleLog(
+    // Generate battle analysis with explanation
+    const analysis = generateBattleAnalysis(
       attacker,
       defender,
       attackerScore,
       defenderScore,
-      winnerId
+      winnerId,
+      attackerAnalysis,
+      defenderAnalysis
     );
+    
+    // Generate battle log with score breakdown
+    const battleLog = [analysis.summary];
+    if (analysis.scoreBreakdown) {
+      battleLog.push(analysis.scoreBreakdown);
+    }
     
     // Create battle record
     const battleId = `battle_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -334,6 +580,10 @@ export async function createBattle(
       attacker.losses++;
       defender.wins++;
     }
+    
+    // Update total battles count
+    attacker.totalBattles = (attacker.totalBattles || 0) + 1;
+    defender.totalBattles = (defender.totalBattles || 0) + 1;
     
     // Update ratings
     if (attacker.rating !== undefined) {
@@ -360,7 +610,11 @@ export async function createBattle(
       await updateBattleRestrictions(attacker.userId);
     }
     
-    // Return battle result
+    // Check if we should include detailed analysis (every 10 battles)
+    const attackerBattleCount = attacker.totalBattles || 0;
+    const shouldShowDetailedAnalysis = attackerBattleCount % 10 === 0;
+    
+    // Return battle result with detailed analysis conditionally
     const result = {
       id: battleId,
       attackerId,
@@ -369,9 +623,16 @@ export async function createBattle(
       attackerScore,
       defenderScore,
       battleLog,
+      explanation: analysis.explanation,  // Always show brief explanation
+      tip: analysis.tip,  // Always show tip
       attackerEloChange,
       defenderEloChange,
-      createdAt: battle.createdAt
+      createdAt: battle.createdAt,
+      // Include detailed scoring breakdown only every 10 battles
+      ...(shouldShowDetailedAnalysis && {
+        attackerAnalysis,
+        defenderAnalysis
+      })
     };
     
     return { data: result, error: null };

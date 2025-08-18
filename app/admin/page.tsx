@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { 
   HiUsers, 
   HiUserGroup, 
@@ -33,30 +34,29 @@ const tabs: TabItem[] = [
 
 export default function AdminPage() {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("users");
   const [showLoginEffect, setShowLoginEffect] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch("/api/admin/verify");
-      if (response.ok) {
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.error("Auth check failed:", error);
-    } finally {
-      setIsLoading(false);
+    // Check if user is admin when session changes
+    console.log('Admin page - Session status:', status);
+    console.log('Admin page - Session data:', session);
+    console.log('Admin page - User email:', session?.user?.email);
+    
+    if (session?.user?.email === 'admin@example.com') {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
     }
-  };
+  }, [session, status]);
+
+  const isLoading = status === "loading";
+  const isAuthenticated = isAdmin && !!session;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,35 +64,39 @@ export default function AdminPage() {
     setShowLoginEffect(true);
 
     try {
-      const response = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+      // Check if it's the correct admin credentials
+      if (username !== 'admin' || password !== 'admin123') {
+        setError("잘못된 관리자 정보입니다");
+        setShowLoginEffect(false);
+        return;
+      }
 
-      if (response.ok) {
-        setTimeout(() => {
-          setIsAuthenticated(true);
-        }, 500);
+      // Sign in with NextAuth using admin credentials directly
+      const result = await signIn('credentials', {
+        email: 'admin@example.com',
+        password: 'admin123',
+        redirect: false,
+      });
+      
+      if (result?.ok) {
+        // Success - the useEffect will handle setting isAdmin
+        setShowLoginEffect(false);
+        // Force a page reload to ensure session is updated
+        window.location.reload();
       } else {
-        const data = await response.json();
-        setError(data.error || "Login failed");
+        setError(result?.error || "NextAuth 로그인 실패");
         setShowLoginEffect(false);
       }
     } catch (error) {
-      setError("Login failed");
+      console.error('Admin login error:', error);
+      setError("로그인 중 오류가 발생했습니다");
       setShowLoginEffect(false);
     }
   };
 
   const handleLogout = async () => {
-    try {
-      await fetch("/api/admin/logout", { method: "POST" });
-      setIsAuthenticated(false);
-      router.push("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    await signOut({ redirect: false });
+    router.push("/");
   };
 
   if (isLoading) {
@@ -156,7 +160,15 @@ export default function AdminPage() {
             </div>
             
             <h1 className="text-3xl font-bold text-center mb-2 text-white">Admin Portal</h1>
-            <p className="text-gray-400 text-center mb-8">관리자 인증이 필요합니다</p>
+            <p className="text-gray-400 text-center mb-2">관리자 인증이 필요합니다</p>
+            <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-3 text-blue-300 text-sm text-center mb-6">
+              <p>개발 환경 로그인 정보:</p>
+              <p className="font-mono">ID: admin / PW: admin123</p>
+              <p className="text-xs mt-2 text-gray-400">
+                세션 상태: {status} | 
+                세션 이메일: {session?.user?.email || 'none'}
+              </p>
+            </div>
             
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
@@ -296,9 +308,7 @@ export default function AdminPage() {
               `}
               style={activeTab === tab.id ? {
                 backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
-                '--tw-gradient-from': tab.color.split(' ')[1],
-                '--tw-gradient-to': tab.color.split(' ')[3],
-              } : {}}
+              } as React.CSSProperties : {}}
             >
               <span className="flex items-center gap-2">
                 {tab.icon}
@@ -311,9 +321,7 @@ export default function AdminPage() {
                   className="absolute inset-0 rounded-xl bg-gradient-to-r opacity-20"
                   style={{
                     backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))`,
-                    '--tw-gradient-from': tab.color.split(' ')[1],
-                    '--tw-gradient-to': tab.color.split(' ')[3],
-                  }}
+                  } as React.CSSProperties}
                 />
               )}
             </motion.button>

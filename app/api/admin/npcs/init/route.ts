@@ -40,13 +40,13 @@ export const POST = adminOnly(async (req: NextRequest) => {
         experience: 0,
         experienceToNext: 100,
         stats: {
-          health: 100 + Math.floor(Math.random() * 50),
-          attack: 20 + Math.floor(Math.random() * 10),
-          defense: 15 + Math.floor(Math.random() * 10),
-          speed: 15 + Math.floor(Math.random() * 10),
-          magic: 10 + Math.floor(Math.random() * 10),
-          critical: 10 + Math.floor(Math.random() * 5),
-          evasion: 5 + Math.floor(Math.random() * 5)
+          health: 70 + Math.floor(Math.random() * 35),  // Reduced from 100-150 to 70-105
+          attack: 14 + Math.floor(Math.random() * 7),   // Reduced from 20-30 to 14-21
+          defense: 10 + Math.floor(Math.random() * 7),  // Reduced from 15-25 to 10-17
+          speed: 10 + Math.floor(Math.random() * 7),    // Reduced from 15-25 to 10-17
+          magic: 7 + Math.floor(Math.random() * 7),     // Reduced from 10-20 to 7-14
+          critical: 7 + Math.floor(Math.random() * 3),  // Reduced from 10-15 to 7-10
+          evasion: 3 + Math.floor(Math.random() * 3)    // Reduced from 5-10 to 3-6
         },
         battleChat: npc.battleChat,
         eloScore: npc.eloScore,

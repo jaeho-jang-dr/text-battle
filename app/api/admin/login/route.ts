@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { signIn } from "next-auth/react";
 import { memoryStore } from "@/lib/db/memory-store";
 
 export async function POST(request: NextRequest) {
@@ -38,11 +37,11 @@ export async function POST(request: NextRequest) {
     adminUser.lastLoginAt = new Date();
     memoryStore.adminUsers.set(adminUser.id, adminUser);
 
-    // Note: The actual session should be handled by NextAuth
-    // This endpoint is just for verification
+    // Return success - the frontend will handle the NextAuth login
     return NextResponse.json({ 
       success: true,
-      message: "Please use NextAuth login with admin@example.com"
+      email: 'admin@example.com',
+      password: password // Return the password so frontend can use it with NextAuth
     });
   } catch (error) {
     console.error("Admin login error:", error);
